@@ -20,6 +20,7 @@ public class PacmanApp extends JFrame {
                 new Runnable() {
                     public void run() {
                         app.setVisible(true);
+                        //d
                     }
                 }
         );
