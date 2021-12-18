@@ -4,6 +4,9 @@
  * and open the template in the editor.
  */
 
+import com.sun.opengl.util.Animator;
+import com.sun.opengl.util.FPSAnimator;
+
 import java.awt.*;
 import javax.media.opengl.GLCanvas;
 import javax.swing.*;
@@ -13,31 +16,27 @@ import javax.swing.*;
  */
 public class PacmanApp extends JFrame {
 
+    GLCanvas glcanvas = new GLCanvas();
+    Animator animator = new FPSAnimator(40);
+    PacmanGLEventListener listener = new PacmanGLEventListener();
+
     public static void main(String[] args) {
-        final PacmanApp app = new PacmanApp();
-//show what we've done
-        SwingUtilities.invokeLater(
-                new Runnable() {
-                    public void run() {
-                        app.setVisible(true);
-                    }
-                }
-        );
+        new PacmanApp().animator.start();
     }
 
     public PacmanApp() {
-//set the JFrame title
-        super("PacMan");
-//kill the process when the JFrame is closed
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//only three JOGL lines of code ... and here they are
-        GLCanvas glcanvas = new GLCanvas();
-        glcanvas.addGLEventListener(new PacmanGLEventListener());
-//add the GLCanvas just like we would any Component
+        glcanvas.addGLEventListener(listener);
+        glcanvas.addKeyListener(listener);
+        animator.add(glcanvas);
         getContentPane().add(glcanvas, BorderLayout.CENTER);
-        setSize(500, 300);
-//center the JFrame on the screen
-        setLocationRelativeTo(this);
+
+        setTitle("PAC-MAN");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(850, 850);
+        setLocationRelativeTo(null);
+        setVisible(true);
+        setFocusable(true);
+        glcanvas.requestFocus();
     }
 }
 
