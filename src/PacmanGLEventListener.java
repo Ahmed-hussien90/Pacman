@@ -5,9 +5,11 @@ import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLDrawable;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.glu.GLU;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.BitSet;
 
 /**
@@ -24,6 +26,9 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
     double[][] DOWN  = {{29.25,29.25} , {61.25,29.25}};
     double[][] LEFT  = {{29.25,38.75} , {29.25,58}};
     double[][] RIGHT = {{61.25,38.75} , {61.25,58}};
+    ArrayList<points> pointsList = new ArrayList<>();
+
+
 
     String textureNames[] = {"sprites/pacman-right/2.png","Background.jpeg"};
     TextureReader.Texture texture[] = new TextureReader.Texture[textureNames.length];
@@ -52,6 +57,9 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
                 e.printStackTrace();
             }
         }
+
+       // pointsList.add(new points(1.2,1.3,null,null,null,null));
+
     }
     public void display(GLAutoDrawable gld) {
         GL gl = gld.getGL();
