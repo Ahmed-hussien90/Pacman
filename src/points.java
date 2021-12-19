@@ -1,12 +1,12 @@
 public class points {
     private double x ;
     private double y;
-    private points top;
-    private points left;
-    private points bottom;
-    private points right;
+    private int top;
+    private int left;
+    private int bottom;
+    private int right;
 
-    public points(double x, double y, points top, points left, points bottom, points right) {
+    public points(double x, double y, int top, int left, int bottom, int right) {
         this.x = x;
         this.y = y;
         this.top = top;
@@ -31,19 +31,35 @@ public class points {
         this.y = y;
     }
 
-    public points getTop() {
+    public int getTop() {
         return top;
     }
 
-    public points getLeft() {
+    public int getLeft() {
         return left;
     }
 
-    public points getBottom() {
+    public int getBottom() {
         return bottom;
     }
 
-    public points getRight() {
+    public int getRight() {
         return right;
+    }
+
+    public void setTop(int top) {
+        this.top = top;
+    }
+
+    public void setLeft(int left) {
+        this.left = left;
+    }
+
+    public void setBottom(int bottom) {
+        this.bottom = bottom;
+    }
+
+    public void setRight(int right) {
+        this.right = right;
     }
 }
