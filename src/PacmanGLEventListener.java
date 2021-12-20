@@ -25,7 +25,7 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
     double[][] RIGHT = {{61.25,38.75} , {61.25,58}};
     ArrayList<points> pointsList = new ArrayList<>();
 
-    String textureNames[] = {"sprites/pacman-right/2.png","Background.jpeg"};
+    String textureNames[] = {"sprites/pacman-right/2.png", "Background.jpeg", "sprites/extra/dot.png"};
     TextureReader.Texture texture[] = new TextureReader.Texture[textureNames.length];
     int textures[] = new int[textureNames.length];
     public BitSet keyBits = new BitSet(256);
@@ -57,7 +57,7 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
     private void addPoints() {
 
         pointsList.add(new points(0, 0, 0, 0, 0, 0));
-        pointsList.add(new points(38.75, 45, 0, 0, 50, 2));
+        pointsList.add(new points(45, 38.75, 0, 0, 50, 2));
         pointsList.add(new points(61.25, 38.75, 3, 67, 1, -1));
         pointsList.add(new points(61.25, 48, 4, 2, -1, 17));
         pointsList.add(new points(61.25, 58, -1, 3, 5, -1));
@@ -91,32 +91,32 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
         pointsList.add(new points(51, 29, -1, -1, -1, -1));
         pointsList.add(new points(51, 19, -1, -1, -1, -1));
         pointsList.add(new points(40, 19, -1, -1, -1, -1));
-        pointsList.add(new points(29, 10, -1, -1, -1, -1));
-        pointsList.add(new points(29, 29, -1, -1, -1, -1));
-        pointsList.add(new points(40, 19, -1, -1, -1, -1));
-        pointsList.add(new points(40, 19, -1, -1, -1, -1));
-        pointsList.add(new points(0, 19, -1, -1, -1, -1));
-        pointsList.add(new points(0, 10, -1, -1, -1, -1));
-        pointsList.add(new points(8, 10, -1, -1, -1, -1));
-        pointsList.add(new points(8, 0, -1, -1, -1, -1));
-        pointsList.add(new points(0, 0, -1, -1, -1, -1));
-        pointsList.add(new points(0, 10, -1, -1, -1, -1));
-        pointsList.add(new points(18, 10, -1, -1, -1, -1));
-        pointsList.add(new points(18, 19, -1, -1, -1, -1));
-        pointsList.add(new points(18, 19, -1, -1, -1, -1));
-        pointsList.add(new points(29, 29, -1, -1, -1, -1));
-        pointsList.add(new points(40, 29, -1, -1, -1, -1));
         pointsList.add(new points(29, 19, -1, -1, -1, -1));
         pointsList.add(new points(29, 10, -1, -1, -1, -1));
+        pointsList.add(new points(40, 10, -1, -1, -1, -1));
+        pointsList.add(new points(40, 0, -1, -1, -1, -1));
+        pointsList.add(new points(0, 0, -1, -1, -1, -1));
+        pointsList.add(new points(0, 10, -1, -1, -1, -1));
+        pointsList.add(new points(8, 10, -1, -1, -1, -1));
+        pointsList.add(new points(8, 19, -1, -1, -1, -1));
+        pointsList.add(new points(0, 19, -1, -1, -1, -1));
+        pointsList.add(new points(0, 29, -1, -1, -1, -1));
+        pointsList.add(new points(18, 29, -1, -1, -1, -1));
+        pointsList.add(new points(18, 19, -1, -1, -1, -1));
+        pointsList.add(new points(18, 10, -1, -1, -1, -1));
         pointsList.add(new points(29, 29, -1, -1, -1, -1));
         pointsList.add(new points(40, 29, -1, -1, -1, -1));
-        pointsList.add(new points(40, 38.75, -1, -1, -1, -1));
+        pointsList.add(new points(29, 38.5, -1, -1, -1, -1));
         pointsList.add(new points(29, 48, -1, -1, -1, -1));
         pointsList.add(new points(29, 58, -1, -1, -1, -1));
         pointsList.add(new points(40, 58, -1, -1, -1, -1));
         pointsList.add(new points(40, 68, -1, -1, -1, -1));
-        pointsList.add(new points(18, 68, -1, -1, -1, -1));
-        pointsList.add(new points(0, 77.5, -1, -1, -1, -1));
+        pointsList.add(new points(29, 68, -1, -1, -1, -1));
+        pointsList.add(new points(29, 77.5, -1, -1, -1, -1));
+        pointsList.add(new points(40, 77.5, -1, -1, -1, -1));
+        pointsList.add(new points(40, 90.5, -1, -1, -1, -1));
+        pointsList.add(new points(18, 90.5, -1, -1, -1, -1));
+        pointsList.add(new points(0, 90.5, -1, -1, -1, -1));
         pointsList.add(new points(0, 77.5, -1, -1, -1, -1));
         pointsList.add(new points(0, 68, -1, -1, -1, -1));
         pointsList.add(new points(18, 68, -1, -1, -1, -1));
@@ -165,7 +165,7 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
     }
 
 
-    public void DrawSprite(GL gl,double x, double y, float scale){
+    public void DrawSprite(GL gl, double x, double y, float scale){
         gl.glEnable(GL.GL_BLEND);
         gl.glBindTexture(GL.GL_TEXTURE_2D, textures[0]);
         gl.glPushMatrix();
@@ -184,6 +184,34 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
         gl.glPopMatrix();
         gl.glDisable(GL.GL_BLEND);
 
+
+        drawdot(gl);
+
+    }
+
+    private void drawdot(GL gl) {
+
+        for (int i = 1; i < pointsList.size(); i++) {
+            double x = pointsList.get(i).getX();
+            double y = pointsList.get(i).getY();
+            gl.glEnable(GL.GL_BLEND);
+            gl.glBindTexture(GL.GL_TEXTURE_2D, textures[2]);
+            gl.glPushMatrix();
+            gl.glTranslated(x / (maxWidth / 2.0) - 0.9, y / (maxHeight / 2.0) - 0.9, 0);
+            gl.glScaled(0.05, 0.05, 1);
+            gl.glBegin(GL.GL_QUADS);
+            gl.glTexCoord2f(0.0f, 0.0f);
+            gl.glVertex3f(-1.0f, -1.0f, -1.0f);
+            gl.glTexCoord2f(1.0f, 0.0f);
+            gl.glVertex3f(1.0f, -1.0f, -1.0f);
+            gl.glTexCoord2f(1.0f, 1.0f);
+            gl.glVertex3f(1.0f, 1.0f, -1.0f);
+            gl.glTexCoord2f(0.0f, 1.0f);
+            gl.glVertex3f(-1.0f, 1.0f, -1.0f);
+            gl.glEnd();
+            gl.glPopMatrix();
+            gl.glDisable(GL.GL_BLEND);
+        }
     }
 
     public void handleKeyPress() {
