@@ -190,14 +190,16 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
 
         if (isKeyPressed(KeyEvent.VK_LEFT)) {
             for (int i = 0; i < LEFT.length; i++) {
-                if (((x == LEFT[i][0] && y ==LEFT[i][1]))){
+                if (((x == LEFT[i][0] && y == LEFT[i][1]))) {
                     keyBits.clear(keyCode);
                     IS = true;
                 }
-                if(x<0.25){}else{
+                if (x < 0.25) {
+                } else {
+
+                    if (!IS) x -= speed;
+                    System.out.println(x + ",,," + y);
                 }
-                if (!IS) x -=speed;
-                System.out.println(x+",,,"+y);
             }}
         else if (isKeyPressed(KeyEvent.VK_RIGHT)) {
             for (int i = 0; i < RIGHT.length; i++) {
