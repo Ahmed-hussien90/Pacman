@@ -2,16 +2,13 @@ import Texture.TextureReader;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
-import javax.media.opengl.GLDrawable;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.glu.GLU;
-import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.BitSet;
-
 /**
  * For our purposes only two of the GLEventListeners matter. Those would be
  * init() and display().
@@ -27,8 +24,6 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
     double[][] LEFT  = {{29.25,38.75} , {29.25,58}};
     double[][] RIGHT = {{61.25,38.75} , {61.25,58}};
     ArrayList<points> pointsList = new ArrayList<>();
-
-
 
     String textureNames[] = {"sprites/pacman-right/2.png","Background.jpeg"};
     TextureReader.Texture texture[] = new TextureReader.Texture[textureNames.length];
@@ -49,36 +44,111 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
                         +"//"+textureNames[i], true);
                 gl.glBindTexture(GL.GL_TEXTURE_2D, textures[i]);
                 new GLU().gluBuild2DMipmaps(GL.GL_TEXTURE_2D,
-                        GL.GL_RGBA,texture[i].getWidth(),texture[i].getHeight(),
-                        GL.GL_RGBA,GL.GL_UNSIGNED_BYTE,texture[i].getPixels());
-            }
-            catch( IOException e ) {
+                        GL.GL_RGBA, texture[i].getWidth(), texture[i].getHeight(),
+                        GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, texture[i].getPixels());
+            } catch (IOException e) {
                 System.out.println(e);
                 e.printStackTrace();
             }
         }
+        addPoints();
+    }
 
-       // pointsList.add(new points(1.2,1.3,null,null,null,null));
+    private void addPoints() {
+
+        pointsList.add(new points(0, 0, 0, 0, 0, 0));
+        pointsList.add(new points(38.75, 45, 0, 0, 50, 2));
+        pointsList.add(new points(61.25, 38.75, 3, 67, 1, -1));
+        pointsList.add(new points(61.25, 48, 4, 2, -1, 17));
+        pointsList.add(new points(61.25, 58, -1, 3, 5, -1));
+        pointsList.add(new points(50.75, 58, 6, -1, 53, 4));
+        pointsList.add(new points(50.75, 68, -1, 5, -1, 7));
+        pointsList.add(new points(61.75, 68, 8, -1, 6, -1));
+        pointsList.add(new points(61.75, 77.5, -1, 7, 9, 16));
+        pointsList.add(new points(51, 77.5, 10, -1, 57, 8));
+        pointsList.add(new points(51, 90.5, -1, 9, -1, 11));
+        pointsList.add(new points(71.5, 90.5, -1, 16, 10, 12));
+        pointsList.add(new points(89.25, 90.5, -1, 13, 11, -1));
+        pointsList.add(new points(89.25, 77.5, 12, 14, 16, -1));
+        pointsList.add(new points(89.25, 67.75, 13, -1, 15, -1));
+        pointsList.add(new points(72, 67.75, 16, 17, -1, 14));
+        pointsList.add(new points(72, 77.5, 11, 15, 8, 13));
+        pointsList.add(new points(72, 48, 15, 19, 3, 18));
+        pointsList.add(new points(90, 48, -1, -1, 17, -1));
+        pointsList.add(new points(72, 29, 17, 30, 67, 20));
+        pointsList.add(new points(90, 29, -1, 21, 19, -1));
+        pointsList.add(new points(90, 19, 20, -1, 22, -1));
+        pointsList.add(new points(82, 19, -1, 23, -1, 21));
+        pointsList.add(new points(82, 10, 22, -1, 31, 24));
+        pointsList.add(new points(90, 10, -1, 25, 23, -1));
+        pointsList.add(new points(90, 0, 24, -1, 26, -1));
+        pointsList.add(new points(50.5, 0, 27, -1, 38, 25));
+        pointsList.add(new points(50.5, 10, -1, 26, -1, 28));
+        pointsList.add(new points(61.5, 10, 29, -1, 27, -1));
+        pointsList.add(new points(61.5, 19, 19, 31, 29, -1));
+        pointsList.add(new points(72, 19, -1, -1, -1, -1));
+        pointsList.add(new points(72, 10, -1, -1, -1, -1));
+        pointsList.add(new points(51, 29, -1, -1, -1, -1));
+        pointsList.add(new points(51, 19, -1, -1, -1, -1));
+        pointsList.add(new points(40, 19, -1, -1, -1, -1));
+        pointsList.add(new points(29, 10, -1, -1, -1, -1));
+        pointsList.add(new points(29, 29, -1, -1, -1, -1));
+        pointsList.add(new points(40, 19, -1, -1, -1, -1));
+        pointsList.add(new points(40, 19, -1, -1, -1, -1));
+        pointsList.add(new points(0, 19, -1, -1, -1, -1));
+        pointsList.add(new points(0, 10, -1, -1, -1, -1));
+        pointsList.add(new points(8, 10, -1, -1, -1, -1));
+        pointsList.add(new points(8, 0, -1, -1, -1, -1));
+        pointsList.add(new points(0, 0, -1, -1, -1, -1));
+        pointsList.add(new points(0, 10, -1, -1, -1, -1));
+        pointsList.add(new points(18, 10, -1, -1, -1, -1));
+        pointsList.add(new points(18, 19, -1, -1, -1, -1));
+        pointsList.add(new points(18, 19, -1, -1, -1, -1));
+        pointsList.add(new points(29, 29, -1, -1, -1, -1));
+        pointsList.add(new points(40, 29, -1, -1, -1, -1));
+        pointsList.add(new points(29, 19, -1, -1, -1, -1));
+        pointsList.add(new points(29, 10, -1, -1, -1, -1));
+        pointsList.add(new points(29, 29, -1, -1, -1, -1));
+        pointsList.add(new points(40, 29, -1, -1, -1, -1));
+        pointsList.add(new points(40, 38.75, -1, -1, -1, -1));
+        pointsList.add(new points(29, 48, -1, -1, -1, -1));
+        pointsList.add(new points(29, 58, -1, -1, -1, -1));
+        pointsList.add(new points(40, 58, -1, -1, -1, -1));
+        pointsList.add(new points(40, 68, -1, -1, -1, -1));
+        pointsList.add(new points(18, 68, -1, -1, -1, -1));
+        pointsList.add(new points(0, 77.5, -1, -1, -1, -1));
+        pointsList.add(new points(0, 77.5, -1, -1, -1, -1));
+        pointsList.add(new points(0, 68, -1, -1, -1, -1));
+        pointsList.add(new points(18, 68, -1, -1, -1, -1));
+        pointsList.add(new points(18, 77.5, -1, -1, -1, -1));
+        pointsList.add(new points(18, 48, -1, -1, -1, -1));
+        pointsList.add(new points(0, 48, -1, -1, -1, -1));
+        pointsList.add(new points(61.25, 29, -1, -1, -1, -1));
 
     }
+
     public void display(GLAutoDrawable gld) {
         GL gl = gld.getGL();
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
         gl.glLoadIdentity();
-        Draw(gl);
+        DrawBackground(gl);
         handleKeyPress();
-        DrawSprite(gl,x,y,1);
+        DrawSprite(gl, x, y, 1);
     }
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
     }
     public void displayChanged(GLAutoDrawable drawable, boolean modeChanged, boolean deviceChanged) {
     }
 
-    public void Draw(GL gl){
+    public void DrawBackground(GL gl) {
         gl.glEnable(GL.GL_BLEND);
-        gl.glBindTexture(GL.GL_TEXTURE_2D, textures[textureNames.length-1]);
+        gl.glBindTexture(GL.GL_TEXTURE_2D, textures[1]);    // Turn Blending On
+
+//        gl.glColor3f(0, 0.5f, 0.5f);
         gl.glPushMatrix();
         gl.glBegin(GL.GL_QUADS);
+        gl.glScaled(0.05, 0.1, 1);
+        // Front Face
         gl.glTexCoord2f(0.0f, 0.0f);
         gl.glVertex3f(-1.0f, -1.0f, -1.0f);
         gl.glTexCoord2f(1.0f, 0.0f);
@@ -89,8 +159,12 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
         gl.glVertex3f(-1.0f, 1.0f, -1.0f);
         gl.glEnd();
         gl.glPopMatrix();
+
         gl.glDisable(GL.GL_BLEND);
+
     }
+
+
     public void DrawSprite(GL gl,double x, double y, float scale){
         gl.glEnable(GL.GL_BLEND);
         gl.glBindTexture(GL.GL_TEXTURE_2D, textures[0]);
@@ -109,6 +183,7 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
         gl.glEnd();
         gl.glPopMatrix();
         gl.glDisable(GL.GL_BLEND);
+
     }
 
     public void handleKeyPress() {

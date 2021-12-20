@@ -6,7 +6,7 @@ public class points {
     private int bottom;
     private int right;
 
-    public points(double x, double y, int top, int left, int bottom, int right) {
+    public points(double x, double y, int top, int bottom, int left, int right) {
         this.x = x;
         this.y = y;
         this.top = top;
