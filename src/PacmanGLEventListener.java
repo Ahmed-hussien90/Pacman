@@ -110,6 +110,7 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
         gl.glPopMatrix();
         gl.glDisable(GL.GL_BLEND);
     }
+
     public void handleKeyPress() {
 
         if (isKeyPressed(KeyEvent.VK_LEFT)) {
@@ -118,10 +119,11 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
                     keyBits.clear(keyCode);
                     IS = true;
                 }
-            }
-            if (!IS) x -=speed;
-            System.out.println(x+",,,"+y);
-        }
+                if(x<0.25){}else{
+                }
+                if (!IS) x -=speed;
+                System.out.println(x+",,,"+y);
+            }}
         else if (isKeyPressed(KeyEvent.VK_RIGHT)) {
             for (int i = 0; i < RIGHT.length; i++) {
                 if (((x == RIGHT[i][0] && y == RIGHT[i][1]))) {
@@ -129,9 +131,10 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
                     IS = true;
                 }
             }
-            if (!IS) x += speed;
-            System.out.println(x + ",,," + y);
-        }
+            if(x>90.5){}else{
+                if (!IS) x += speed;
+                System.out.println(x + ",,," + y);
+            }}
         else if (isKeyPressed(KeyEvent.VK_DOWN)) {
             for (int i = 0; i < DOWN.length; i++) {
                 if (((x == DOWN[i][0] && y ==DOWN[i][1]))){
@@ -139,9 +142,10 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
                     IS = true;
                 }
             }
-            if (!IS) y -= speed;
-            System.out.println(x+",,,"+y);
-        }
+            if(y<0.25){}else{
+                if (!IS) y -= speed;
+                System.out.println(x+",,,"+y);
+            }}
         else if (isKeyPressed(KeyEvent.VK_UP)) {
             for (int i = 0; i < TOP.length; i++) {
                 if (((x == TOP[i][0] && y == TOP[i][1]))){
@@ -149,11 +153,13 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
                     IS = true;
                 }
             }
-            if (!IS) y += speed;
-            System.out.println(x+",,,"+y);
-        }
+            if(y>90.5){}else{
+                if (!IS) y += speed;
+                System.out.println(x+",,,"+y);
+            }}
         IS = false;
     }
+
     public void keyPressed(final KeyEvent event) {
         keyCode = event.getKeyCode();
         keyBits.set(keyCode);
