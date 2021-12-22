@@ -85,7 +85,7 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
 
     //Our Methods
     private void handleKeyPress() {
-        if (isKeyPressed(KeyEvent.VK_TOP)) {
+        if (isKeyPressed(KeyEvent.VK_UP)) {
             test++;
         }
         else if (isKeyPressed(KeyEvent.VK_DOWN)) {
@@ -169,13 +169,13 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
         pointsList.add(new points(33,51   , 19   , 32, -1, 34, 29));
         pointsList.add(new points(34,40   , 19   , 49, -1, 35, 33));
         pointsList.add(new points(35,29   , 19   , -1, 36, 46, 34));
-        pointsList.add(new points(36,29   , 29   , 35, -1, -1, 37));
-        pointsList.add(new points(37,40   , 19   , -1, 38, 36, -1));
-        pointsList.add(new points(38,40   , 19   , 37, -1, 39, 26));
-        pointsList.add(new points(39,0    , 19   , 40, -1, -1, 38));
+        pointsList.add(new points(36,29   , 10   , 35, -1, -1, 37));
+        pointsList.add(new points(37,40   , 10   , -1, 38, 36, -1));
+        pointsList.add(new points(38,40   , 0    , 37, -1, 39, 26));
+        pointsList.add(new points(39,0    , 0    , 40, -1, -1, 38));
         pointsList.add(new points(40,0    , 10   , -1, 39, -1, 41));
         pointsList.add(new points(41,8    , 10   , 42, -1, 40, 47));
-        pointsList.add(new points(42,8    , 0    , -1, 41, 43, -1));
+        pointsList.add(new points(42,8    , 19   , -1, 41, 43, -1));
         pointsList.add(new points(43,0    , 0    , 44, -1, -1, 42));
         pointsList.add(new points(44,0    , 10   , -1, 43, -1, 45));
         pointsList.add(new points(45,18   , 10   , 65, 46, 44, 48));
