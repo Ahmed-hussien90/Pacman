@@ -134,7 +134,7 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
     }
     private void addPoints() {
         pointsList.add(new points( 0,0    , 0    , 0 , 0 , 0 , 0 ));
-        pointsList.add(new points( 1,45   , 38.75   , -1, -1, 50, 2 ));
+        pointsList.add(new points( 1,45   , 38.75, -1, -1, 50, 2 ));
         pointsList.add(new points( 2,61.25, 38.75, 3 , 67, 1 , -1));
         pointsList.add(new points( 3,61.25, 48   , 4 , 2 , -1, 17));
         pointsList.add(new points( 4,61.25, 58   , -1, 3 , 5 , -1));
@@ -176,24 +176,24 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
         pointsList.add(new points(40,0    , 10   , -1, 39, -1, 41));
         pointsList.add(new points(41,8    , 10   , 42, -1, 40, 47));
         pointsList.add(new points(42,8    , 19   , -1, 41, 43, -1));
-        pointsList.add(new points(43,0    , 0    , 44, -1, -1, 42));
-        pointsList.add(new points(44,0    , 10   , -1, 43, -1, 45));
-        pointsList.add(new points(45,18   , 10   , 65, 46, 44, 48));
+        pointsList.add(new points(43,0    , 19   , 44, -1, -1, 42));
+        pointsList.add(new points(44,0    , 29   , -1, 43, -1, 45));
+        pointsList.add(new points(45,18   , 29   , 65, 46, 44, 48));
         pointsList.add(new points(46,18   , 19   , 45, 47, -1, 35));
-        pointsList.add(new points(47,18   , 19   , 46, -1, 41, -1));
+        pointsList.add(new points(47,18   , 10   , 46, -1, 41, -1));
         pointsList.add(new points(48,29   , 29   , 50, -1, 45, 49));
         pointsList.add(new points(49,40   , 29   , -1, 34, 48, -1));
-        pointsList.add(new points(50,29   , 19   , 51, 48, -1, -1));
-        pointsList.add(new points(51,29   , 10   , 52, 50, 65, -1));
-        pointsList.add(new points(52,29   , 29   , -1, 51, -1, 53));
-        pointsList.add(new points(53,40   , 29   , 54, -1, 52, 5 ));
-        pointsList.add(new points(54,40   , 38.75, -1, 53, 55, -1));
-        pointsList.add(new points(55,29   , 48   , 56, -1, -1, 54));
-        pointsList.add(new points(56,29   , 58   , -1, 55, 64, 57));
-        pointsList.add(new points(57,40   , 58   , 58, -1, 56, 9 ));
-        pointsList.add(new points(58,40   , 68   , -1, 57, 59, -1));
-        pointsList.add(new points(59,18   , 68   , -1, 64, 61, 56));
-        pointsList.add(new points(60,0    , 77.5 , -1, 61, -1, 59));
+        pointsList.add(new points(50,29   , 38.75, 51, 48, -1, -1));
+        pointsList.add(new points(51,29   , 48   , 52, 50, 65, -1));
+        pointsList.add(new points(52,29   , 58   , -1, 51, -1, 53));
+        pointsList.add(new points(53,40   , 58   , 54, -1, 52, 5 ));
+        pointsList.add(new points(54,40   , 68   , -1, 53, 55, -1));
+        pointsList.add(new points(55,29   , 68   , 56, -1, -1, 54));
+        pointsList.add(new points(56,29   , 77.5 , -1, 55, 64, 57));
+        pointsList.add(new points(57,40   , 77.5 , 58, -1, 56, 9 ));
+        pointsList.add(new points(58,40   , 90.5 , -1, 57, 59, -1));
+        pointsList.add(new points(59,18   , 90.5 , -1, 64, 61, 56));
+        pointsList.add(new points(60,0    , 90.5 , -1, 61, -1, 59));
         pointsList.add(new points(61,0    , 77.5 , 60, 62, -1, 64));
         pointsList.add(new points(62,0    , 68   , 61, -1, -1, 63));
         pointsList.add(new points(63,18   , 68   , 64, 65, 62, -1));
