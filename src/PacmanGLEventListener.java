@@ -29,6 +29,7 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
     double[][] RIGHT = {{61.25,38.75} , {61.25,58}};
     boolean IS = false;
     int keyCode;
+    int test = 1;
 
     //GLEventListener Methods
     public void init(GLAutoDrawable gld) {
@@ -51,8 +52,6 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
             }
         }
         addPoints();
-        x = pointsList.get(1).getX();
-        y = pointsList.get(1).getY();
     }
     public void display(GLAutoDrawable gld) {
         GL gl = gld.getGL();
@@ -60,6 +59,8 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
         gl.glLoadIdentity();
         DrawBackground(gl);
         handleKeyPress();
+        x = pointsList.get(test).getX();
+        y = pointsList.get(test).getY();
         DrawSprite(gl, x, y, 1);
     }
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
@@ -86,29 +87,11 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
     private void handleKeyPress() {
 
         if (isKeyPressed(KeyEvent.VK_LEFT)) {
-            for (int i = 0; i < LEFT.length; i++) {
-                if (((x == LEFT[i][0] && y == LEFT[i][1]))) {
-                    keyBits.clear(keyCode);
-                    IS = true;
-                }
-                if (x < 0.25) {
-                } else {
-
-                    if (!IS) x -= speed;
-                    System.out.println(x + ",,," + y);
-                }
-            }}
+            test++;
+        }
         else if (isKeyPressed(KeyEvent.VK_RIGHT)) {
-            for (int i = 0; i < RIGHT.length; i++) {
-                if (((x == RIGHT[i][0] && y == RIGHT[i][1]))) {
-                    keyBits.clear(keyCode);
-                    IS = true;
-                }
-            }
-            if(x>90.5){}else{
-                if (!IS) x += speed;
-                System.out.println(x + ",,," + y);
-            }}
+            test--;
+        }
         else if (isKeyPressed(KeyEvent.VK_DOWN)) {
             for (int i = 0; i < DOWN.length; i++) {
                 if (((x == DOWN[i][0] && y ==DOWN[i][1]))){
