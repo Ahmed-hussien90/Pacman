@@ -27,8 +27,8 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
     double[][] DOWN  = {{29.25,29.25} , {61.25,29.25}};
     double[][] LEFT  = {{29.25,38.75} , {29.25,58}};
     double[][] RIGHT = {{61.25,38.75} , {61.25,58}};
-    int keyCode;
     boolean IS = false;
+    int keyCode;
 
     //GLEventListener Methods
     public void init(GLAutoDrawable gld) {
@@ -172,16 +172,16 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
 
     }
     private void addPoints() {
-        pointsList.add(new points( 0,0    , 0    , 0 , 0 , 0 , 0));
-        pointsList.add(new points( 1,38.75, 45   , 0 , 0 , 50, 2));
+        pointsList.add(new points( 0,0    , 0    , 0 , 0 , 0 , 0 ));
+        pointsList.add(new points( 1,38.75, 45   , 0 , 0 , 50, 2 ));
         pointsList.add(new points( 2,61.25, 38.75, 3 , 67, 1 , -1));
         pointsList.add(new points( 3,61.25, 48   , 4 , 2 , -1, 17));
         pointsList.add(new points( 4,61.25, 58   , -1, 3 , 5 , -1));
-        pointsList.add(new points( 5,50.75, 58   , 6 , -1, 53, 4));
-        pointsList.add(new points( 6,50.75, 68   , -1, 5 , -1, 7));
+        pointsList.add(new points( 5,50.75, 58   , 6 , -1, 53, 4 ));
+        pointsList.add(new points( 6,50.75, 68   , -1, 5 , -1, 7 ));
         pointsList.add(new points( 7,61.75, 68   , 8 , -1, 6 , -1));
         pointsList.add(new points( 8,61.75, 77.5 , -1, 7 , 9 , 16));
-        pointsList.add(new points( 9,51   , 77.5 , 10, -1, 57, 8));
+        pointsList.add(new points( 9,51   , 77.5 , 10, -1, 57, 8 ));
         pointsList.add(new points(10,51   , 90.5 , -1, 9 , -1, 11));
         pointsList.add(new points(11,71.5 , 90.5 , -1, 16, 10, 12));
         pointsList.add(new points(12,89.25, 90.5 , -1, 13, 11, -1));
