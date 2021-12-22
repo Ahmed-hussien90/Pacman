@@ -85,36 +85,12 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
 
     //Our Methods
     private void handleKeyPress() {
-
-        if (isKeyPressed(KeyEvent.VK_LEFT)) {
+        if (isKeyPressed(KeyEvent.VK_TOP)) {
             test++;
         }
-        else if (isKeyPressed(KeyEvent.VK_RIGHT)) {
+        else if (isKeyPressed(KeyEvent.VK_DOWN)) {
             test--;
         }
-        else if (isKeyPressed(KeyEvent.VK_DOWN)) {
-            for (int i = 0; i < DOWN.length; i++) {
-                if (((x == DOWN[i][0] && y ==DOWN[i][1]))){
-                    keyBits.clear(keyCode);
-                    IS = true;
-                }
-            }
-            if(y<0.25){}else{
-                if (!IS) y -= speed;
-                System.out.println(x+",,,"+y);
-            }}
-        else if (isKeyPressed(KeyEvent.VK_UP)) {
-            for (int i = 0; i < TOP.length; i++) {
-                if (((x == TOP[i][0] && y == TOP[i][1]))){
-                    keyBits.clear(keyCode);
-                    IS = true;
-                }
-            }
-            if(y>90.5){}else{
-                if (!IS) y += speed;
-                System.out.println(x+",,,"+y);
-            }}
-        IS = false;
     }
     private void DrawSprite(GL gl,double x, double y, float scale){
         gl.glEnable(GL.GL_BLEND);
@@ -192,7 +168,7 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
         pointsList.add(new points(32,51   , 29   , -1, 33, -1, 67));
         pointsList.add(new points(33,51   , 19   , 32, -1, 34, 29));
         pointsList.add(new points(34,40   , 19   , 49, -1, 35, 33));
-        pointsList.add(new points(35,29   , 10   , -1, 36, 46, 34));
+        pointsList.add(new points(35,29   , 19   , -1, 36, 46, 34));
         pointsList.add(new points(36,29   , 29   , 35, -1, -1, 37));
         pointsList.add(new points(37,40   , 19   , -1, 38, 36, -1));
         pointsList.add(new points(38,40   , 19   , 37, -1, 39, 26));
