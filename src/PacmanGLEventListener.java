@@ -52,8 +52,6 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
         gl.glLoadIdentity();
         DrawBackground(gl);
         handleKeyPress();
-        x = pointsList.get(index).getX();
-        y = pointsList.get(index).getY();
         DrawSprite(gl, x, y, 1);
     }
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
@@ -98,6 +96,8 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
                 index = pointsList.get(index).getRight();
             }
         }
+        x = pointsList.get(index).getX();
+        y = pointsList.get(index).getY();
     }
     private void DrawSprite(GL gl,double x, double y, float scale){
         gl.glEnable(GL.GL_BLEND);
@@ -158,7 +158,7 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
         pointsList.add(new points(15,72   , 67.75, 16, 17, -1, 14));
         pointsList.add(new points(16,72   , 77.5 , 11, 15, 8 , 13));
         pointsList.add(new points(17,72   , 48   , 15, 19, 3 , 18));
-        pointsList.add(new points(18,90   , 48   , -1, -1, 17, -1));
+        pointsList.add(new points(18,90   , 48   , -1, -1, 17, 66));
         pointsList.add(new points(19,72   , 29   , 17, 30, 67, 20));
         pointsList.add(new points(20,90   , 29   , -1, 21, 19, -1));
         pointsList.add(new points(21,90   , 19   , 20, -1, 22, -1));
@@ -190,7 +190,7 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
         pointsList.add(new points(47,18   , 10   , 46, -1, 41, -1));
         pointsList.add(new points(48,29   , 29   , 50, -1, 45, 49));
         pointsList.add(new points(49,40   , 29   , -1, 34, 48, -1));
-        pointsList.add(new points(50,29   , 38.75, 51, 48, -1, -1));
+        pointsList.add(new points(50,29   , 38.75, 51, 48, -1, 1 ));
         pointsList.add(new points(51,29   , 48   , 52, 50, 65, -1));
         pointsList.add(new points(52,29   , 58   , -1, 51, -1, 53));
         pointsList.add(new points(53,40   , 58   , 54, -1, 52, 5 ));
@@ -199,14 +199,14 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
         pointsList.add(new points(56,29   , 77.5 , -1, 55, 64, 57));
         pointsList.add(new points(57,40   , 77.5 , 58, -1, 56, 9 ));
         pointsList.add(new points(58,40   , 90.5 , -1, 57, 59, -1));
-        pointsList.add(new points(59,18   , 90.5 , -1, 64, 61, 56));
+        pointsList.add(new points(59,18   , 90.5 , -1, 64, 60, 56));
         pointsList.add(new points(60,0    , 90.5 , -1, 61, -1, 59));
         pointsList.add(new points(61,0    , 77.5 , 60, 62, -1, 64));
         pointsList.add(new points(62,0    , 68   , 61, -1, -1, 63));
         pointsList.add(new points(63,18   , 68   , 64, 65, 62, -1));
         pointsList.add(new points(64,18   , 77.5 , 59, 63, 61, 56));
         pointsList.add(new points(65,18   , 48   , 63, 45, 66, 51));
-        pointsList.add(new points(66,0    , 48   , -1, -1, -1, 65));
+        pointsList.add(new points(66,0    , 48   , -1, -1, 18, 65));
         pointsList.add(new points(67,61.25, 29   , 2 , -1, 32, 19));
     }
 }
