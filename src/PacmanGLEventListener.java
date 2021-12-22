@@ -79,16 +79,24 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
     //Our Methods
     private void handleKeyPress() {
         if (isKeyPressed(KeyEvent.VK_UP)) {
-            index++;
+            if (pointsList.get(index).getTop()!=-1){
+                index = pointsList.get(index).getTop();
+            }
         }
         else if (isKeyPressed(KeyEvent.VK_DOWN)) {
-            index--;
+            if (pointsList.get(index).getBottom()!=-1){
+                index = pointsList.get(index).getBottom();
+            }
         }
         else if (isKeyPressed(KeyEvent.VK_LEFT)) {
-            index++;
+            if (pointsList.get(index).getLeft()!=-1){
+                index = pointsList.get(index).getLeft();
+            }
         }
         else if (isKeyPressed(KeyEvent.VK_RIGHT)) {
-            index--;
+            if (pointsList.get(index).getRight()!=-1){
+                index = pointsList.get(index).getRight();
+            }
         }
     }
     private void DrawSprite(GL gl,double x, double y, float scale){
