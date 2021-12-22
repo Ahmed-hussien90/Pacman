@@ -7,7 +7,7 @@ import javax.swing.*;
 public class PacmanApp extends JFrame {
 
     GLCanvas glcanvas = new GLCanvas();
-    Animator animator = new FPSAnimator(20);
+    Animator animator = new FPSAnimator(10);
     PacmanGLEventListener listener = new PacmanGLEventListener();
 
     public static void main(String[] args) {
