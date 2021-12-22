@@ -11,23 +11,26 @@ import java.util.ArrayList;
 import java.util.BitSet;
 
 public class PacmanGLEventListener implements GLEventListener , KeyListener {
-    protected String assetsFolderName = "Assets/";
-    int maxWidth = 100 , maxHeight = 100;
-    double x = 45 , y = 38.75 , speed = 0.25;
+    ArrayList<points> pointsList = new ArrayList<>();
+    final int maxWidth = 100 , maxHeight = 100;
+    final double speed = 0.25;
+    double x = 45 , y = 38.75;
 
+    String assetsFolderName = "Assets/";
+    String textureNames[] = {"sprites/pacman-right/2.png","Background.jpeg"};
+    TextureReader.Texture texture[] = new TextureReader.Texture[textureNames.length];
+    int textures[] = new int[textureNames.length];
+    BitSet keyBits = new BitSet(256);
+
+    ///For Test
     double[][] TOP   = {{61.25,58} , {29.25,58}};
     double[][] DOWN  = {{29.25,29.25} , {61.25,29.25}};
     double[][] LEFT  = {{29.25,38.75} , {29.25,58}};
     double[][] RIGHT = {{61.25,38.75} , {61.25,58}};
-    ArrayList<points> pointsList = new ArrayList<>();
-
-    String textureNames[] = {"sprites/pacman-right/2.png","Background.jpeg"};
-    TextureReader.Texture texture[] = new TextureReader.Texture[textureNames.length];
-    int textures[] = new int[textureNames.length];
-    public BitSet keyBits = new BitSet(256);
     int keyCode;
     boolean IS = false;
 
+    //GLEventListener Methods
     public void init(GLAutoDrawable gld) {
         GL gl = gld.getGL();
         gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -48,6 +51,125 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
             }
         }
         addPoints();
+    }
+    public void display(GLAutoDrawable gld) {
+        GL gl = gld.getGL();
+        gl.glClear(GL.GL_COLOR_BUFFER_BIT);
+        gl.glLoadIdentity();
+        DrawBackground(gl);
+        handleKeyPress();
+        DrawSprite(gl, x, y, 1);
+    }
+    public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
+    }
+    public void displayChanged(GLAutoDrawable drawable, boolean modeChanged, boolean deviceChanged) {
+    }
+
+    //KeyListener Methods
+    public void keyPressed(final KeyEvent event) {
+        keyCode = event.getKeyCode();
+        keyBits.set(keyCode);
+    }
+    public void keyReleased(final KeyEvent event) {
+        keyCode = event.getKeyCode();
+        keyBits.clear(keyCode);
+    }
+    public void keyTyped(final KeyEvent event) {
+    }
+    public boolean isKeyPressed(final int keyCode) {
+        return keyBits.get(keyCode);
+    }
+
+    //Our Methods
+    private void handleKeyPress() {
+
+        if (isKeyPressed(KeyEvent.VK_LEFT)) {
+            for (int i = 0; i < LEFT.length; i++) {
+                if (((x == LEFT[i][0] && y == LEFT[i][1]))) {
+                    keyBits.clear(keyCode);
+                    IS = true;
+                }
+                if (x < 0.25) {
+                } else {
+
+                    if (!IS) x -= speed;
+                    System.out.println(x + ",,," + y);
+                }
+            }}
+        else if (isKeyPressed(KeyEvent.VK_RIGHT)) {
+            for (int i = 0; i < RIGHT.length; i++) {
+                if (((x == RIGHT[i][0] && y == RIGHT[i][1]))) {
+                    keyBits.clear(keyCode);
+                    IS = true;
+                }
+            }
+            if(x>90.5){}else{
+                if (!IS) x += speed;
+                System.out.println(x + ",,," + y);
+            }}
+        else if (isKeyPressed(KeyEvent.VK_DOWN)) {
+            for (int i = 0; i < DOWN.length; i++) {
+                if (((x == DOWN[i][0] && y ==DOWN[i][1]))){
+                    keyBits.clear(keyCode);
+                    IS = true;
+                }
+            }
+            if(y<0.25){}else{
+                if (!IS) y -= speed;
+                System.out.println(x+",,,"+y);
+            }}
+        else if (isKeyPressed(KeyEvent.VK_UP)) {
+            for (int i = 0; i < TOP.length; i++) {
+                if (((x == TOP[i][0] && y == TOP[i][1]))){
+                    keyBits.clear(keyCode);
+                    IS = true;
+                }
+            }
+            if(y>90.5){}else{
+                if (!IS) y += speed;
+                System.out.println(x+",,,"+y);
+            }}
+        IS = false;
+    }
+    private void DrawSprite(GL gl,double x, double y, float scale){
+        gl.glEnable(GL.GL_BLEND);
+        gl.glBindTexture(GL.GL_TEXTURE_2D, textures[0]);
+        gl.glPushMatrix();
+        gl.glTranslated( x/(maxWidth/2.0) - 0.9, y/(maxHeight/2.0) - 0.9, 0);
+        gl.glScaled(0.05*scale, 0.05*scale, 1);
+        gl.glBegin(GL.GL_QUADS);
+        gl.glTexCoord2f(0.0f, 0.0f);
+        gl.glVertex3f(-1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1.0f, 0.0f);
+        gl.glVertex3f(1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1.0f, 1.0f);
+        gl.glVertex3f(1.0f, 1.0f, -1.0f);
+        gl.glTexCoord2f(0.0f, 1.0f);
+        gl.glVertex3f(-1.0f, 1.0f, -1.0f);
+        gl.glEnd();
+        gl.glPopMatrix();
+        gl.glDisable(GL.GL_BLEND);
+    }
+    private void DrawBackground(GL gl) {
+        gl.glEnable(GL.GL_BLEND);
+        gl.glBindTexture(GL.GL_TEXTURE_2D, textures[1]);
+        gl.glPushMatrix();
+        gl.glBegin(GL.GL_QUADS);
+        gl.glScaled(0.05, 0.1, 1);
+        // Front Face
+        gl.glTexCoord2f(0.0f, 0.0f);
+        gl.glVertex3f(-1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1.0f, 0.0f);
+        gl.glVertex3f(1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1.0f, 1.0f);
+        gl.glVertex3f(1.0f, 1.0f, -1.0f);
+        gl.glTexCoord2f(0.0f, 1.0f);
+        gl.glVertex3f(-1.0f, 1.0f, -1.0f);
+        gl.glEnd();
+        gl.glPopMatrix();
+
+        gl.glDisable(GL.GL_BLEND);
+
     }
     private void addPoints() {
         pointsList.add(new points( 0,0    , 0    , 0 , 0 , 0 , 0));
@@ -118,122 +240,5 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
         pointsList.add(new points(64,18   , 48   , -1, -1, -1, -1));
         pointsList.add(new points(65,0    , 48   , -1, -1, -1, -1));
         pointsList.add(new points(66,61.25, 29   , -1, -1, -1, -1));
-    }
-    public void display(GLAutoDrawable gld) {
-        GL gl = gld.getGL();
-        gl.glClear(GL.GL_COLOR_BUFFER_BIT);
-        gl.glLoadIdentity();
-        DrawBackground(gl);
-        handleKeyPress();
-        DrawSprite(gl, x, y, 1);
-    }
-    public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
-    }
-    public void displayChanged(GLAutoDrawable drawable, boolean modeChanged, boolean deviceChanged) {
-    }
-    public void DrawBackground(GL gl) {
-        gl.glEnable(GL.GL_BLEND);
-        gl.glBindTexture(GL.GL_TEXTURE_2D, textures[1]);
-        gl.glPushMatrix();
-        gl.glBegin(GL.GL_QUADS);
-        gl.glScaled(0.05, 0.1, 1);
-        // Front Face
-        gl.glTexCoord2f(0.0f, 0.0f);
-        gl.glVertex3f(-1.0f, -1.0f, -1.0f);
-        gl.glTexCoord2f(1.0f, 0.0f);
-        gl.glVertex3f(1.0f, -1.0f, -1.0f);
-        gl.glTexCoord2f(1.0f, 1.0f);
-        gl.glVertex3f(1.0f, 1.0f, -1.0f);
-        gl.glTexCoord2f(0.0f, 1.0f);
-        gl.glVertex3f(-1.0f, 1.0f, -1.0f);
-        gl.glEnd();
-        gl.glPopMatrix();
-
-        gl.glDisable(GL.GL_BLEND);
-
-    }
-
-
-    public void DrawSprite(GL gl,double x, double y, float scale){
-        gl.glEnable(GL.GL_BLEND);
-        gl.glBindTexture(GL.GL_TEXTURE_2D, textures[0]);
-        gl.glPushMatrix();
-        gl.glTranslated( x/(maxWidth/2.0) - 0.9, y/(maxHeight/2.0) - 0.9, 0);
-        gl.glScaled(0.05*scale, 0.05*scale, 1);
-        gl.glBegin(GL.GL_QUADS);
-        gl.glTexCoord2f(0.0f, 0.0f);
-        gl.glVertex3f(-1.0f, -1.0f, -1.0f);
-        gl.glTexCoord2f(1.0f, 0.0f);
-        gl.glVertex3f(1.0f, -1.0f, -1.0f);
-        gl.glTexCoord2f(1.0f, 1.0f);
-        gl.glVertex3f(1.0f, 1.0f, -1.0f);
-        gl.glTexCoord2f(0.0f, 1.0f);
-        gl.glVertex3f(-1.0f, 1.0f, -1.0f);
-        gl.glEnd();
-        gl.glPopMatrix();
-        gl.glDisable(GL.GL_BLEND);
-    }
-    public void handleKeyPress() {
-
-        if (isKeyPressed(KeyEvent.VK_LEFT)) {
-            for (int i = 0; i < LEFT.length; i++) {
-                if (((x == LEFT[i][0] && y == LEFT[i][1]))) {
-                    keyBits.clear(keyCode);
-                    IS = true;
-                }
-                if (x < 0.25) {
-                } else {
-
-                    if (!IS) x -= speed;
-                    System.out.println(x + ",,," + y);
-                }
-            }}
-        else if (isKeyPressed(KeyEvent.VK_RIGHT)) {
-            for (int i = 0; i < RIGHT.length; i++) {
-                if (((x == RIGHT[i][0] && y == RIGHT[i][1]))) {
-                    keyBits.clear(keyCode);
-                    IS = true;
-                }
-            }
-            if(x>90.5){}else{
-                if (!IS) x += speed;
-                System.out.println(x + ",,," + y);
-            }}
-        else if (isKeyPressed(KeyEvent.VK_DOWN)) {
-            for (int i = 0; i < DOWN.length; i++) {
-                if (((x == DOWN[i][0] && y ==DOWN[i][1]))){
-                    keyBits.clear(keyCode);
-                    IS = true;
-                }
-            }
-            if(y<0.25){}else{
-                if (!IS) y -= speed;
-                System.out.println(x+",,,"+y);
-            }}
-        else if (isKeyPressed(KeyEvent.VK_UP)) {
-            for (int i = 0; i < TOP.length; i++) {
-                if (((x == TOP[i][0] && y == TOP[i][1]))){
-                    keyBits.clear(keyCode);
-                    IS = true;
-                }
-            }
-            if(y>90.5){}else{
-                if (!IS) y += speed;
-                System.out.println(x+",,,"+y);
-            }}
-        IS = false;
-    }
-    public void keyPressed(final KeyEvent event) {
-        keyCode = event.getKeyCode();
-        keyBits.set(keyCode);
-    }
-    public void keyReleased(final KeyEvent event) {
-        keyCode = event.getKeyCode();
-        keyBits.clear(keyCode);
-    }
-    public boolean isKeyPressed(final int keyCode) {
-        return keyBits.get(keyCode);
-    }
-    public void keyTyped(final KeyEvent event) {
     }
 }
