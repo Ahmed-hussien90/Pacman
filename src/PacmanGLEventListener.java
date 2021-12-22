@@ -15,6 +15,7 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
     final int maxWidth = 100 , maxHeight = 100;
     final double speed = 0.25;
     double x,y;
+    int index = 1;
 
     String assetsFolderName = "Assets/";
     String textureNames[] = {"sprites/pacman-right/2.png","Background.jpeg"};
@@ -22,14 +23,6 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
     int textures[] = new int[textureNames.length];
     BitSet keyBits = new BitSet(256);
 
-    ///For Test
-    double[][] TOP   = {{61.25,58} , {29.25,58}};
-    double[][] DOWN  = {{29.25,29.25} , {61.25,29.25}};
-    double[][] LEFT  = {{29.25,38.75} , {29.25,58}};
-    double[][] RIGHT = {{61.25,38.75} , {61.25,58}};
-    boolean IS = false;
-    int keyCode;
-    int test = 1;
 
     //GLEventListener Methods
     public void init(GLAutoDrawable gld) {
@@ -59,8 +52,8 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
         gl.glLoadIdentity();
         DrawBackground(gl);
         handleKeyPress();
-        x = pointsList.get(test).getX();
-        y = pointsList.get(test).getY();
+        x = pointsList.get(index).getX();
+        y = pointsList.get(index).getY();
         DrawSprite(gl, x, y, 1);
     }
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
@@ -70,11 +63,11 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
 
     //KeyListener Methods
     public void keyPressed(final KeyEvent event) {
-        keyCode = event.getKeyCode();
+        int keyCode = event.getKeyCode();
         keyBits.set(keyCode);
     }
     public void keyReleased(final KeyEvent event) {
-        keyCode = event.getKeyCode();
+        int keyCode = event.getKeyCode();
         keyBits.clear(keyCode);
     }
     public void keyTyped(final KeyEvent event) {
@@ -86,10 +79,16 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
     //Our Methods
     private void handleKeyPress() {
         if (isKeyPressed(KeyEvent.VK_UP)) {
-            test++;
+            index++;
         }
         else if (isKeyPressed(KeyEvent.VK_DOWN)) {
-            test--;
+            index--;
+        }
+        else if (isKeyPressed(KeyEvent.VK_LEFT)) {
+            index++;
+        }
+        else if (isKeyPressed(KeyEvent.VK_RIGHT)) {
+            index--;
         }
     }
     private void DrawSprite(GL gl,double x, double y, float scale){
