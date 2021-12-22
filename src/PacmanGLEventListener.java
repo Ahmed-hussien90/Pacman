@@ -14,7 +14,7 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
     ArrayList<points> pointsList = new ArrayList<>();
     final int maxWidth = 100 , maxHeight = 100;
     final double speed = 0.25;
-    double x = 45 , y = 38.75;
+    double x,y;
 
     String assetsFolderName = "Assets/";
     String textureNames[] = {"sprites/pacman-right/2.png","Background.jpeg"};
@@ -51,6 +51,8 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
             }
         }
         addPoints();
+        x = pointsList.get(1).getX();
+        y = pointsList.get(1).getY();
     }
     public void display(GLAutoDrawable gld) {
         GL gl = gld.getGL();
@@ -173,7 +175,7 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
     }
     private void addPoints() {
         pointsList.add(new points( 0,0    , 0    , 0 , 0 , 0 , 0 ));
-        pointsList.add(new points( 1,38.75, 45   , -1, -1, 50, 2 ));
+        pointsList.add(new points( 1,45   , 38.75   , -1, -1, 50, 2 ));
         pointsList.add(new points( 2,61.25, 38.75, 3 , 67, 1 , -1));
         pointsList.add(new points( 3,61.25, 48   , 4 , 2 , -1, 17));
         pointsList.add(new points( 4,61.25, 58   , -1, 3 , 5 , -1));
