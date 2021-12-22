@@ -16,6 +16,7 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
     final double speed = 0.25;
     double x,y;
     int index = 1;
+    int keyCode;
 
     String assetsFolderName = "Assets/";
     String textureNames[] = {"sprites/pacman-right/2.png","Background.jpeg"};
@@ -45,6 +46,8 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
             }
         }
         addPoints();
+        x = pointsList.get(index).getX();
+        y = pointsList.get(index).getY();
     }
     public void display(GLAutoDrawable gld) {
         GL gl = gld.getGL();
@@ -61,12 +64,12 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
 
     //KeyListener Methods
     public void keyPressed(final KeyEvent event) {
-        int keyCode = event.getKeyCode();
+        keyCode = event.getKeyCode();
         keyBits.set(keyCode);
     }
     public void keyReleased(final KeyEvent event) {
-        int keyCode = event.getKeyCode();
-        keyBits.clear(keyCode);
+         keyCode = event.getKeyCode();
+         keyBits.clear(keyCode);
     }
     public void keyTyped(final KeyEvent event) {
     }
@@ -77,25 +80,30 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
     //Our Methods
     private void handleKeyPress() {
         if (isKeyPressed(KeyEvent.VK_UP)) {
-            if (pointsList.get(index).getTop()!=-1){
-                index = pointsList.get(index).getTop();
+            int T = pointsList.get(index).getTop();
+            if (T !=-1){
+                index = T;
             }
         }
         else if (isKeyPressed(KeyEvent.VK_DOWN)) {
-            if (pointsList.get(index).getBottom()!=-1){
-                index = pointsList.get(index).getBottom();
+            int B = pointsList.get(index).getBottom();
+            if (B !=-1){
+                index = B;
             }
         }
         else if (isKeyPressed(KeyEvent.VK_LEFT)) {
-            if (pointsList.get(index).getLeft()!=-1){
-                index = pointsList.get(index).getLeft();
+            int L = pointsList.get(index).getLeft();
+            if (L !=-1){
+                index = L;
             }
         }
         else if (isKeyPressed(KeyEvent.VK_RIGHT)) {
-            if (pointsList.get(index).getRight()!=-1){
-                index = pointsList.get(index).getRight();
+            int R = pointsList.get(index).getRight();
+            if (R !=-1){
+                index = R;
             }
         }
+        System.out.println(index);
         x = pointsList.get(index).getX();
         y = pointsList.get(index).getY();
     }
@@ -199,7 +207,7 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
         pointsList.add(new points(56,29   , 77.5 , -1, 55, 64, 57));
         pointsList.add(new points(57,40   , 77.5 , 58, -1, 56, 9 ));
         pointsList.add(new points(58,40   , 90.5 , -1, 57, 59, -1));
-        pointsList.add(new points(59,18   , 90.5 , -1, 64, 60, 56));
+        pointsList.add(new points(59,18   , 90.5 , -1, 64, 60, 58));
         pointsList.add(new points(60,0    , 90.5 , -1, 61, -1, 59));
         pointsList.add(new points(61,0    , 77.5 , 60, 62, -1, 64));
         pointsList.add(new points(62,0    , 68   , 61, -1, -1, 63));
