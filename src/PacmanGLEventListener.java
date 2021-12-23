@@ -219,10 +219,7 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
         pointsList.add(new points(66, 0, 48, -1, -1, 18, 65));
         pointsList.add(new points(67, 61.25, 29, 2, -1, 32, 19));
     }
-
-
     private void drawdot(GL gl) {
-
         for (int i = 1; i < pointsList.size(); i++) {
             double x = pointsList.get(i).getX();
             double y = pointsList.get(i).getY();
