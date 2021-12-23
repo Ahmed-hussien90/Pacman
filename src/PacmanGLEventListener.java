@@ -56,8 +56,10 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
         DrawBackground(gl);
         handleKeyPress();
         DrawSprite(gl, x, y, 1);
-        drawdot(gl);
 
+        for (int i = 2; i < 67; i++) {
+            drawdot(gl,pointsList.get(i).getX(),pointsList.get(i).getY());
+        }
     }
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
     }
@@ -219,10 +221,7 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
         pointsList.add(new points(66, 0, 48, -1, -1, 18, 65));
         pointsList.add(new points(67, 61.25, 29, 2, -1, 32, 19));
     }
-    private void drawdot(GL gl) {
-        for (int i = 1; i < pointsList.size(); i++) {
-            double x = pointsList.get(i).getX();
-            double y = pointsList.get(i).getY();
+    private void drawdot(GL gl ,double x , double y) {
             gl.glEnable(GL.GL_BLEND);
             gl.glBindTexture(GL.GL_TEXTURE_2D, textures[2]);
             gl.glPushMatrix();
@@ -240,6 +239,5 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
             gl.glEnd();
             gl.glPopMatrix();
             gl.glDisable(GL.GL_BLEND);
-        }
     }
 }
