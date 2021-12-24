@@ -26,7 +26,6 @@ public class PacmanApp extends JFrame {
         setVisible(true);
         setFocusable(true);
         glcanvas.requestFocus();
-        //abd
     }
 }
 
