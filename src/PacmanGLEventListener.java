@@ -63,8 +63,30 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
             handleKeyPress();
         DrawSprite(gl, x, y, 1,animation);
 
+        double x1,x2,y1,y2,length;
         for (int i = 2; i < 67; i++) {
-            drawdot(gl,pointsList.get(i).getX(),pointsList.get(i).getY());
+             x1 = pointsList.get(i).getX() ; y1 = pointsList.get(i).getY();
+             x2 = pointsList.get(i+1).getX(); y2 = pointsList.get(i+1).getY();
+             if (x1 == x2){
+                 if (y1>=y2){
+                     for (double j = y2; j < y1; j+=1.5)
+                         drawdot(gl,x1,j);
+                 }
+                 else {
+                     for (double j = y1; j < y2; j+=1.5)
+                         drawdot(gl,x1,j);
+                 }
+             }
+             else if(y1==y2){
+                 if (x1>=x2){
+                     for (double j = x2; j < x1; j+=1.5)
+                         drawdot(gl,j,y1);
+                 }
+                 else {
+                     for (double j = x1; j < x2; j+=1.5)
+                         drawdot(gl,j,y1);
+                 }
+             }
         }
     }
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
