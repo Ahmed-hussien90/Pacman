@@ -17,11 +17,15 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
     final double speed = 0.25;
     double x,y;
     int index = 1;
-    int keyCode;
+    int keyCode , animation = 0 , face =0;
 
 
     String assetsFolderName = "Assets/";
-    String textureNames[] = {"sprites/pacman-right/2.png", "Background.jpeg", "sprites/extra/dot.png"};
+    String textureNames[] = {"sprites/pacman-right/1.png","sprites/pacman-right/2.png","sprites/pacman-right/3.png",
+                             "sprites/pacman-left/1.png","sprites/pacman-left/2.png","sprites/pacman-left/3.png",
+                             "sprites/pacman-up/1.png","sprites/pacman-up/2.png","sprites/pacman-up/3.png",
+                             "sprites/pacman-down/1.png","sprites/pacman-down/2.png","sprites/pacman-down/3.png",
+                             "sprites/extra/dot.png","Background.jpeg"};
     TextureReader.Texture texture[] = new TextureReader.Texture[textureNames.length];
     int textures[] = new int[textureNames.length];
 
@@ -57,7 +61,7 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
         DrawBackground(gl);
         if (KeyL.size() != 0)
             handleKeyPress();
-        DrawSprite(gl, x, y, 1);
+        DrawSprite(gl, x, y, 1,animation);
 
         for (int i = 2; i < 67; i++) {
             drawdot(gl,pointsList.get(i).getX(),pointsList.get(i).getY());
@@ -91,7 +95,9 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
 
     //Our Methods
     private void handleKeyPress() {
+        //Up
         if (isKeyPressed(38)) {
+            face = 6;
             int T = pointsList.get(index).getTop();
             if (T !=-1){
                 if (pointsList.get(T).getY() == y) {
@@ -105,7 +111,9 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
                 }
             }
         }
+        //Down
         else if (isKeyPressed(40)) {
+            face = 9;
             int B = pointsList.get(index).getBottom();
             if (B !=-1){
                 if (pointsList.get(B).getY() == y){
@@ -119,7 +127,9 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
                 }
             }
         }
+        //Left
         else if (isKeyPressed(37)) {
+            face = 3;
             int L = pointsList.get(index).getLeft();
             if (L !=-1){
                 if (pointsList.get(L).getX() == x){
@@ -133,7 +143,9 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
                 }
             }
         }
+        //Right
         else if (isKeyPressed(39)) {
+            face = 0;
             int R = pointsList.get(index).getRight();
             if (R !=-1){
                 if (pointsList.get(R).getX() == x){
@@ -147,10 +159,12 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
                 }
             }
         }
+
+        animation++;
     }
-    private void DrawSprite(GL gl,double x, double y, float scale){
+    private void DrawSprite(GL gl,double x, double y, float scale,int animation){
         gl.glEnable(GL.GL_BLEND);
-        gl.glBindTexture(GL.GL_TEXTURE_2D, textures[0]);
+        gl.glBindTexture(GL.GL_TEXTURE_2D, textures[face+animation%3]);
         gl.glPushMatrix();
         gl.glTranslated( x/(maxWidth/2.0) - 0.9, y/(maxHeight/2.0) - 0.9, 0);
         gl.glScaled(0.05*scale, 0.05*scale, 1);
@@ -169,7 +183,7 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
     }
     private void DrawBackground(GL gl) {
         gl.glEnable(GL.GL_BLEND);
-        gl.glBindTexture(GL.GL_TEXTURE_2D, textures[1]);
+        gl.glBindTexture(GL.GL_TEXTURE_2D, textures[textureNames.length-1]);
         gl.glPushMatrix();
         gl.glBegin(GL.GL_QUADS);
         gl.glScaled(0.05, 0.1, 1);
@@ -187,6 +201,25 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
 
         gl.glDisable(GL.GL_BLEND);
 
+    }
+    private void drawdot(GL gl ,double x , double y) {
+        gl.glEnable(GL.GL_BLEND);
+        gl.glBindTexture(GL.GL_TEXTURE_2D, textures[textureNames.length-2]);
+        gl.glPushMatrix();
+        gl.glTranslated(x / (maxWidth / 2.0) - 0.9, y / (maxHeight / 2.0) - 0.9, 0);
+        gl.glScaled(0.05, 0.05, 1);
+        gl.glBegin(GL.GL_QUADS);
+        gl.glTexCoord2f(0.0f, 0.0f);
+        gl.glVertex3f(-1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1.0f, 0.0f);
+        gl.glVertex3f(1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1.0f, 1.0f);
+        gl.glVertex3f(1.0f, 1.0f, -1.0f);
+        gl.glTexCoord2f(0.0f, 1.0f);
+        gl.glVertex3f(-1.0f, 1.0f, -1.0f);
+        gl.glEnd();
+        gl.glPopMatrix();
+        gl.glDisable(GL.GL_BLEND);
     }
     private void addPoints() {
         pointsList.add(new points(0 ,0    , 0    , 0 , 0 , 0 , 0 ));
@@ -257,24 +290,5 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
         pointsList.add(new points(65,18   , 48   , 63, 45, 66, 51));
         pointsList.add(new points(66,0    , 48   , -1, -1, 18, 65));
         pointsList.add(new points(67,61.25, 29   , 2 , -1, 32, 19));
-    }
-    private void drawdot(GL gl ,double x , double y) {
-            gl.glEnable(GL.GL_BLEND);
-            gl.glBindTexture(GL.GL_TEXTURE_2D, textures[2]);
-            gl.glPushMatrix();
-            gl.glTranslated(x / (maxWidth / 2.0) - 0.9, y / (maxHeight / 2.0) - 0.9, 0);
-            gl.glScaled(0.05, 0.05, 1);
-            gl.glBegin(GL.GL_QUADS);
-            gl.glTexCoord2f(0.0f, 0.0f);
-            gl.glVertex3f(-1.0f, -1.0f, -1.0f);
-            gl.glTexCoord2f(1.0f, 0.0f);
-            gl.glVertex3f(1.0f, -1.0f, -1.0f);
-            gl.glTexCoord2f(1.0f, 1.0f);
-            gl.glVertex3f(1.0f, 1.0f, -1.0f);
-            gl.glTexCoord2f(0.0f, 1.0f);
-            gl.glVertex3f(-1.0f, 1.0f, -1.0f);
-            gl.glEnd();
-            gl.glPopMatrix();
-            gl.glDisable(GL.GL_BLEND);
     }
 }
