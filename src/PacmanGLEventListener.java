@@ -24,7 +24,6 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
     String textureNames[] = {"sprites/pacman-right/2.png", "Background.jpeg", "sprites/extra/dot.png"};
     TextureReader.Texture texture[] = new TextureReader.Texture[textureNames.length];
     int textures[] = new int[textureNames.length];
-//    BitSet keyBits = new BitSet(256);
 
 
     //GLEventListener Methods
@@ -73,16 +72,20 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
     public void keyPressed(final KeyEvent event) {
         keyCode = event.getKeyCode();
         KeyL.add(keyCode);
-//        keyBits.set(keyCode);
+        if (keyCode == 38)
+            System.out.println("Direction is Top");
+        else if(keyCode ==40)
+            System.out.println("Direction is Down");
+        else if(keyCode ==39)
+            System.out.println("Direction is Right");
+        else if(keyCode ==37)
+            System.out.println("Direction is Left");
     }
     public void keyReleased(final KeyEvent event) {
-//         keyCode = event.getKeyCode();
-//         keyBits.clear(keyCode);
     }
     public void keyTyped(final KeyEvent event) {
     }
     public boolean isKeyPressed(int keyC) {
-//        return keyBits.get(keyC);
         return keyC == KeyL.get(n);
     }
 
@@ -91,52 +94,56 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
         if (isKeyPressed(38)) {
             int T = pointsList.get(index).getTop();
             if (T !=-1){
-                if (pointsList.get(T).getY() != y)
-                    y += speed;
-                else{
-                    index = T;
-                    if (n < KeyL.size()-1){
+                if (pointsList.get(T).getY() == y) {
+                    if (n < KeyL.size() - 1) {
                         n++;
                     }
+                    index = T;
+                }
+                else{
+                    y += speed;
                 }
             }
         }
         else if (isKeyPressed(40)) {
             int B = pointsList.get(index).getBottom();
             if (B !=-1){
-                if (pointsList.get(B).getY() != y)
-                    y -= speed;
-                else{
-                    index = B;
+                if (pointsList.get(B).getY() == y){
                     if (n < KeyL.size()-1){
                         n++;
                     }
+                    index = B;
+                }
+                else{
+                    y -= speed;
                 }
             }
         }
         else if (isKeyPressed(37)) {
             int L = pointsList.get(index).getLeft();
             if (L !=-1){
-                if (pointsList.get(L).getX() != x)
-                    x -= speed;
-                else{
-                    index = L;
+                if (pointsList.get(L).getX() == x){
                     if (n < KeyL.size()-1){
                         n++;
                     }
+                    index = L;
+                }
+                else{
+                    x -= speed;
                 }
             }
         }
         else if (isKeyPressed(39)) {
             int R = pointsList.get(index).getRight();
             if (R !=-1){
-                if (pointsList.get(R).getX() != x)
-                    x += speed;
-                else{
-                    index = R;
+                if (pointsList.get(R).getX() == x){
                     if (n < KeyL.size()-1){
                         n++;
                     }
+                    index = R;
+                }
+                else{
+                    x += speed;
                 }
             }
         }
