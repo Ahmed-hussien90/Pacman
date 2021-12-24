@@ -6,8 +6,9 @@ public class points {
     private int left;
     private int bottom;
     private int right;
+    private boolean isChecked;
 
-    public points(int index,double x, double y, int top, int bottom, int left, int right) {
+    public points(int index,double x, double y, int top, int bottom, int left, int right,boolean isChecked) {
         this.index = index;
         this.x = x;
         this.y = y;
@@ -15,6 +16,7 @@ public class points {
         this.left = left;
         this.bottom = bottom;
         this.right = right;
+        this.isChecked = isChecked;
     }
 
     public double getX() {
@@ -35,8 +37,13 @@ public class points {
     public int getRight() {
         return right;
     }
-
-
-
-
+    public void setChecked(boolean checked) {
+        isChecked = checked;
+    }
+    public int getIndex() {
+        return index;
+    }
+    public boolean isChecked() {
+        return isChecked;
+    }
 }
