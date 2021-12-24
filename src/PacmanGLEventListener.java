@@ -119,7 +119,6 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
     private void handleKeyPress() {
         //Up
         if (isKeyPressed(38)) {
-            face = 6;
             int T = pointsList.get(index).getTop();
             if (T !=-1){
                 if (pointsList.get(T).getY() == y) {
@@ -130,12 +129,19 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
                 }
                 else{
                     y += speed;
+                    face = 6;
+                    animation++;
+
+                }
+            }
+            else {
+                if (n < KeyL.size() - 1) {
+                    n++;
                 }
             }
         }
         //Down
         else if (isKeyPressed(40)) {
-            face = 9;
             int B = pointsList.get(index).getBottom();
             if (B !=-1){
                 if (pointsList.get(B).getY() == y){
@@ -146,12 +152,18 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
                 }
                 else{
                     y -= speed;
+                    face = 9;
+                    animation++;
+                }
+            }
+            else {
+                if (n < KeyL.size() - 1) {
+                    n++;
                 }
             }
         }
         //Left
         else if (isKeyPressed(37)) {
-            face = 3;
             int L = pointsList.get(index).getLeft();
             if (L !=-1){
                 if (pointsList.get(L).getX() == x){
@@ -162,12 +174,18 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
                 }
                 else{
                     x -= speed;
+                    face = 3;
+                    animation++;
+                }
+            }
+            else {
+                if (n < KeyL.size() - 1) {
+                    n++;
                 }
             }
         }
         //Right
         else if (isKeyPressed(39)) {
-            face = 0;
             int R = pointsList.get(index).getRight();
             if (R !=-1){
                 if (pointsList.get(R).getX() == x){
@@ -178,11 +196,17 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
                 }
                 else{
                     x += speed;
+                    face = 0;
+                    animation++;
+                }
+            }
+            else {
+                if (n < KeyL.size() - 1) {
+                    n++;
                 }
             }
         }
 
-        animation++;
     }
     private void DrawSprite(GL gl,double x, double y, float scale,int animation){
         gl.glEnable(GL.GL_BLEND);
