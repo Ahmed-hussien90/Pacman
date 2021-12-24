@@ -12,17 +12,19 @@ import java.util.BitSet;
 
 public class PacmanGLEventListener implements GLEventListener , KeyListener {
     ArrayList<points> pointsList = new ArrayList<>();
+    ArrayList<Integer> KeyL = new ArrayList<>(); int n = 0;
     final int maxWidth = 100 , maxHeight = 100;
     final double speed = 0.25;
     double x,y;
     int index = 1;
     int keyCode;
 
+
     String assetsFolderName = "Assets/";
     String textureNames[] = {"sprites/pacman-right/2.png", "Background.jpeg", "sprites/extra/dot.png"};
     TextureReader.Texture texture[] = new TextureReader.Texture[textureNames.length];
     int textures[] = new int[textureNames.length];
-    BitSet keyBits = new BitSet(256);
+//    BitSet keyBits = new BitSet(256);
 
 
     //GLEventListener Methods
@@ -48,6 +50,7 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
         addPoints();
         x = pointsList.get(index).getX();
         y = pointsList.get(index).getY();
+        KeyL.add(39);
     }
     public void display(GLAutoDrawable gld) {
         GL gl = gld.getGL();
@@ -69,47 +72,74 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
     //KeyListener Methods
     public void keyPressed(final KeyEvent event) {
         keyCode = event.getKeyCode();
-        keyBits.set(keyCode);
+        KeyL.add(keyCode);
+//        keyBits.set(keyCode);
     }
     public void keyReleased(final KeyEvent event) {
-         keyCode = event.getKeyCode();
-         keyBits.clear(keyCode);
+//         keyCode = event.getKeyCode();
+//         keyBits.clear(keyCode);
     }
     public void keyTyped(final KeyEvent event) {
     }
-    public boolean isKeyPressed(final int keyCode) {
-        return keyBits.get(keyCode);
+    public boolean isKeyPressed(int keyC) {
+//        return keyBits.get(keyC);
+        return keyC == KeyL.get(n);
     }
 
     //Our Methods
     private void handleKeyPress() {
-        if (isKeyPressed(KeyEvent.VK_UP)) {
+        if (isKeyPressed(38)) {
             int T = pointsList.get(index).getTop();
             if (T !=-1){
-                index = T;
+                if (pointsList.get(T).getY() != y)
+                    y += speed;
+                else{
+                    index = T;
+                    if (n < KeyL.size()-1){
+                        n++;
+                    }
+                }
             }
         }
-        else if (isKeyPressed(KeyEvent.VK_DOWN)) {
+        else if (isKeyPressed(40)) {
             int B = pointsList.get(index).getBottom();
             if (B !=-1){
-                index = B;
+                if (pointsList.get(B).getY() != y)
+                    y -= speed;
+                else{
+                    index = B;
+                    if (n < KeyL.size()-1){
+                        n++;
+                    }
+                }
             }
         }
-        else if (isKeyPressed(KeyEvent.VK_LEFT)) {
+        else if (isKeyPressed(37)) {
             int L = pointsList.get(index).getLeft();
             if (L !=-1){
-                index = L;
+                if (pointsList.get(L).getX() != x)
+                    x -= speed;
+                else{
+                    index = L;
+                    if (n < KeyL.size()-1){
+                        n++;
+                    }
+                }
             }
         }
-        else if (isKeyPressed(KeyEvent.VK_RIGHT)) {
+        else if (isKeyPressed(39)) {
             int R = pointsList.get(index).getRight();
             if (R !=-1){
-                index = R;
+                if (pointsList.get(R).getX() != x)
+                    x += speed;
+                else{
+                    index = R;
+                    if (n < KeyL.size()-1){
+                        n++;
+                    }
+                }
             }
         }
-        System.out.println(index);
-        x = pointsList.get(index).getX();
-        y = pointsList.get(index).getY();
     }
     private void DrawSprite(GL gl,double x, double y, float scale){
         gl.glEnable(GL.GL_BLEND);
