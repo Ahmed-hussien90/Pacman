@@ -50,14 +50,14 @@ public class PacmanGLEventListener implements GLEventListener , KeyListener {
         addPoints();
         x = pointsList.get(index).getX();
         y = pointsList.get(index).getY();
-        KeyL.add(39);
     }
     public void display(GLAutoDrawable gld) {
         GL gl = gld.getGL();
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
         gl.glLoadIdentity();
         DrawBackground(gl);
-        handleKeyPress();
+        if (KeyL.size() != 0)
+            handleKeyPress();
         DrawSprite(gl, x, y, 1);
 
         for (int i = 2; i < 67; i++) {
