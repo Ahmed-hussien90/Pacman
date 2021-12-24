@@ -7,7 +7,7 @@ import javax.swing.*;
 public class PacmanApp extends JFrame {
 
     GLCanvas glcanvas = new GLCanvas();
-    Animator animator = new FPSAnimator(70);
+    Animator animator = new FPSAnimator(30);
     PacmanGLEventListener listener = new PacmanGLEventListener();
 
     public static void main(String[] args) {
@@ -19,7 +19,6 @@ public class PacmanApp extends JFrame {
         glcanvas.addKeyListener(listener);
         animator.add(glcanvas);
         getContentPane().add(glcanvas, BorderLayout.CENTER);
-
         setTitle("PAC-MAN");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(850, 850);
