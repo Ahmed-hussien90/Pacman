@@ -62,7 +62,7 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener {
         x = pointsList.get(index).getX();
         y = pointsList.get(index).getY();
 
-        playSound("C:\\Users\\20114\\IdeaProjects\\Pacman\\Assets\\sounds\\pacman_beginning.wav");
+        playSound("Assets\\sounds\\pacman_beginning.wav");
 
     }
 
@@ -214,13 +214,13 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener {
         gl.glTranslated(x / (maxWidth / 2.0) - 0.9, y / (maxHeight / 2.0) - 0.9, 0);
         for(int i =0; i<pointsList.size();i++){
             if(x ==pointsList.get(i).getX() && y ==pointsList.get(i).getY() && !pointsList.get(i).isChecked()){
-                playSound("C:\\Users\\20114\\IdeaProjects\\Pacman\\Assets\\sounds\\pacman_chomp.wav");
+                playSound("Assets\\sounds\\pacman_chomp.wav");
                 pointsList.get(i).setChecked(true);
             }
         }
         for(int i =0; i<fruitsList.size();i++) {
             if (x == fruitsList.get(i).getX() && y == fruitsList.get(i).getY() && !fruitsList.get(i).isChecked()) {
-                playSound("C:\\Users\\20114\\IdeaProjects\\Pacman\\Assets\\sounds\\pacman_eatfruit.wav");
+                playSound("Assets\\sounds\\pacman_eatfruit.wav");
                 fruitsList.get(i).setChecked(true);
             }
         }
