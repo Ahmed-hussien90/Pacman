@@ -155,6 +155,12 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener {
         //Left
         else if (isKeyPressed(37)) {
             int L = pointsList.get(index).getLeft();
+            if (L == -2){
+                index = 18;
+                x = pointsList.get(index).getX();
+                y = pointsList.get(index).getY();
+                return;
+            }
             if (L != -1) {
                 if (pointsList.get(L).getX() == x) {
                     if (n < KeyL.size() - 1) {
@@ -175,6 +181,12 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener {
         //Right
         else if (isKeyPressed(39)) {
             int R = pointsList.get(index).getRight();
+            if (R == -2){
+                index = 66;
+                x = pointsList.get(index).getX();
+                y = pointsList.get(index).getY();
+                return;
+            }
             if (R != -1) {
                 if (pointsList.get(R).getX() == x) {
                     if (n < KeyL.size() - 1) {
@@ -323,7 +335,7 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener {
         pointsList.add(new points(15,72   , 67.75, 16, 17, -1, 14,false));
         pointsList.add(new points(16,72   , 77.5 , 11, 15, 8 , 13,false));
         pointsList.add(new points(17,72   , 48   , 15, 19, 3 , 18,false));
-        pointsList.add(new points(18,90   , 48   , -1, -1, 17, 66,false));
+        pointsList.add(new points(18,90   , 48   , -1, -1, 17, -2,false));
         pointsList.add(new points(19,72   , 29   , 17, 30, 67, 20,false));
         pointsList.add(new points(20,90   , 29   , -1, 21, 19, -1,false));
         pointsList.add(new points(21,90   , 19   , 20, -1, 22, -1,false));
@@ -371,7 +383,7 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener {
         pointsList.add(new points(63,18   , 68   , 64, 65, 62, -1,false));
         pointsList.add(new points(64,18   , 77.5 , 59, 63, 61, 56,false));
         pointsList.add(new points(65,18   , 48   , 63, 45, 66, 51,false));
-        pointsList.add(new points(66,0    , 48   , -1, -1, 18, 65,false));
+        pointsList.add(new points(66,0    , 48   , -1, -1, -2, 65,false));
         pointsList.add(new points(67,61.25, 29   , 2 , -1, 32, 19,false));
 
 
@@ -384,9 +396,6 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener {
 
 
     }
-
-
-
 
     public static synchronized void playSound(final String url) {
         new Thread(new Runnable() { // the wrapper thread is unnecessary, unless it blocks on the Clip finishing, see comments
