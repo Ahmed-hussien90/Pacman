@@ -20,6 +20,16 @@
         <jarDirectory url="file://C:/JOGLwin/lib64" recursive="false" />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="lib32" level="project" />
+    <orderEntry type="library" exported="" name="lib32" level="project" />
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="file://C:/JOGLwin/lib64" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+        <jarDirectory url="file://C:/JOGLwin/lib64" recursive="false" />
+      </library>
+    </orderEntry>
   </component>
 </module>

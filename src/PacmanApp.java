@@ -17,6 +17,7 @@ public class PacmanApp extends JFrame {
     public PacmanApp() {
         glcanvas.addGLEventListener(listener);
         glcanvas.addKeyListener(listener);
+        glcanvas.addMouseListener(listener);
         animator.add(glcanvas);
         getContentPane().add(glcanvas, BorderLayout.CENTER);
         setTitle("PAC-MAN");

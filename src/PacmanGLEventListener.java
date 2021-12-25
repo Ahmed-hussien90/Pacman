@@ -1,4 +1,5 @@
 import Texture.TextureReader;
+import com.sun.opengl.util.GLUT;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
@@ -7,14 +8,21 @@ import javax.media.opengl.glu.GLU;
 import javax.sound.sampled.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class PacmanGLEventListener implements GLEventListener, KeyListener {
+import static javax.media.opengl.GL.GL_CURRENT_BIT;
+
+public class PacmanGLEventListener implements GLEventListener, KeyListener , MouseListener {
     ArrayList<points> pointsList = new ArrayList<>();
     ArrayList<points> fruitsList = new ArrayList<>();
+    ArrayList<Texts> TextsList = new ArrayList<>();
+
     ArrayList<Integer> KeyL = new ArrayList<>();
+
     int n = 0;
     int angle1 = 0 , angle2 = 0;
     final int maxWidth = 100, maxHeight = 100;
@@ -22,26 +30,26 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener {
     double x, y;
     int index = 1;
     int keyCode, animation = 0, face = 0;
-    int count=0;
     private static final int BUFFER_SIZE = 4096;
+    boolean start= false;
 
 
     String assetsFolderName = "Assets/";
-    String textureNames[] = {
+    static String[] textureNames = {
             "sprites/pacman-right/1.png", "sprites/pacman-right/2.png", "sprites/pacman-right/3.png",
             "sprites/pacman-left/1.png" , "sprites/pacman-left/2.png" , "sprites/pacman-left/3.png" ,
             "sprites/pacman-up/1.png"   , "sprites/pacman-up/2.png"   , "sprites/pacman-up/3.png",
             "sprites/pacman-down/1.png" , "sprites/pacman-down/2.png" , "sprites/pacman-down/3.png",
-            "sprites/extra/dot.png","sprites/extra/apple.png", "Background.jpeg"
+            "sprites/extra/dot.png","sprites/extra/apple.png", "Ready.png","GameOver.png","Win.png", "menu.jpg","levels.png" ,"Background.jpeg"
     };
     TextureReader.Texture texture[] = new TextureReader.Texture[textureNames.length];
-    int textures[] = new int[textureNames.length];
+    static int[] textures = new int[textureNames.length];
 
 
     //GLEventListener Methods
     public void init(GLAutoDrawable gld) {
         GL gl = gld.getGL();
-        gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);    //This Will Clear The Background Color To Black
         gl.glEnable(GL.GL_TEXTURE_2D);
         gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
         gl.glGenTextures(textureNames.length, textures, 0);
@@ -61,8 +69,7 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener {
         addPoints();
         x = pointsList.get(index).getX();
         y = pointsList.get(index).getY();
-
-        playSound("Assets\\sounds\\pacman_beginning.wav");
+        playSound("Assets\\sounds\\pacman_beginning.wav",0);
 
     }
 //ssw
@@ -71,12 +78,14 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener {
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
         gl.glLoadIdentity();
         DrawBackground(gl);
+
         if (KeyL.size() != 0)
             handleKeyPress();
-        DrawSprite(gl, x, y, 1, animation);
 
-        drawdotAndFruits(gl);
-
+        if(start) {
+            DrawSprite(gl, x, y, 1, animation);
+            drawDotAndFruits(gl);
+        }
     }
 
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
@@ -214,13 +223,13 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener {
         gl.glTranslated(x / (maxWidth / 2.0) - 0.9, y / (maxHeight / 2.0) - 0.9, 0);
         for(int i =0; i<pointsList.size();i++){
             if(x ==pointsList.get(i).getX() && y ==pointsList.get(i).getY() && !pointsList.get(i).isChecked()){
-                playSound("Assets\\sounds\\pacman_chomp.wav");
+                playSound("Assets\\sounds\\pacman_chomp.wav",-1);
                 pointsList.get(i).setChecked(true);
             }
         }
         for(int i =0; i<fruitsList.size();i++) {
             if (x == fruitsList.get(i).getX() && y == fruitsList.get(i).getY() && !fruitsList.get(i).isChecked()) {
-                playSound("Assets\\sounds\\pacman_eatfruit.wav");
+                playSound("Assets\\sounds\\pacman_eatfruit.wav",-1);
                 fruitsList.get(i).setChecked(true);
             }
         }
@@ -240,39 +249,84 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener {
     }
 
     private void DrawBackground(GL gl) {
-        gl.glEnable(GL.GL_BLEND);
-        gl.glBindTexture(GL.GL_TEXTURE_2D, textures[textureNames.length - 1]);
-        gl.glPushMatrix();
-        gl.glBegin(GL.GL_QUADS);
-        gl.glScaled(0.05, 0.1, 1);
-        // Front Face
-        gl.glTexCoord2f(0.0f, 0.0f);
-        gl.glVertex3f(-1.0f, -1.0f, -1.0f);
-        gl.glTexCoord2f(1.0f, 0.0f);
-        gl.glVertex3f(1.0f, -1.0f, -1.0f);
-        gl.glTexCoord2f(1.0f, 1.0f);
-        gl.glVertex3f(1.0f, 1.0f, -1.0f);
-        gl.glTexCoord2f(0.0f, 1.0f);
-        gl.glVertex3f(-1.0f, 1.0f, -1.0f);
-        gl.glEnd();
-        gl.glPopMatrix();
+        if(start) {
+            //drawing game background
+            gl.glEnable(GL.GL_BLEND);
+            gl.glBindTexture(GL.GL_TEXTURE_2D, textures[textureNames.length - 1]);	// Turn Blending On
 
-        gl.glDisable(GL.GL_BLEND);
+            gl.glPushMatrix();
+            gl.glBegin(GL.GL_QUADS);
+            gl.glScaled(0.05, 0.1, 1);
+            gl.glTexCoord2f(0.0f, 0.0f);
+            gl.glVertex3f(-1.0f, -1.0f, -1.0f);
+            gl.glTexCoord2f(1.0f, 0.0f);
+            gl.glVertex3f(1.0f, -1.0f, -1.0f);
+            gl.glTexCoord2f(1.0f, 1.0f);
+            gl.glVertex3f(1.0f, 1.0f, -1.0f);
+            gl.glTexCoord2f(0.0f, 1.0f);
+            gl.glVertex3f(-1.0f, 1.0f, -1.0f);
+            gl.glEnd();
+            gl.glPopMatrix();
+
+            gl.glDisable(GL.GL_BLEND);
+
+
+        }else{
+
+            //Drawing Menu Background
+            gl.glEnable(GL.GL_BLEND);
+            gl.glBindTexture(GL.GL_TEXTURE_2D, textures[17]);
+            gl.glPushMatrix();
+            gl.glBegin(GL.GL_QUADS);
+            gl.glScaled(0.1, 0.1, 1);
+            gl.glTexCoord2f(0.0f, 0.0f);
+            gl.glVertex3f(-1.0f, -1.0f, -1.0f);
+            gl.glTexCoord2f(1.0f, 0.0f);
+            gl.glVertex3f(1.0f, -1.0f, -1.0f);
+            gl.glTexCoord2f(1.0f, 1.0f);
+            gl.glVertex3f(1.0f, 1.0f, -1.0f);
+            gl.glTexCoord2f(0.0f, 1.0f);
+            gl.glVertex3f(-1.0f, 1.0f, -1.0f);
+            gl.glEnd();
+            gl.glPopMatrix();
+
+            gl.glDisable(GL.GL_BLEND);
+
+            //Drawing levels image
+            gl.glEnable(GL.GL_BLEND);
+            gl.glBindTexture(GL.GL_TEXTURE_2D, textures[18]);
+            gl.glPushMatrix();
+            gl.glTranslated(0, -0.6, 0);
+            gl.glScaled(0.3, 0.3, 1);
+            gl.glBegin(GL.GL_QUADS);
+            gl.glTexCoord2f(0.0f, 0.0f);
+            gl.glVertex3f(-1.0f, -1.0f, -1.0f);
+            gl.glTexCoord2f(1.0f, 0.0f);
+            gl.glVertex3f(1.0f, -1.0f, -1.0f);
+            gl.glTexCoord2f(1.0f, 1.0f);
+            gl.glVertex3f(1.0f, 1.0f, -1.0f);
+            gl.glTexCoord2f(0.0f, 1.0f);
+            gl.glVertex3f(-1.0f, 1.0f, -1.0f);
+            gl.glEnd();
+            gl.glPopMatrix();
+            gl.glDisable(GL.GL_BLEND);
+
+        }
 
     }
 
-    private void drawdotAndFruits(GL gl) {
+    private void drawDotAndFruits(GL gl) {
         angle2+=2;
         for (int i = 1; i < pointsList.size(); i++) {
             if(!pointsList.get(i).isChecked()) {
                 double x = pointsList.get(i).getX();
                 double y = pointsList.get(i).getY();
                 gl.glEnable(GL.GL_BLEND);
-                gl.glBindTexture(GL.GL_TEXTURE_2D, textures[textureNames.length-3]);
+                gl.glBindTexture(GL.GL_TEXTURE_2D, textures[12]);
                 gl.glPushMatrix();
-                    gl.glTranslated(x / (maxWidth / 2.0) - 0.9, y / (maxHeight / 2.0) - 0.9, 0);
-                    gl.glScaled(0.05, 0.05, 1);
-                    gl.glRotated((angle1++)%360,0,0,1);
+                gl.glTranslated(x / (maxWidth / 2.0) - 0.9, y / (maxHeight / 2.0) - 0.9, 0);
+                gl.glScaled(0.075, 0.075, 1);
+                gl.glRotated((angle1++)%360,0,0,1);
                 gl.glBegin(GL.GL_QUADS);
                 gl.glTexCoord2f(0.0f, 0.0f);
                 gl.glVertex3f(-1.0f, -1.0f, -1.0f);
@@ -292,12 +346,34 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener {
                 double x = fruitsList.get(i).getX();
                 double y = fruitsList.get(i).getY();
                 gl.glEnable(GL.GL_BLEND);
-                gl.glBindTexture(GL.GL_TEXTURE_2D, textures[textureNames.length-2]);
+                gl.glBindTexture(GL.GL_TEXTURE_2D, textures[13]);
                 gl.glPushMatrix();
                 gl.glTranslated(x / (maxWidth / 2.0) - 0.9, y / (maxHeight / 2.0) - 0.9, 0);
                 gl.glScaled(0.03, 0.03, 1);
                 gl.glRotated(angle2%360,0,0,1);
 
+                gl.glBegin(GL.GL_QUADS);
+                gl.glTexCoord2f(0.0f, 0.0f);
+                gl.glVertex3f(-1.0f, -1.0f, -1.0f);
+                gl.glTexCoord2f(1.0f, 0.0f);
+                gl.glVertex3f(1.0f, -1.0f, -1.0f);
+                gl.glTexCoord2f(1.0f, 1.0f);
+                gl.glVertex3f(1.0f, 1.0f, -1.0f);
+                gl.glTexCoord2f(0.0f, 1.0f);
+                gl.glVertex3f(-1.0f, 1.0f, -1.0f);
+                gl.glEnd();
+                gl.glPopMatrix();
+                gl.glDisable(GL.GL_BLEND);
+            }
+        }
+
+        for (int i = 0; i < TextsList.size(); i++) {
+            if(TextsList.get(i).isAppear()) {
+                gl.glEnable(GL.GL_BLEND);
+                gl.glBindTexture(GL.GL_TEXTURE_2D, textures[TextsList.get(i).getIndex()]);
+                gl.glPushMatrix();
+                gl.glTranslated(0,  0.25, 0);
+                gl.glScaled(0.12, 0.08, 1);
                 gl.glBegin(GL.GL_QUADS);
                 gl.glTexCoord2f(0.0f, 0.0f);
                 gl.glVertex3f(-1.0f, -1.0f, -1.0f);
@@ -395,13 +471,22 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener {
         fruitsList.add(new points(82,29,90.5,-1,-1,-1,-1,false));
 
 
+        //adding texts img
+        TextsList.add(new Texts(14,false)); //for Ready
+        TextsList.add(new Texts(15,false)); //for GameOver
+        TextsList.add(new Texts(16,false));  //for Win
+
+
     }
 
-    public static synchronized void playSound(final String url) {
+    public synchronized void playSound(final String url,int index) {
         new Thread(new Runnable() { // the wrapper thread is unnecessary, unless it blocks on the Clip finishing, see comments
             public void run() {
                 File soundFile = new File(url);
+                if(index ==0) {
+                    while (!start){
                 try {
+
                     //convering the audio file to a stream
                     AudioInputStream sampleStream = AudioSystem.getAudioInputStream(soundFile);
 
@@ -413,22 +498,31 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener {
 
                     theAudioLine.open(formatAudio);
 
-                    theAudioLine.start();
 
-                    System.out.println("Audio Player Started.");
+                        theAudioLine.start();
 
-                    byte[] bufferBytes = new byte[BUFFER_SIZE];
-                    int readBytes = -1;
+                       // System.out.println("Audio Player Started.");
 
-                    while ((readBytes = sampleStream.read(bufferBytes)) != -1) {
-                        theAudioLine.write(bufferBytes, 0, readBytes);
-                    }
+                        if (index != -1) {
+                            TextsList.get(index).setAppear(true);
+                        }
 
-                    theAudioLine.drain();
-                    theAudioLine.close();
-                    sampleStream.close();
+                        byte[] bufferBytes = new byte[BUFFER_SIZE];
+                        int readBytes = -1;
 
-                    System.out.println("Playback has been finished.");
+                        while ((readBytes = sampleStream.read(bufferBytes)) != -1) {
+                            theAudioLine.write(bufferBytes, 0, readBytes);
+                        }
+
+                        theAudioLine.drain();
+                        theAudioLine.close();
+                        sampleStream.close();
+
+                        if (index != -1) {
+                            TextsList.get(index).setAppear(false);
+                        }
+
+                        //System.out.println("Playback has been finished.");
 
                 } catch (UnsupportedAudioFileException e) {
                     System.out.println("Unsupported file.");
@@ -440,8 +534,83 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener {
                     System.out.println("Experienced an error.");
                     e.printStackTrace();
                 }
+            }}else {
+                    try {
+                        AudioInputStream sampleStream = AudioSystem.getAudioInputStream(soundFile);
+                        AudioFormat formatAudio = sampleStream.getFormat();
+                        DataLine.Info info = new DataLine.Info(SourceDataLine.class, formatAudio);
+                        SourceDataLine theAudioLine = (SourceDataLine) AudioSystem.getLine(info);
+                        theAudioLine.open(formatAudio);
+
+                        theAudioLine.start();
+
+                        if (index != -1) {
+                            TextsList.get(index).setAppear(true);
+                        }
+
+                        byte[] bufferBytes = new byte[BUFFER_SIZE];
+                        int readBytes = -1;
+
+                        while ((readBytes = sampleStream.read(bufferBytes)) != -1) {
+                            theAudioLine.write(bufferBytes, 0, readBytes);
+                        }
+
+                        theAudioLine.drain();
+                        theAudioLine.close();
+                        sampleStream.close();
+
+                        if (index != -1) {
+                            TextsList.get(index).setAppear(false);
+                        }
+
+                    } catch (UnsupportedAudioFileException e) {
+                        System.out.println("Unsupported file.");
+                        e.printStackTrace();
+                    } catch (LineUnavailableException e) {
+                        System.out.println("Line not found.");
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        System.out.println("Experienced an error.");
+                        e.printStackTrace();
+                    }
+
+                }
+
             }
         }).start();
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        double x = e.getX();
+        double y = e.getY();
+
+        System.out.println("("+x+","+y+")");
+
+            if (x > 353 && x < 477 && y < 597 && y > 539 && !start) {
+               start =true;
+            }
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
     }
 }
 
