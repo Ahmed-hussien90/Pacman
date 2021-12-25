@@ -65,7 +65,7 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener {
         playSound("Assets\\sounds\\pacman_beginning.wav");
 
     }
-
+//ss
     public void display(GLAutoDrawable gld) {
         GL gl = gld.getGL();
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
