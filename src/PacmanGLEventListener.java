@@ -16,6 +16,7 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener {
     ArrayList<points> fruitsList = new ArrayList<>();
     ArrayList<Integer> KeyL = new ArrayList<>();
     int n = 0;
+    int angle1 = 0 , angle2 = 0;
     final int maxWidth = 100, maxHeight = 100;
     final double speed = 0.25;
     double x, y;
@@ -26,11 +27,13 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener {
 
 
     String assetsFolderName = "Assets/";
-    String textureNames[] = {"sprites/pacman-right/1.png", "sprites/pacman-right/2.png", "sprites/pacman-right/3.png",
-            "sprites/pacman-left/1.png", "sprites/pacman-left/2.png", "sprites/pacman-left/3.png",
-            "sprites/pacman-up/1.png", "sprites/pacman-up/2.png", "sprites/pacman-up/3.png",
-            "sprites/pacman-down/1.png", "sprites/pacman-down/2.png", "sprites/pacman-down/3.png",
-            "sprites/extra/dot.png","sprites/extra/apple.png", "Background.jpeg"};
+    String textureNames[] = {
+            "sprites/pacman-right/1.png", "sprites/pacman-right/2.png", "sprites/pacman-right/3.png",
+            "sprites/pacman-left/1.png" , "sprites/pacman-left/2.png" , "sprites/pacman-left/3.png" ,
+            "sprites/pacman-up/1.png"   , "sprites/pacman-up/2.png"   , "sprites/pacman-up/3.png",
+            "sprites/pacman-down/1.png" , "sprites/pacman-down/2.png" , "sprites/pacman-down/3.png",
+            "sprites/extra/dot.png","sprites/extra/apple.png", "Background.jpeg"
+    };
     TextureReader.Texture texture[] = new TextureReader.Texture[textureNames.length];
     int textures[] = new int[textureNames.length];
 
@@ -247,16 +250,17 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener {
     }
 
     private void drawdotAndFruits(GL gl) {
-
+        angle2+=2;
         for (int i = 1; i < pointsList.size(); i++) {
             if(!pointsList.get(i).isChecked()) {
                 double x = pointsList.get(i).getX();
                 double y = pointsList.get(i).getY();
                 gl.glEnable(GL.GL_BLEND);
-                gl.glBindTexture(GL.GL_TEXTURE_2D, textures[12]);
+                gl.glBindTexture(GL.GL_TEXTURE_2D, textures[textureNames.length-3]);
                 gl.glPushMatrix();
-                gl.glTranslated(x / (maxWidth / 2.0) - 0.9, y / (maxHeight / 2.0) - 0.9, 0);
-                gl.glScaled(0.05, 0.05, 1);
+                    gl.glTranslated(x / (maxWidth / 2.0) - 0.9, y / (maxHeight / 2.0) - 0.9, 0);
+                    gl.glScaled(0.05, 0.05, 1);
+                    gl.glRotated((angle1++)%360,0,0,1);
                 gl.glBegin(GL.GL_QUADS);
                 gl.glTexCoord2f(0.0f, 0.0f);
                 gl.glVertex3f(-1.0f, -1.0f, -1.0f);
@@ -271,16 +275,17 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener {
                 gl.glDisable(GL.GL_BLEND);
             }
         }
-
         for (int i = 0; i < fruitsList.size(); i++) {
             if(!fruitsList.get(i).isChecked()) {
                 double x = fruitsList.get(i).getX();
                 double y = fruitsList.get(i).getY();
                 gl.glEnable(GL.GL_BLEND);
-                gl.glBindTexture(GL.GL_TEXTURE_2D, textures[13]);
+                gl.glBindTexture(GL.GL_TEXTURE_2D, textures[textureNames.length-2]);
                 gl.glPushMatrix();
                 gl.glTranslated(x / (maxWidth / 2.0) - 0.9, y / (maxHeight / 2.0) - 0.9, 0);
-                gl.glScaled(0.05, 0.05, 1);
+                gl.glScaled(0.03, 0.03, 1);
+                gl.glRotated(angle2%360,0,0,1);
+
                 gl.glBegin(GL.GL_QUADS);
                 gl.glTexCoord2f(0.0f, 0.0f);
                 gl.glVertex3f(-1.0f, -1.0f, -1.0f);
