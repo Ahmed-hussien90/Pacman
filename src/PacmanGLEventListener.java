@@ -21,23 +21,18 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
     ArrayList<points> pointsList = new ArrayList<>();
     ArrayList<points> fruitsList = new ArrayList<>();
     ArrayList<Texts> TextsList = new ArrayList<>();
-
     ArrayList<Integer> KeyL = new ArrayList<>();
-    int levelNo = 1;
 
-    int n = 0;
-    int angle1 = 0 , angle2 = 0;
-    final int maxWidth = 100, maxHeight = 100;
-    final double speed = 0.25;
+    private final int maxWidth = 100, maxHeight = 100; final double speed = 0.25;
+    private static final int BUFFER_SIZE = 4096;
+
+    int levelNo = 1;
+    int angle1 = 0 , angle2 = 0 , n = 0;
     double x , y , xR , yR , xB , yB , xO , yO;
     int index = 1 , indexR = 20 , indexB = 30 , indexO = 40;
     int keyCode, animation = 0, face = 0;
-    private static final int BUFFER_SIZE = 4096;
+    int score = 0 , lvScore = 780;
     boolean start= false;
-    int score = 0;
-    int lvScore = 780;
-
-
 
     String assetsFolderName = "Assets/";
     static String[] textureNames = {
@@ -91,6 +86,7 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
         if (KeyL.size() != 0)
             handleKeyPress();
 
+        handleKeyPressEnemy();
         if(start) {
             DrawSprite(gl, x, y, 1, animation);
             drawDotAndFruits(gl);
@@ -177,9 +173,7 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
             int T = pointsList.get(index).getTop();
             if (T != -1) {
                 if (pointsList.get(T).getY() == y) {
-                    if (n < KeyL.size() - 1) {
-                        n++;
-                    }
+                    checkN();
                     index = T;
                 } else {
                     y += speed;
@@ -188,9 +182,7 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
 
                 }
             } else {
-                if (n < KeyL.size() - 1) {
-                    n++;
-                }
+                checkN();
             }
         }
         //Down
@@ -198,9 +190,7 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
             int B = pointsList.get(index).getBottom();
             if (B != -1) {
                 if (pointsList.get(B).getY() == y) {
-                    if (n < KeyL.size() - 1) {
-                        n++;
-                    }
+                    checkN();
                     index = B;
                 } else {
                     y -= speed;
@@ -208,9 +198,7 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
                     animation++;
                 }
             } else {
-                if (n < KeyL.size() - 1) {
-                    n++;
-                }
+                checkN();
             }
         }
         //Left
@@ -224,9 +212,7 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
             }
             if (L != -1) {
                 if (pointsList.get(L).getX() == x) {
-                    if (n < KeyL.size() - 1) {
-                        n++;
-                    }
+                    checkN();
                     index = L;
                 } else {
                     x -= speed;
@@ -234,9 +220,7 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
                     animation++;
                 }
             } else {
-                if (n < KeyL.size() - 1) {
-                    n++;
-                }
+                checkN();
             }
         }
         //Right
@@ -250,9 +234,7 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
             }
             if (R != -1) {
                 if (pointsList.get(R).getX() == x) {
-                    if (n < KeyL.size() - 1) {
-                        n++;
-                    }
+                    checkN();
                     index = R;
                 } else {
                     x += speed;
@@ -260,17 +242,20 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
                     animation++;
                 }
             } else {
-                if (n < KeyL.size() - 1) {
-                    n++;
-                }
+                checkN();
             }
         }
 
-        //handleKeyPressEnemy();
     }
 
     private void handleKeyPressEnemy() {
 
+    }
+
+    private void checkN(){
+        if (n < KeyL.size() - 1) {
+            n++;
+        }
     }
 
     private void DrawSprite(GL gl, double x, double y, float scale, int animation) {
