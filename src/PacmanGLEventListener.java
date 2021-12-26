@@ -21,23 +21,18 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
     ArrayList<points> pointsList = new ArrayList<>();
     ArrayList<points> fruitsList = new ArrayList<>();
     ArrayList<Texts> TextsList = new ArrayList<>();
-
     ArrayList<Integer> KeyL = new ArrayList<>();
-    int levelNo = 1;
 
-    int n = 0;
-    int angle1 = 0 , angle2 = 0;
-    final int maxWidth = 100, maxHeight = 100;
-    final double speed = 0.25;
+    private final int maxWidth = 100, maxHeight = 100; final double speed = 0.25;
+    private static final int BUFFER_SIZE = 4096;
+    int Random = 37 + (int)(Math.random()*4);;
+    int levelNo = 1;
+    int angle1 = 0 , angle2 = 0 , n = 0;
     double x , y , xR , yR , xB , yB , xO , yO;
     int index = 1 , indexR = 20 , indexB = 30 , indexO = 40;
     int keyCode, animation = 0, face = 0;
-    private static final int BUFFER_SIZE = 4096;
+    int score = 0 , lvScore = 780;
     boolean start= false;
-    int score = 0;
-    int lvScore = 780;
-
-
 
     String assetsFolderName = "Assets/";
     static String[] textureNames = {
@@ -87,13 +82,13 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
         gl.glLoadIdentity();
         DrawBackground(gl);
-
+        handleKeyPressEnemy();
         if (KeyL.size() != 0)
             handleKeyPress();
 
         if(start) {
-            DrawSprite(gl, x, y, 1, animation);
             drawDotAndFruits(gl);
+            DrawSprite(gl, x, y, 1, animation);
             updateScore(gl);
         }
 
@@ -177,41 +172,30 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
             int T = pointsList.get(index).getTop();
             if (T != -1) {
                 if (pointsList.get(T).getY() == y) {
-                    if (n < KeyL.size() - 1) {
-                        n++;
-                    }
+                    checkN();
                     index = T;
-                } else {
-                    y += speed;
-                    face = 6;
-                    animation++;
-
                 }
-            } else {
-                if (n < KeyL.size() - 1) {
-                    n++;
+                else {
+                    y += speed; face = 6; animation++;
                 }
             }
+            else
+                checkN();
         }
         //Down
         else if (isKeyPressed(40)) {
             int B = pointsList.get(index).getBottom();
             if (B != -1) {
                 if (pointsList.get(B).getY() == y) {
-                    if (n < KeyL.size() - 1) {
-                        n++;
-                    }
+                    checkN();
                     index = B;
-                } else {
-                    y -= speed;
-                    face = 9;
-                    animation++;
                 }
-            } else {
-                if (n < KeyL.size() - 1) {
-                    n++;
+                else {
+                    y -= speed; face = 9; animation++;
                 }
             }
+            else
+                checkN();
         }
         //Left
         else if (isKeyPressed(37)) {
@@ -224,20 +208,15 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
             }
             if (L != -1) {
                 if (pointsList.get(L).getX() == x) {
-                    if (n < KeyL.size() - 1) {
-                        n++;
-                    }
+                    checkN();
                     index = L;
-                } else {
-                    x -= speed;
-                    face = 3;
-                    animation++;
                 }
-            } else {
-                if (n < KeyL.size() - 1) {
-                    n++;
+                else {
+                    x -= speed; face = 3; animation++;
                 }
             }
+            else
+                checkN();
         }
         //Right
         else if (isKeyPressed(39)) {
@@ -250,27 +229,98 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
             }
             if (R != -1) {
                 if (pointsList.get(R).getX() == x) {
-                    if (n < KeyL.size() - 1) {
-                        n++;
-                    }
+                    checkN();
                     index = R;
-                } else {
-                    x += speed;
-                    face = 0;
-                    animation++;
                 }
-            } else {
-                if (n < KeyL.size() - 1) {
-                    n++;
+                else {
+                    x += speed; face = 0; animation++;
                 }
             }
+            else
+                checkN();
         }
-
-        //handleKeyPressEnemy();
     }
 
     private void handleKeyPressEnemy() {
+        System.out.println(Random+" ,,,,,,,,,,,,,");
+        //Up
+        if (Random == 38) {
+            int T = pointsList.get(indexR).getTop();
+            if (T != -1) {
+                if (pointsList.get(T).getY() == yR) {
+                    Random = 37 + (int)(Math.random()*4);
+                    indexR = T;
+                }
+                else {
+                    yR += speed;
+                }
+            }
+            else
+                Random = 37 + (int)(Math.random()*4);
+        }
+        //Down
+        else if (Random == 40) {
+            int B = pointsList.get(indexR).getBottom();
+            if (B != -1) {
+                if (pointsList.get(B).getY() == yR) {
+                    Random = 37 + (int)(Math.random()*4);
+                    indexR = B;
+                }
+                else {
+                    yR -= speed;
+                }
+            }
+            else
+                Random = 37 + (int)(Math.random()*4);
+        }
+        //Left
+        else if (Random == 37) {
+            int L = pointsList.get(indexR).getLeft();
+            if (L == -2){
+                indexR = 18;
+                xR = pointsList.get(index).getX();
+                yR = pointsList.get(index).getY();
+                return;
+            }
+            if (L != -1) {
+                if (pointsList.get(L).getX() == xR) {
+                    Random = 37 + (int)(Math.random()*4);
+                    indexR = L;
+                }
+                else {
+                    xR -= speed;
+                }
+            }
+            else
+                Random = 37 + (int)(Math.random()*4);
+        }
+        //Right
+        else if (Random == 39) {
+            int R = pointsList.get(indexR).getRight();
+            if (R == -2){
+                indexR = 66;
+                xR = pointsList.get(indexR).getX();
+                yR = pointsList.get(indexR).getY();
+                return;
+            }
+            if (R != -1) {
+                if (pointsList.get(R).getX() == xR) {
+                    Random = 37 + (int)(Math.random()*4);
+                    indexR = R;
+                }
+                else {
+                    xR += speed;
+                }
+            }
+            else
+                Random = 37 + (int)(Math.random()*4);
+        }
+    }
 
+    private void checkN(){
+        if (n < KeyL.size() - 1) {
+            n++;
+        }
     }
 
     private void DrawSprite(GL gl, double x, double y, float scale, int animation) {
