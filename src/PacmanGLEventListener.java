@@ -25,7 +25,10 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
 
     private final int maxWidth = 100, maxHeight = 100; final double speed = 0.25;
     private static final int BUFFER_SIZE = 4096;
-    int Random = 37 + (int)(Math.random()*4);;
+    int RandomR = 37 + (int)(Math.random()*4);;
+    int RandomB = 37 + (int)(Math.random()*4);;
+    int RandomO = 37 + (int)(Math.random()*4);;
+
     int levelNo = 1;
     int angle1 = 0 , angle2 = 0 , n = 0;
     double x , y , xR , yR , xB , yB , xO , yO;
@@ -242,13 +245,13 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
     }
 
     private void handleKeyPressEnemy() {
-        System.out.println(Random+" ,,,,,,,,,,,,,");
+        System.out.println(RandomR+" ,,,,,,,,,,,,,");
         //Up
-        if (Random == 38) {
+        if (RandomR == 38) {
             int T = pointsList.get(indexR).getTop();
             if (T != -1) {
                 if (pointsList.get(T).getY() == yR) {
-                    Random = 37 + (int)(Math.random()*4);
+                    RandomR = 37 + (int)(Math.random()*4);
                     indexR = T;
                 }
                 else {
@@ -256,14 +259,14 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
                 }
             }
             else
-                Random = 37 + (int)(Math.random()*4);
+                RandomR = 37 + (int)(Math.random()*4);
         }
         //Down
-        else if (Random == 40) {
+        else if (RandomR == 40) {
             int B = pointsList.get(indexR).getBottom();
             if (B != -1) {
                 if (pointsList.get(B).getY() == yR) {
-                    Random = 37 + (int)(Math.random()*4);
+                    RandomR = 37 + (int)(Math.random()*4);
                     indexR = B;
                 }
                 else {
@@ -271,20 +274,20 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
                 }
             }
             else
-                Random = 37 + (int)(Math.random()*4);
+                RandomR = 37 + (int)(Math.random()*4);
         }
         //Left
-        else if (Random == 37) {
+        else if (RandomR == 37) {
             int L = pointsList.get(indexR).getLeft();
             if (L == -2){
                 indexR = 18;
-                xR = pointsList.get(index).getX();
-                yR = pointsList.get(index).getY();
+                xR = pointsList.get(indexR).getX();
+                yR = pointsList.get(indexR).getY();
                 return;
             }
             if (L != -1) {
                 if (pointsList.get(L).getX() == xR) {
-                    Random = 37 + (int)(Math.random()*4);
+                    RandomR = 37 + (int)(Math.random()*4);
                     indexR = L;
                 }
                 else {
@@ -292,10 +295,10 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
                 }
             }
             else
-                Random = 37 + (int)(Math.random()*4);
+                RandomR = 37 + (int)(Math.random()*4);
         }
         //Right
-        else if (Random == 39) {
+        else if (RandomR == 39) {
             int R = pointsList.get(indexR).getRight();
             if (R == -2){
                 indexR = 66;
@@ -305,7 +308,7 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
             }
             if (R != -1) {
                 if (pointsList.get(R).getX() == xR) {
-                    Random = 37 + (int)(Math.random()*4);
+                    RandomR = 37 + (int)(Math.random()*4);
                     indexR = R;
                 }
                 else {
@@ -313,7 +316,223 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
                 }
             }
             else
-                Random = 37 + (int)(Math.random()*4);
+                RandomR = 37 + (int)(Math.random()*4);
+        }
+        if (RandomR == 38) {
+            int T = pointsList.get(indexR).getTop();
+            if (T != -1) {
+                if (pointsList.get(T).getY() == yR) {
+                    RandomR = 37 + (int)(Math.random()*4);
+                    indexR = T;
+                }
+                else {
+                    yR += speed;
+                }
+            }
+            else
+                RandomR = 37 + (int)(Math.random()*4);
+        }
+        //Down
+        else if (RandomR == 40) {
+            int B = pointsList.get(indexR).getBottom();
+            if (B != -1) {
+                if (pointsList.get(B).getY() == yR) {
+                    RandomR = 37 + (int)(Math.random()*4);
+                    indexR = B;
+                }
+                else {
+                    yR -= speed;
+                }
+            }
+            else
+                RandomR = 37 + (int)(Math.random()*4);
+        }
+        //Left
+        else if (RandomR == 37) {
+            int L = pointsList.get(indexR).getLeft();
+            if (L == -2){
+                indexR = 18;
+                xR = pointsList.get(indexR).getX();
+                yR = pointsList.get(indexR).getY();
+                return;
+            }
+            if (L != -1) {
+                if (pointsList.get(L).getX() == xR) {
+                    RandomR = 37 + (int)(Math.random()*4);
+                    indexR = L;
+                }
+                else {
+                    xR -= speed;
+                }
+            }
+            else
+                RandomR = 37 + (int)(Math.random()*4);
+        }
+        //Right
+        else if (RandomR == 39) {
+            int R = pointsList.get(indexR).getRight();
+            if (R == -2){
+                indexR = 66;
+                xR = pointsList.get(indexR).getX();
+                yR = pointsList.get(indexR).getY();
+                return;
+            }
+            if (R != -1) {
+                if (pointsList.get(R).getX() == xR) {
+                    RandomR = 37 + (int)(Math.random()*4);
+                    indexR = R;
+                }
+                else {
+                    xR += speed;
+                }
+            }
+            else
+                RandomR = 37 + (int)(Math.random()*4);
+        }
+        //////B ANMI
+        if (RandomB == 38) {
+            int T = pointsList.get(indexB).getTop();
+            if (T != -1) {
+                if (pointsList.get(T).getY() == yB) {
+                    RandomB = 37 + (int)(Math.random()*4);
+                    indexB = T;
+                }
+                else {
+                    yB += speed;
+                }
+            }
+            else
+                RandomB = 37 + (int)(Math.random()*4);
+        }
+        //Down
+        else if (RandomB == 40) {
+            int B = pointsList.get(indexB).getBottom();
+            if (B != -1) {
+                if (pointsList.get(B).getY() == yB) {
+                    RandomB= 37 + (int)(Math.random()*4);
+                    indexB = B;
+                }
+                else {
+                    yB -= speed;
+                }
+            }
+            else
+                RandomB= 37 + (int)(Math.random()*4);
+        }
+        //Left
+        else if (RandomB== 37) {
+            int L = pointsList.get(indexB).getLeft();
+            if (L == -2){
+                indexB= 18;
+                xB= pointsList.get(indexB).getX();
+                yB = pointsList.get(indexB).getY();
+                return;
+            }
+            if (L != -1) {
+                if (pointsList.get(L).getX() == xB) {
+                    RandomB = 37 + (int)(Math.random()*4);
+                    indexB = L;
+                }
+                else {
+                    xB-= speed;
+                }
+            }
+            else
+                RandomB = 37 + (int)(Math.random()*4);
+        }
+        //Right
+        else if (RandomB == 39) {
+            int R = pointsList.get(indexB).getRight();
+            if (R == -2){
+                indexB= 66;
+                xB = pointsList.get(indexB).getX();
+                yB = pointsList.get(indexB).getY();
+                return;
+            }
+            if (R != -1) {
+                if (pointsList.get(R).getX() == xB) {
+                    RandomB= 37 + (int)(Math.random()*4);
+                    indexB = R;
+                }
+                else {
+                    xB += speed;
+                }
+            }
+            else
+                RandomB = 37 + (int)(Math.random()*4);
+        }
+        ////ORANGE ANMI
+
+        if (RandomO == 38) {
+            int T = pointsList.get(indexO).getTop();
+            if (T != -1) {
+                if (pointsList.get(T).getY() == yO) {
+                    RandomO = 37 + (int)(Math.random()*4);
+                    indexO = T;
+                }
+                else {
+                    yO += speed;
+                }
+            }
+            else
+                RandomO = 37 + (int)(Math.random()*4);
+        }
+        //Down
+        else if (RandomO == 40) {
+            int B = pointsList.get(indexO).getBottom();
+            if (B != -1) {
+                if (pointsList.get(B).getY() == yO) {
+                    RandomO= 37 + (int)(Math.random()*4);
+                    indexO = B;
+                }
+                else {
+                    yO -= speed;
+                }
+            }
+            else
+                RandomO= 37 + (int)(Math.random()*4);
+        }
+        //Left
+        else if (RandomO== 37) {
+            int L = pointsList.get(indexO).getLeft();
+            if (L == -2){
+                indexO= 18;
+                xO= pointsList.get(indexO).getX();
+                yO = pointsList.get(indexO).getY();
+                return;
+            }
+            if (L != -1) {
+                if (pointsList.get(L).getX() == xO) {
+                    RandomO= 37 + (int)(Math.random()*4);
+                    indexO= L;
+                }
+                else {
+                    xO-= speed;
+                }
+            }
+            else
+                RandomO = 37 + (int)(Math.random()*4);
+        }
+        //Right
+        else if (RandomO == 39) {
+            int R = pointsList.get(indexO).getRight();
+            if (R == -2){
+                indexO= 66;
+                xO = pointsList.get(indexO).getX();
+                yO = pointsList.get(indexO).getY();
+                return;
+            }
+            if (R != -1) {
+                if (pointsList.get(R).getX() == xO) {
+                    RandomO= 37 + (int)(Math.random()*4);
+                    indexO = R;
+                }
+                else {
+                    xO += speed;
+                }
+            }
+            else
+                RandomO = 37 + (int)(Math.random()*4);
         }
     }
 
