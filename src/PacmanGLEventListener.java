@@ -72,7 +72,7 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
         playSound("Assets\\sounds\\pacman_beginning.wav",0);
 
     }
-//ssw
+
     public void display(GLAutoDrawable gld) {
         GL gl = gld.getGL();
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
@@ -116,6 +116,35 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
 
     public boolean isKeyPressed(int keyC) {
         return keyC == KeyL.get(n);
+    }
+
+    //MouseListener Methods
+    public void mouseClicked(MouseEvent e) {
+        double x = e.getX();
+        double y = e.getY();
+
+        System.out.println("("+x+","+y+")");
+
+        if (x > 353 && x < 477 && y < 597 && y > 539 && !start) {
+            start =true;
+        }
+
+    }
+
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    public void mouseExited(MouseEvent e) {
+
     }
 
     //Our Methods
@@ -578,39 +607,6 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
 
             }
         }).start();
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        double x = e.getX();
-        double y = e.getY();
-
-        System.out.println("("+x+","+y+")");
-
-            if (x > 353 && x < 477 && y < 597 && y > 539 && !start) {
-               start =true;
-            }
-
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-
     }
 }
 
