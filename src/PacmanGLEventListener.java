@@ -27,8 +27,8 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
     int angle1 = 0 , angle2 = 0;
     final int maxWidth = 100, maxHeight = 100;
     final double speed = 0.25;
-    double x, y;
-    int index = 1;
+    double x , y , xR , yR , xB , yB , xO , yO;
+    int index = 1 , indexR = 20 , indexB = 30 , indexO = 40;
     int keyCode, animation = 0, face = 0;
     private static final int BUFFER_SIZE = 4096;
     boolean start= false;
@@ -36,13 +36,13 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
 
     String assetsFolderName = "Assets/";
     static String[] textureNames = {
-            "sprites/pacman-right/1.png", "sprites/pacman-right/2.png", "sprites/pacman-right/3.png",
-            "sprites/pacman-left/1.png" , "sprites/pacman-left/2.png" , "sprites/pacman-left/3.png" ,
-            "sprites/pacman-up/1.png"   , "sprites/pacman-up/2.png"   , "sprites/pacman-up/3.png",
-            "sprites/pacman-down/1.png" , "sprites/pacman-down/2.png" , "sprites/pacman-down/3.png",
-            "sprites/extra/dot.png"     , "sprites/extra/apple.png"   , "Ready.png",
-            "GameOver.png"              , "Win.png" , "menu.jpg"      ,"levels.png" ,
-            "sprites/ghosts/blinky"     ,"sprites/ghosts/blue_ghost"  ,"sprites/ghosts/clyde",
+            "sprites/pacman-right/1.png", "sprites/pacman-right/2.png"   , "sprites/pacman-right/3.png",
+            "sprites/pacman-left/1.png" , "sprites/pacman-left/2.png"    , "sprites/pacman-left/3.png" ,
+            "sprites/pacman-up/1.png"   , "sprites/pacman-up/2.png"      , "sprites/pacman-up/3.png",
+            "sprites/pacman-down/1.png" , "sprites/pacman-down/2.png"    , "sprites/pacman-down/3.png",
+            "sprites/extra/dot.png"     , "sprites/extra/apple.png"      , "Ready.png",
+            "GameOver.png"              , "Win.png" , "menu.jpg"         ,"levels.png" ,
+            "sprites/ghosts/blinky.png" ,"sprites/ghosts/blue_ghost.png" ,"sprites/ghosts/clyde.png",
             "Background.jpeg"
     };
     TextureReader.Texture texture[] = new TextureReader.Texture[textureNames.length];
@@ -70,10 +70,11 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
             }
         }
         addPoints();
-        x = pointsList.get(index).getX();
-        y = pointsList.get(index).getY();
+        x = pointsList.get(index).getX(); y = pointsList.get(index).getY();
         playSound("Assets\\sounds\\pacman_beginning.wav",0);
-
+        xR = pointsList.get(indexR).getX(); yR = pointsList.get(indexR).getY();
+        xB = pointsList.get(indexB).getX(); yB = pointsList.get(indexB).getY();
+        xO = pointsList.get(indexO).getX(); yO = pointsList.get(indexO).getY();
     }
 
     public void display(GLAutoDrawable gld) {
@@ -86,8 +87,8 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
             handleKeyPress();
 
         if(start) {
-            DrawSprite(gl, x, y, 1, animation);
             drawDotAndFruits(gl);
+            DrawSprite(gl, x, y, 1, animation);
         }
     }
 
@@ -246,6 +247,11 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
             }
         }
 
+        //handleKeyPressEnemy();
+    }
+
+    private void handleKeyPressEnemy() {
+
     }
 
     private void DrawSprite(GL gl, double x, double y, float scale, int animation) {
@@ -265,6 +271,61 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
                 fruitsList.get(i).setChecked(true);
             }
         }
+        gl.glScaled(0.05 * scale, 0.05 * scale, 1);
+        gl.glBegin(GL.GL_QUADS);
+        gl.glTexCoord2f(0.0f, 0.0f);
+        gl.glVertex3f(-1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1.0f, 0.0f);
+        gl.glVertex3f(1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1.0f, 1.0f);
+        gl.glVertex3f(1.0f, 1.0f, -1.0f);
+        gl.glTexCoord2f(0.0f, 1.0f);
+        gl.glVertex3f(-1.0f, 1.0f, -1.0f);
+        gl.glEnd();
+        gl.glPopMatrix();
+        gl.glDisable(GL.GL_BLEND);
+
+
+        gl.glEnable(GL.GL_BLEND);
+        gl.glBindTexture(GL.GL_TEXTURE_2D, textures[19]);
+        gl.glPushMatrix();
+        gl.glTranslated(xR / (maxWidth / 2.0) - 0.9, yR / (maxHeight / 2.0) - 0.9, 0);
+        gl.glScaled(0.05 * scale, 0.05 * scale, 1);
+        gl.glBegin(GL.GL_QUADS);
+        gl.glTexCoord2f(0.0f, 0.0f);
+        gl.glVertex3f(-1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1.0f, 0.0f);
+        gl.glVertex3f(1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1.0f, 1.0f);
+        gl.glVertex3f(1.0f, 1.0f, -1.0f);
+        gl.glTexCoord2f(0.0f, 1.0f);
+        gl.glVertex3f(-1.0f, 1.0f, -1.0f);
+        gl.glEnd();
+        gl.glPopMatrix();
+        gl.glDisable(GL.GL_BLEND);
+
+        gl.glEnable(GL.GL_BLEND);
+        gl.glBindTexture(GL.GL_TEXTURE_2D, textures[20]);
+        gl.glPushMatrix();
+        gl.glTranslated(xB / (maxWidth / 2.0) - 0.9, yB / (maxHeight / 2.0) - 0.9, 0);
+        gl.glScaled(0.05 * scale, 0.05 * scale, 1);
+        gl.glBegin(GL.GL_QUADS);
+        gl.glTexCoord2f(0.0f, 0.0f);
+        gl.glVertex3f(-1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1.0f, 0.0f);
+        gl.glVertex3f(1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1.0f, 1.0f);
+        gl.glVertex3f(1.0f, 1.0f, -1.0f);
+        gl.glTexCoord2f(0.0f, 1.0f);
+        gl.glVertex3f(-1.0f, 1.0f, -1.0f);
+        gl.glEnd();
+        gl.glPopMatrix();
+        gl.glDisable(GL.GL_BLEND);
+
+        gl.glEnable(GL.GL_BLEND);
+        gl.glBindTexture(GL.GL_TEXTURE_2D, textures[21]);
+        gl.glPushMatrix();
+        gl.glTranslated(xO / (maxWidth / 2.0) - 0.9, yO / (maxHeight / 2.0) - 0.9, 0);
         gl.glScaled(0.05 * scale, 0.05 * scale, 1);
         gl.glBegin(GL.GL_QUADS);
         gl.glTexCoord2f(0.0f, 0.0f);
