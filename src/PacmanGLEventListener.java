@@ -110,8 +110,12 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
 
     //KeyListener Methods
     public void keyPressed(final KeyEvent event) {
-        keyCode = event.getKeyCode();
-        KeyL.add(keyCode);
+
+           keyCode= event.getKeyCode();
+           if(keyCode==38||keyCode==37|| keyCode==39||keyCode==40) {
+               KeyL.add(keyCode);
+           }
+
         if (keyCode == 38)
             System.out.println("Direction is Top");
         else if (keyCode == 40)
