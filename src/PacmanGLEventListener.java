@@ -85,10 +85,16 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
         gl.glLoadIdentity();
         DrawBackground(gl);
-        handleKeyPressEnemy();
-        if (KeyL.size() != 0)
-            handleKeyPress();
 
+        if ((x == xR && y == yR)||(x == xB && y == yB)||(x == xO && y == yO)){
+            System.out.println("bebo");
+        }
+        else {
+            handleKeyPressEnemy();
+            if (KeyL.size() != 0) {
+                handleKeyPress();
+            }
+        }
         if(start) {
             drawDotAndFruits(gl);
             DrawSprite(gl, x, y, 1, animation);
