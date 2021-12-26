@@ -678,6 +678,7 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
                         }
                         if(index ==2){
                             start = false;
+                            playSound("Assets\\sounds\\pacman_beginning.wav",0);
                         }
 
                     } catch (UnsupportedAudioFileException e) {
@@ -712,7 +713,7 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
             glut.glutBitmapString(GLUT.BITMAP_TIMES_ROMAN_24, "Score : " + score);
 
             gl.glRasterPos2d(-0.9, 0.95);
-            glut.glutBitmapString(GLUT.BITMAP_TIMES_ROMAN_24, "LV : " + levelNo);
+            glut.glutBitmapString(GLUT.BITMAP_HELVETICA_18, "LV : " + levelNo);
 
         gl.glPopMatrix();
         gl.glPopAttrib();
