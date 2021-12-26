@@ -23,6 +23,7 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
     ArrayList<Texts> TextsList = new ArrayList<>();
 
     ArrayList<Integer> KeyL = new ArrayList<>();
+    int levelNo = 1;
 
     int n = 0;
     int angle1 = 0 , angle2 = 0;
@@ -34,6 +35,7 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
     private static final int BUFFER_SIZE = 4096;
     boolean start= false;
     int score = 0;
+    int lvScore = 780;
 
 
 
@@ -94,6 +96,12 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
             drawDotAndFruits(gl);
             updateScore(gl);
         }
+
+        if(score==lvScore){
+            playSound("Assets\\sounds\\Victory.wav",2);
+            score = 0;
+        }
+
     }
 
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
@@ -135,6 +143,13 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
 
         if (x > 353 && x < 477 && y < 597 && y > 539 && !start) {
             start =true;
+            levelNo = 1;
+        }else  if (x > 355 && x < 485 && y < 680 && y > 624 && !start) {
+            start =true;
+            levelNo = 2;
+        }else  if (x > 351 && x < 485 && y < 766 && y > 708 && !start) {
+            start =true;
+            levelNo = 3;
         }
 
     }
@@ -661,6 +676,9 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
                         if (index != -1) {
                             TextsList.get(index).setAppear(false);
                         }
+                        if(index ==2){
+                            start = false;
+                        }
 
                     } catch (UnsupportedAudioFileException e) {
                         System.out.println("Unsupported file.");
@@ -692,6 +710,9 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
         GLUT glut = new GLUT();
             gl.glRasterPos2d(-0.1, 0.95);
             glut.glutBitmapString(GLUT.BITMAP_TIMES_ROMAN_24, "Score : " + score);
+
+            gl.glRasterPos2d(-0.9, 0.95);
+            glut.glutBitmapString(GLUT.BITMAP_TIMES_ROMAN_24, "LV : " + levelNo);
 
         gl.glPopMatrix();
         gl.glPopAttrib();
