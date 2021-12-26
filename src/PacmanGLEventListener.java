@@ -70,7 +70,7 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
             }
         }
         addPoints();
-        x = pointsList.get(index).getX(); y = pointsList.get(index).getY();
+        x = pointsList.get(index).getX()-5; y = pointsList.get(index).getY();
         playSound("Assets\\sounds\\pacman_beginning.wav",0);
         xR = pointsList.get(indexR).getX(); yR = pointsList.get(indexR).getY();
         xB = pointsList.get(indexB).getX(); yB = pointsList.get(indexB).getY();
@@ -556,7 +556,7 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
 
     private void addPoints() {
         //adding points
-
+        pointsList.clear();
         pointsList.add(new points(0 ,0    , 0    , 0 , 0 , 0 , 0,false ));
         pointsList.add(new points(1 ,45   , 38.75, -1, -1, 50, 2,false ));
         pointsList.add(new points(2 ,61.25, 38.75, 3 , 67, 1 , -1,false));
@@ -628,6 +628,7 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
 
 
         //adding fruits
+        fruitsList.clear();
         fruitsList.add(new points(78,20,0,-1,-1,-1,-1,false));
         fruitsList.add(new points(79,69,0,-1,-1,-1,-1,false));
         fruitsList.add(new points(80,18,59,-1,-1,-1,-1,false));
@@ -643,11 +644,11 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
 
     }
 
-    public synchronized void playSound(final String url,int index) {
+    public synchronized void playSound(final String url,int idx) {
         new Thread(new Runnable() { // the wrapper thread is unnecessary, unless it blocks on the Clip finishing, see comments
             public void run() {
                 File soundFile = new File(url);
-                if(index ==0) {
+                if(idx ==0) {
                     while (!start){
                 try {
 
@@ -667,8 +668,8 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
 
                        // System.out.println("Audio Player Started.");
 
-                        if (index != -1) {
-                            TextsList.get(index).setAppear(true);
+                        if (idx != -1) {
+                            TextsList.get(idx).setAppear(true);
                         }
 
                         byte[] bufferBytes = new byte[BUFFER_SIZE];
@@ -682,8 +683,8 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
                         theAudioLine.close();
                         sampleStream.close();
 
-                        if (index != -1) {
-                            TextsList.get(index).setAppear(false);
+                        if (idx != -1) {
+                            TextsList.get(idx).setAppear(false);
                         }
 
                         //System.out.println("Playback has been finished.");
@@ -708,8 +709,8 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
 
                         theAudioLine.start();
 
-                        if (index != -1) {
-                            TextsList.get(index).setAppear(true);
+                        if (idx != -1) {
+                            TextsList.get(idx).setAppear(true);
                         }
 
                         byte[] bufferBytes = new byte[BUFFER_SIZE];
@@ -723,11 +724,14 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
                         theAudioLine.close();
                         sampleStream.close();
 
-                        if (index != -1) {
-                            TextsList.get(index).setAppear(false);
+                        if (idx != -1) {
+                            TextsList.get(idx).setAppear(false);
                         }
-                        if(index ==2){
+                        if(idx ==2){
                             start = false;
+                            addPoints();
+                            index = 1;
+                            x = pointsList.get(index).getX()-5; y = pointsList.get(index).getY();
                             playSound("Assets\\sounds\\pacman_beginning.wav",0);
                         }
 
@@ -759,10 +763,10 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
         gl.glPushMatrix();
 
         GLUT glut = new GLUT();
-            gl.glRasterPos2d(-0.1, 0.95);
+            gl.glRasterPos2d(-0.1, 0.957);
             glut.glutBitmapString(GLUT.BITMAP_TIMES_ROMAN_24, "Score : " + score);
 
-            gl.glRasterPos2d(-0.9, 0.95);
+            gl.glRasterPos2d(-0.9, 0.957);
             glut.glutBitmapString(GLUT.BITMAP_HELVETICA_18, "LV : " + levelNo);
 
         gl.glPopMatrix();
