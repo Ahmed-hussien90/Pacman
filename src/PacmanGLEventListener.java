@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import static javax.media.opengl.GL.GL_CURRENT_BIT;
+import static javax.media.opengl.GL.GL_TEXTURE_2D;
 
 public class PacmanGLEventListener implements GLEventListener, KeyListener , MouseListener {
     ArrayList<points> pointsList = new ArrayList<>();
@@ -32,6 +33,8 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
     int keyCode, animation = 0, face = 0;
     private static final int BUFFER_SIZE = 4096;
     boolean start= false;
+    int score = 0;
+
 
 
     String assetsFolderName = "Assets/";
@@ -53,15 +56,15 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
     public void init(GLAutoDrawable gld) {
         GL gl = gld.getGL();
         gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);    //This Will Clear The Background Color To Black
-        gl.glEnable(GL.GL_TEXTURE_2D);
+        gl.glEnable(GL_TEXTURE_2D);
         gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
         gl.glGenTextures(textureNames.length, textures, 0);
         for (int i = 0; i < textureNames.length; i++) {
             try {
                 texture[i] = TextureReader.readTexture(assetsFolderName
                         + "//" + textureNames[i], true);
-                gl.glBindTexture(GL.GL_TEXTURE_2D, textures[i]);
-                new GLU().gluBuild2DMipmaps(GL.GL_TEXTURE_2D,
+                gl.glBindTexture(GL_TEXTURE_2D, textures[i]);
+                new GLU().gluBuild2DMipmaps(GL_TEXTURE_2D,
                         GL.GL_RGBA, texture[i].getWidth(), texture[i].getHeight(),
                         GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, texture[i].getPixels());
             } catch (IOException e) {
@@ -87,8 +90,9 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
             handleKeyPress();
 
         if(start) {
-            drawDotAndFruits(gl);
             DrawSprite(gl, x, y, 1, animation);
+            drawDotAndFruits(gl);
+            updateScore(gl);
         }
     }
 
@@ -256,18 +260,20 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
 
     private void DrawSprite(GL gl, double x, double y, float scale, int animation) {
         gl.glEnable(GL.GL_BLEND);
-        gl.glBindTexture(GL.GL_TEXTURE_2D, textures[face + animation % 3]);
+        gl.glBindTexture(GL_TEXTURE_2D, textures[face + animation % 3]);
         gl.glPushMatrix();
         gl.glTranslated(x / (maxWidth / 2.0) - 0.9, y / (maxHeight / 2.0) - 0.9, 0);
         for(int i =0; i<pointsList.size();i++){
             if(x ==pointsList.get(i).getX() && y ==pointsList.get(i).getY() && !pointsList.get(i).isChecked()){
                 playSound("Assets\\sounds\\pacman_chomp.wav",-1);
+                score+=10;
                 pointsList.get(i).setChecked(true);
             }
         }
         for(int i =0; i<fruitsList.size();i++) {
             if (x == fruitsList.get(i).getX() && y == fruitsList.get(i).getY() && !fruitsList.get(i).isChecked()) {
                 playSound("Assets\\sounds\\pacman_eatfruit.wav",-1);
+                score+=20;
                 fruitsList.get(i).setChecked(true);
             }
         }
@@ -287,7 +293,7 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
 
 
         gl.glEnable(GL.GL_BLEND);
-        gl.glBindTexture(GL.GL_TEXTURE_2D, textures[19]);
+        gl.glBindTexture(GL_TEXTURE_2D, textures[19]);
         gl.glPushMatrix();
         gl.glTranslated(xR / (maxWidth / 2.0) - 0.9, yR / (maxHeight / 2.0) - 0.9, 0);
         gl.glScaled(0.05 * scale, 0.05 * scale, 1);
@@ -305,7 +311,7 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
         gl.glDisable(GL.GL_BLEND);
 
         gl.glEnable(GL.GL_BLEND);
-        gl.glBindTexture(GL.GL_TEXTURE_2D, textures[20]);
+        gl.glBindTexture(GL_TEXTURE_2D, textures[20]);
         gl.glPushMatrix();
         gl.glTranslated(xB / (maxWidth / 2.0) - 0.9, yB / (maxHeight / 2.0) - 0.9, 0);
         gl.glScaled(0.05 * scale, 0.05 * scale, 1);
@@ -323,7 +329,7 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
         gl.glDisable(GL.GL_BLEND);
 
         gl.glEnable(GL.GL_BLEND);
-        gl.glBindTexture(GL.GL_TEXTURE_2D, textures[21]);
+        gl.glBindTexture(GL_TEXTURE_2D, textures[21]);
         gl.glPushMatrix();
         gl.glTranslated(xO / (maxWidth / 2.0) - 0.9, yO / (maxHeight / 2.0) - 0.9, 0);
         gl.glScaled(0.05 * scale, 0.05 * scale, 1);
@@ -345,7 +351,7 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
         if(start) {
             //drawing game background
             gl.glEnable(GL.GL_BLEND);
-            gl.glBindTexture(GL.GL_TEXTURE_2D, textures[textureNames.length - 1]);	// Turn Blending On
+            gl.glBindTexture(GL_TEXTURE_2D, textures[textureNames.length - 1]);	// Turn Blending On
 
             gl.glPushMatrix();
             gl.glBegin(GL.GL_QUADS);
@@ -368,7 +374,7 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
 
             //Drawing Menu Background
             gl.glEnable(GL.GL_BLEND);
-            gl.glBindTexture(GL.GL_TEXTURE_2D, textures[17]);
+            gl.glBindTexture(GL_TEXTURE_2D, textures[17]);
             gl.glPushMatrix();
             gl.glBegin(GL.GL_QUADS);
             gl.glScaled(0.1, 0.1, 1);
@@ -387,7 +393,7 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
 
             //Drawing levels image
             gl.glEnable(GL.GL_BLEND);
-            gl.glBindTexture(GL.GL_TEXTURE_2D, textures[18]);
+            gl.glBindTexture(GL_TEXTURE_2D, textures[18]);
             gl.glPushMatrix();
             gl.glTranslated(0, -0.6, 0);
             gl.glScaled(0.3, 0.3, 1);
@@ -415,7 +421,7 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
                 double x = pointsList.get(i).getX();
                 double y = pointsList.get(i).getY();
                 gl.glEnable(GL.GL_BLEND);
-                gl.glBindTexture(GL.GL_TEXTURE_2D, textures[12]);
+                gl.glBindTexture(GL_TEXTURE_2D, textures[12]);
                 gl.glPushMatrix();
                 gl.glTranslated(x / (maxWidth / 2.0) - 0.9, y / (maxHeight / 2.0) - 0.9, 0);
                 gl.glScaled(0.075, 0.075, 1);
@@ -439,7 +445,7 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
                 double x = fruitsList.get(i).getX();
                 double y = fruitsList.get(i).getY();
                 gl.glEnable(GL.GL_BLEND);
-                gl.glBindTexture(GL.GL_TEXTURE_2D, textures[13]);
+                gl.glBindTexture(GL_TEXTURE_2D, textures[13]);
                 gl.glPushMatrix();
                 gl.glTranslated(x / (maxWidth / 2.0) - 0.9, y / (maxHeight / 2.0) - 0.9, 0);
                 gl.glScaled(0.03, 0.03, 1);
@@ -463,7 +469,7 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
         for (int i = 0; i < TextsList.size(); i++) {
             if(TextsList.get(i).isAppear()) {
                 gl.glEnable(GL.GL_BLEND);
-                gl.glBindTexture(GL.GL_TEXTURE_2D, textures[TextsList.get(i).getIndex()]);
+                gl.glBindTexture(GL_TEXTURE_2D, textures[TextsList.get(i).getIndex()]);
                 gl.glPushMatrix();
                 gl.glTranslated(0,  0.25, 0);
                 gl.glScaled(0.12, 0.08, 1);
@@ -671,6 +677,26 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
 
             }
         }).start();
+    }
+
+    public void updateScore(GL gl){
+
+        gl.glMatrixMode(gl.GL_MODELVIEW);
+        gl.glLoadIdentity();
+
+        gl.glDisable(GL_TEXTURE_2D);
+        gl.glPushAttrib(GL_CURRENT_BIT);
+        gl.glColor4f(1, 0, 0, 0.5f);
+        gl.glPushMatrix();
+
+        GLUT glut = new GLUT();
+            gl.glRasterPos2d(-0.1, 0.95);
+            glut.glutBitmapString(GLUT.BITMAP_TIMES_ROMAN_24, "Score : " + score);
+
+        gl.glPopMatrix();
+        gl.glPopAttrib();
+        gl.glEnable(GL_TEXTURE_2D);
+
     }
 }
 
