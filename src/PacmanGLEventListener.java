@@ -40,7 +40,10 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
             "sprites/pacman-left/1.png" , "sprites/pacman-left/2.png" , "sprites/pacman-left/3.png" ,
             "sprites/pacman-up/1.png"   , "sprites/pacman-up/2.png"   , "sprites/pacman-up/3.png",
             "sprites/pacman-down/1.png" , "sprites/pacman-down/2.png" , "sprites/pacman-down/3.png",
-            "sprites/extra/dot.png","sprites/extra/apple.png", "Ready.png","GameOver.png","Win.png", "menu.jpg","levels.png" ,"Background.jpeg"
+            "sprites/extra/dot.png"     , "sprites/extra/apple.png"   , "Ready.png",
+            "GameOver.png"              , "Win.png" , "menu.jpg"      ,"levels.png" ,
+            "sprites/ghosts/blinky"     ,"sprites/ghosts/blue_ghost"  ,"sprites/ghosts/clyde",
+            "Background.jpeg"
     };
     TextureReader.Texture texture[] = new TextureReader.Texture[textureNames.length];
     static int[] textures = new int[textureNames.length];
