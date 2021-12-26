@@ -727,11 +727,11 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
         pointsList.add(new points(12,89.25, 90.5 , -1, 13, 11, -1,false));
         pointsList.add(new points(13,89.25, 77.5 , 12, 14, 16, -1,false));
         pointsList.add(new points(14,89.25, 67.75, 13, -1, 15, -1,false));
-        pointsList.add(new points(15,72   , 67.75, 16, 17, -1, 14,false));
-        pointsList.add(new points(16,72   , 77.5 , 11, 15, 8 , 13,false));
-        pointsList.add(new points(17,72   , 48   , 15, 19, 3 , 18,false));
+        pointsList.add(new points(15,71.5   , 67.75, 16, 17, -1, 14,false));
+        pointsList.add(new points(16,71.5   , 77.5 , 11, 15, 8 , 13,false));
+        pointsList.add(new points(17,71.5   , 48   , 15, 19, 3 , 18,false));
         pointsList.add(new points(18,90   , 48   , -1, -1, 17, -2,false));
-        pointsList.add(new points(19,72   , 29   , 17, 30, 67, 20,false));
+        pointsList.add(new points(19,71.5   , 29   , 17, 30, 67, 20,false));
         pointsList.add(new points(20,90   , 29   , -1, 21, 19, -1,false));
         pointsList.add(new points(21,90   , 19   , 20, -1, 22, -1,false));
         pointsList.add(new points(22,82   , 19   , -1, 23, -1, 21,false));
@@ -742,8 +742,8 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
         pointsList.add(new points(27,50.5 , 10   , -1, 26, -1, 28,false));
         pointsList.add(new points(28,61.5 , 10   , 29, -1, 27, -1,false));
         pointsList.add(new points(29,61.5 , 19   , -1, 28, 33, 30,false));
-        pointsList.add(new points(30,72   , 19   , 19, 31, 29, -1,false));
-        pointsList.add(new points(31,72   , 10   , 30, -1, -1, 23,false));
+        pointsList.add(new points(30,71.5   , 19   , 19, 31, 29, -1,false));
+        pointsList.add(new points(31,71.5   , 10   , 30, -1, -1, 23,false));
         pointsList.add(new points(32,51   , 29   , -1, 33, -1, 67,false));
         pointsList.add(new points(33,51   , 19   , 32, -1, 34, 29,false));
         pointsList.add(new points(34,40   , 19   , 49, -1, 35, 33,false));
@@ -787,7 +787,7 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
         fruitsList.add(new points(78,20,0,-1,-1,-1,-1,false));
         fruitsList.add(new points(79,69,0,-1,-1,-1,-1,false));
         fruitsList.add(new points(80,18,59,-1,-1,-1,-1,false));
-        fruitsList.add(new points(81,72,59,-1,-1,-1,-1,false));
+        fruitsList.add(new points(81,71.5,59,-1,-1,-1,-1,false));
         fruitsList.add(new points(82,29,90.5,-1,-1,-1,-1,false));
 
 
