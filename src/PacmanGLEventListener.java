@@ -95,7 +95,7 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
         if(start) {
             drawDotAndFruits(gl);
             DrawSprite(gl, x, y, 1, animation);
-            updateScore(gl);
+            updateScoreAndLevel(gl);
         }
 
         if(score==lvScore){
@@ -104,7 +104,6 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
         }
 
         if (gameOver){
-            System.out.println("FFFFFFF");
             playSound("Assets\\sounds\\pacman_death.wav",1);
             gameOver = false;
         }else {
@@ -927,7 +926,7 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
         }).start();
     }
 
-    public void updateScore(GL gl){
+    public void updateScoreAndLevel(GL gl){
 
         gl.glMatrixMode(gl.GL_MODELVIEW);
         gl.glLoadIdentity();
