@@ -25,9 +25,9 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
 
     private final int maxWidth = 100, maxHeight = 100; final double speed = 0.25;
     private static final int BUFFER_SIZE = 4096;
-    int RandomR = 37 + (int)(Math.random()*4);
-    int RandomB = 37 + (int)(Math.random()*4);
-    int RandomO = 37 + (int)(Math.random()*4);
+    int RandomR = 37 + (int)(Math.random()*4);;
+    int RandomB = 37 + (int)(Math.random()*4);;
+    int RandomO = 37 + (int)(Math.random()*4);;
 
     int levelNo = 1;
     int angle1 = 0 , angle2 = 0 , n = 0;
@@ -81,8 +81,7 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
         xO = pointsList.get(indexO).getX(); yO = pointsList.get(indexO).getY();
     }
 
-    public void display(GLAutoDrawable gld)
-    {
+    public void display(GLAutoDrawable gld) {
         GL gl = gld.getGL();
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
         gl.glLoadIdentity();
@@ -496,6 +495,20 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
         gl.glBindTexture(GL_TEXTURE_2D, textures[face + animation % 3]);
         gl.glPushMatrix();
         gl.glTranslated(x / (maxWidth / 2.0) - 0.9, y / (maxHeight / 2.0) - 0.9, 0);
+        gl.glScaled(0.05 * scale, 0.05 * scale, 1);
+        gl.glBegin(GL.GL_QUADS);
+        gl.glTexCoord2f(0.0f, 0.0f);
+        gl.glVertex3f(-1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1.0f, 0.0f);
+        gl.glVertex3f(1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1.0f, 1.0f);
+        gl.glVertex3f(1.0f, 1.0f, -1.0f);
+        gl.glTexCoord2f(0.0f, 1.0f);
+        gl.glVertex3f(-1.0f, 1.0f, -1.0f);
+        gl.glEnd();
+        gl.glPopMatrix();
+        gl.glDisable(GL.GL_BLEND);
+
         for(int i =0; i<pointsList.size();i++){
             if(x ==pointsList.get(i).getX() && y ==pointsList.get(i).getY() && !pointsList.get(i).isChecked()){
                 playSound("Assets\\sounds\\pacman_chomp.wav",-1);
@@ -511,28 +524,12 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
             }
         }
         double s= 0.000001;
-        if( ((x >= xR-5 && x <= xR+5) && y == yR)||(x == xR && (y >= yR-5 && y <= yR+5))||
-            ((x >= xB-5 && x <= xB+5) && y == yB)||(x == xB && (y >= yB-5 && y <= yB+5))||
-            ((x >= xO-5 && x <= xO+5) && y == yO)||(x == xO && (y >= yO-5 && y <= yO+5)))
-        {
+        if((x == xR && y == yR)||(x == xB && y == yB)||(x == xO && y == yO)){
             KeyL.clear();
             n=0;
             gameOver = true;
             xR+=s; xO+=s; xB+=s;
         }
-        gl.glScaled(0.05 * scale, 0.05 * scale, 1);
-        gl.glBegin(GL.GL_QUADS);
-        gl.glTexCoord2f(0.0f, 0.0f);
-        gl.glVertex3f(-1.0f, -1.0f, -1.0f);
-        gl.glTexCoord2f(1.0f, 0.0f);
-        gl.glVertex3f(1.0f, -1.0f, -1.0f);
-        gl.glTexCoord2f(1.0f, 1.0f);
-        gl.glVertex3f(1.0f, 1.0f, -1.0f);
-        gl.glTexCoord2f(0.0f, 1.0f);
-        gl.glVertex3f(-1.0f, 1.0f, -1.0f);
-        gl.glEnd();
-        gl.glPopMatrix();
-        gl.glDisable(GL.GL_BLEND);
 
 
         //drawing enemies
@@ -592,11 +589,13 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
     }
 
     private void DrawBackground(GL gl) {
-        if(start) {
-            //drawing game background
-            gl.glEnable(GL.GL_BLEND);
-            gl.glBindTexture(GL_TEXTURE_2D, textures[textureNames.length - 1]);	// Turn Blending On
+        int i =0;
+        if(start){i=textureNames.length-1;}else{ i=17;}
 
+            //drawing game background or Drawing Menu Background based on i
+
+            gl.glEnable(GL.GL_BLEND);
+            gl.glBindTexture(GL_TEXTURE_2D, textures[i]);	// Turn Blending On
             gl.glPushMatrix();
             gl.glBegin(GL.GL_QUADS);
             gl.glScaled(0.05, 0.1, 1);
@@ -613,51 +612,28 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
 
             gl.glDisable(GL.GL_BLEND);
 
+            if(!start) {
+                //Drawing levels image
+                gl.glEnable(GL.GL_BLEND);
+                gl.glBindTexture(GL_TEXTURE_2D, textures[18]);
+                gl.glPushMatrix();
+                gl.glTranslated(0, -0.6, 0);
+                gl.glScaled(0.3, 0.3, 1);
+                gl.glBegin(GL.GL_QUADS);
+                gl.glTexCoord2f(0.0f, 0.0f);
+                gl.glVertex3f(-1.0f, -1.0f, -1.0f);
+                gl.glTexCoord2f(1.0f, 0.0f);
+                gl.glVertex3f(1.0f, -1.0f, -1.0f);
+                gl.glTexCoord2f(1.0f, 1.0f);
+                gl.glVertex3f(1.0f, 1.0f, -1.0f);
+                gl.glTexCoord2f(0.0f, 1.0f);
+                gl.glVertex3f(-1.0f, 1.0f, -1.0f);
+                gl.glEnd();
+                gl.glPopMatrix();
+                gl.glDisable(GL.GL_BLEND);
 
-        }else{
-
-            //Drawing Menu Background
-            gl.glEnable(GL.GL_BLEND);
-            gl.glBindTexture(GL_TEXTURE_2D, textures[17]);
-            gl.glPushMatrix();
-            gl.glBegin(GL.GL_QUADS);
-            gl.glScaled(0.1, 0.1, 1);
-            gl.glTexCoord2f(0.0f, 0.0f);
-            gl.glVertex3f(-1.0f, -1.0f, -1.0f);
-            gl.glTexCoord2f(1.0f, 0.0f);
-            gl.glVertex3f(1.0f, -1.0f, -1.0f);
-            gl.glTexCoord2f(1.0f, 1.0f);
-            gl.glVertex3f(1.0f, 1.0f, -1.0f);
-            gl.glTexCoord2f(0.0f, 1.0f);
-            gl.glVertex3f(-1.0f, 1.0f, -1.0f);
-            gl.glEnd();
-            gl.glPopMatrix();
-
-            gl.glDisable(GL.GL_BLEND);
-
-            //Drawing levels image
-            gl.glEnable(GL.GL_BLEND);
-            gl.glBindTexture(GL_TEXTURE_2D, textures[18]);
-            gl.glPushMatrix();
-            gl.glTranslated(0, -0.6, 0);
-            gl.glScaled(0.3, 0.3, 1);
-            gl.glBegin(GL.GL_QUADS);
-            gl.glTexCoord2f(0.0f, 0.0f);
-            gl.glVertex3f(-1.0f, -1.0f, -1.0f);
-            gl.glTexCoord2f(1.0f, 0.0f);
-            gl.glVertex3f(1.0f, -1.0f, -1.0f);
-            gl.glTexCoord2f(1.0f, 1.0f);
-            gl.glVertex3f(1.0f, 1.0f, -1.0f);
-            gl.glTexCoord2f(0.0f, 1.0f);
-            gl.glVertex3f(-1.0f, 1.0f, -1.0f);
-            gl.glEnd();
-            gl.glPopMatrix();
-            gl.glDisable(GL.GL_BLEND);
-
-            score =0;
-
-        }
-
+                score = 0;
+            }
     }
 
     private void drawDotAndFruits(GL gl) {
