@@ -36,6 +36,7 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
     int keyCode, animation = 0, face = 0;
     int score = 0 , lvScore = 780;
     boolean start= false;
+    boolean gameOver =false;
 
     String assetsFolderName = "Assets/";
     static String[] textureNames = {
@@ -86,15 +87,11 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
         gl.glLoadIdentity();
         DrawBackground(gl);
 
-        if ((x == xR && y == yR)||(x == xB && y == yB)||(x == xO && y == yO)){
-            System.out.println("bebo");
-        }
-        else {
-            handleKeyPressEnemy();
+
             if (KeyL.size() != 0) {
                 handleKeyPress();
             }
-        }
+
         if(start) {
             drawDotAndFruits(gl);
             DrawSprite(gl, x, y, 1, animation);
@@ -104,6 +101,16 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
         if(score==lvScore){
             playSound("Assets\\sounds\\Victory.wav",2);
             score = 0;
+        }
+
+        if (gameOver){
+            System.out.println("FFFFFFF");
+            playSound("Assets\\sounds\\pacman_death.wav",1);
+            gameOver = false;
+        }else {
+            for (int i=0;i<levelNo;i++) {
+                handleKeyPressEnemy();
+            }
         }
 
     }
@@ -331,7 +338,6 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
 
 
         //////B ANMI
-        //Up
         if (RandomB == 38) {
             int T = pointsList.get(indexB).getTop();
             if (T != -1) {
@@ -480,8 +486,9 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
     }
 
     private void checkN(){
-        if (n < KeyL.size() - 1)
+        if (n < KeyL.size() - 1) {
             n++;
+        }
     }
 
     private void DrawSprite(GL gl, double x, double y, float scale, int animation) {
@@ -503,6 +510,13 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
                 fruitsList.get(i).setChecked(true);
             }
         }
+        double s= 0.000001;
+        if((x == xR && y == yR)||(x == xB && y == yB)||(x == xO && y == yO)){
+            KeyL.clear();
+            n=0;
+            gameOver = true;
+            xR+=s; xO+=s; xB+=s;
+        }
         gl.glScaled(0.05 * scale, 0.05 * scale, 1);
         gl.glBegin(GL.GL_QUADS);
         gl.glTexCoord2f(0.0f, 0.0f);
@@ -518,6 +532,7 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
         gl.glDisable(GL.GL_BLEND);
 
 
+        //drawing enemies
         gl.glEnable(GL.GL_BLEND);
         gl.glBindTexture(GL_TEXTURE_2D, textures[19]);
         gl.glPushMatrix();
@@ -635,6 +650,8 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
             gl.glEnd();
             gl.glPopMatrix();
             gl.glDisable(GL.GL_BLEND);
+
+            score =0;
 
         }
 
@@ -888,12 +905,9 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
                         if (idx != -1) {
                             TextsList.get(idx).setAppear(false);
                         }
-                        if(idx ==2){
-                            start = false;
+                        if(idx ==2||idx==1){
                             addPoints();
-                            index = 1;
-                            x = pointsList.get(index).getX()-5; y = pointsList.get(index).getY();
-                            playSound("Assets\\sounds\\pacman_beginning.wav",0);
+                            reInit();
                         }
 
                     } catch (UnsupportedAudioFileException e) {
@@ -924,15 +938,28 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
         gl.glPushMatrix();
 
         GLUT glut = new GLUT();
-            gl.glRasterPos2d(-0.1, 0.957);
+            gl.glRasterPos2d(-0.1, 0.958);
             glut.glutBitmapString(GLUT.BITMAP_TIMES_ROMAN_24, "Score : " + score);
 
-            gl.glRasterPos2d(-0.9, 0.957);
+            gl.glRasterPos2d(-0.9, 0.958);
             glut.glutBitmapString(GLUT.BITMAP_HELVETICA_18, "LV : " + levelNo);
 
         gl.glPopMatrix();
         gl.glPopAttrib();
         gl.glEnable(GL_TEXTURE_2D);
+
+    }
+    public void reInit(){
+        gameOver =false;
+        start = false;
+        index = 1 ; indexR = 20 ; indexB = 30 ; indexO = 40;
+        playSound("Assets\\sounds\\pacman_beginning.wav",0);
+        xR = pointsList.get(indexR).getX(); yR = pointsList.get(indexR).getY();
+        xB = pointsList.get(indexB).getX(); yB = pointsList.get(indexB).getY();
+        xO = pointsList.get(indexO).getX(); yO = pointsList.get(indexO).getY();
+        angle1 = 0 ; angle2 = 0 ;
+        animation = 0; face = 0;
+        x = pointsList.get(index).getX()-5; y = pointsList.get(index).getY();
 
     }
 }
