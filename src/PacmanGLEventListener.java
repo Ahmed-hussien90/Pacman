@@ -25,9 +25,9 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
 
     private final int maxWidth = 100, maxHeight = 100; final double speed = 0.25;
     private static final int BUFFER_SIZE = 4096;
-    int RandomR = 37 + (int)(Math.random()*4);;
-    int RandomB = 37 + (int)(Math.random()*4);;
-    int RandomO = 37 + (int)(Math.random()*4);;
+    int RandomR = 37 + (int)(Math.random()*4);
+    int RandomB = 37 + (int)(Math.random()*4);
+    int RandomO = 37 + (int)(Math.random()*4);
 
     int levelNo = 1;
     int angle1 = 0 , angle2 = 0 , n = 0;
@@ -81,7 +81,8 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
         xO = pointsList.get(indexO).getX(); yO = pointsList.get(indexO).getY();
     }
 
-    public void display(GLAutoDrawable gld) {
+    public void display(GLAutoDrawable gld)
+    {
         GL gl = gld.getGL();
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
         gl.glLoadIdentity();
@@ -510,7 +511,10 @@ public class PacmanGLEventListener implements GLEventListener, KeyListener , Mou
             }
         }
         double s= 0.000001;
-        if((x == xR && y == yR)||(x == xB && y == yB)||(x == xO && y == yO)){
+        if( ((x >= xR-5 && x <= xR+5) && y == yR)||(x == xR && (y >= yR-5 && y <= yR+5))||
+            ((x >= xB-5 && x <= xB+5) && y == yB)||(x == xB && (y >= yB-5 && y <= yB+5))||
+            ((x >= xO-5 && x <= xO+5) && y == yO)||(x == xO && (y >= yO-5 && y <= yO+5)))
+        {
             KeyL.clear();
             n=0;
             gameOver = true;
