@@ -1,4 +1,4 @@
 # Pacman
-Cs304 project - PacMan App OpenGl
+Cs304 project - PacMan
+Packman game with openGl using Java
 
-my video which show the game pac-man is in in project and is called  pac-man.mp4
