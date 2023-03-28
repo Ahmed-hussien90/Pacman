@@ -4,17 +4,16 @@ import java.awt.*;
 import javax.media.opengl.GLCanvas;
 import javax.swing.*;
 
-public class PacmanApp extends JFrame {
+public class App extends JFrame {
 
     GLCanvas glcanvas = new GLCanvas();
     Animator animator = new FPSAnimator(50);
     PacmanGLEventListener listener = new PacmanGLEventListener();
-
     public static void main(String[] args) {
-        new PacmanApp().animator.start();
+        new App().animator.start();
     }
 
-    public PacmanApp() {
+    public App() {
         glcanvas.addGLEventListener(listener);
         glcanvas.addKeyListener(listener);
         glcanvas.addMouseListener(listener);

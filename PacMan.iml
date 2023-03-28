@@ -20,7 +20,6 @@
         <jarDirectory url="file://C:/JOGLwin/lib64" recursive="false" />
       </library>
     </orderEntry>
-    <orderEntry type="library" exported="" name="lib32" level="project" />
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
@@ -31,5 +30,8 @@
         <jarDirectory url="file://C:/JOGLwin/lib64" recursive="false" />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="lib641" level="project" />
+    <orderEntry type="library" name="jogl" level="project" />
+    <orderEntry type="library" name="lib64" level="project" />
   </component>
 </module>
