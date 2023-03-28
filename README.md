@@ -10,11 +10,11 @@ Cs304 project - Packman game with openGl using Java
   
   1. File > Project Structure > Libraries
 
-    2. click on new Project Library button and choose (java library)
+  2. click on new Project Library button and choose (java library)
 
-    3. go to library path folder `YourDir/JOGL/lib64` or `YourDir/JOGL/lib32`
+  3. go to library path folder `YourDir/JOGL/lib64` or `YourDir/JOGL/lib32`
 
-    4. add previous folder to your project after check your OS bits type x64 or x32
+  4. add previous folder to your project after check your OS bits type x64 or x32
 
 
 ### Test Video
