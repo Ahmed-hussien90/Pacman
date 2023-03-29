@@ -1,3 +1,5 @@
+package App;
+
 public class Texts {
     int index;
     boolean isAppear;

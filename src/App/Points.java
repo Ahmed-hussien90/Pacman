@@ -1,3 +1,5 @@
+package App;
+
 public class Points {
     private int index;
     private double x, y;

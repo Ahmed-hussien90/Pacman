@@ -1,3 +1,5 @@
+package App;
+
 import com.sun.opengl.util.Animator;
 import com.sun.opengl.util.FPSAnimator;
 import java.awt.*;
@@ -5,10 +7,12 @@ import javax.media.opengl.GLCanvas;
 import javax.swing.*;
 
 public class App extends JFrame {
-
     GLCanvas glcanvas = new GLCanvas();
+
     Animator animator = new FPSAnimator(50);
-    PacmanGLEventListener listener = new PacmanGLEventListener();
+
+    Pacman listener = new Pacman();
+
     public static void main(String[] args) {
         new App().animator.start();
     }
@@ -28,4 +32,3 @@ public class App extends JFrame {
         glcanvas.requestFocus();
     }
 }
-
