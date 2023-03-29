@@ -36,13 +36,13 @@ public class Pacman extends BaseJogl {
     private final double SPEED = 0.25;
     private boolean StartGame = false,  GameOver = false;
     int keyCode, Level = 1, Angle = 0, Score = 0, FinalScore = 780, FaceAnimations = 0, Face = 0;
-
     int n = 0;
-    double x , y , xR , yR , xB , yB , xO , yO;
-    int RandomR = 37 + (int)(Math.random()*4), RandomB = 37 + (int)(Math.random()*4), RandomO = 37 + (int)(Math.random()*4);;
-    int index = 1 , indexR = 20 , indexB = 30 , indexO = 40;
-
-
+    PacObject pacman = new PacObject(19,1);
+    PacObject[] Enemies = {
+        new PacObject(19, 20, 37 + (int)(Math.random()*4)),
+        new PacObject(20, 30, 37 + (int)(Math.random()*4)),
+        new PacObject(21, 40, 37 + (int)(Math.random()*4)),
+    };
 
     private void addPoints() {
         double[][] initPoints = new Points().getInitPoints();
@@ -61,43 +61,6 @@ public class Pacman extends BaseJogl {
         TextsList.add(new Texts(14,false)); //for Ready
         TextsList.add(new Texts(15,false)); //for GameOver
         TextsList.add(new Texts(16,false));  //for Win
-    }
-
-    public void updateScoreAndLevel(GL gl){
-        gl.glMatrixMode(gl.GL_MODELVIEW);
-        gl.glLoadIdentity();
-
-        gl.glDisable(GL_TEXTURE_2D);
-        gl.glPushAttrib(GL_CURRENT_BIT);
-        gl.glColor4f(1, 0, 0, 0.5f);
-        gl.glPushMatrix();
-
-        GLUT glut = new GLUT();
-
-        gl.glRasterPos2d(-0.1, 0.958);
-        glut.glutBitmapString(GLUT.BITMAP_TIMES_ROMAN_24, "Score : " + Score);
-
-        gl.glRasterPos2d(-0.9, 0.958);
-        glut.glutBitmapString(GLUT.BITMAP_HELVETICA_18, "LV : " + Level);
-
-        gl.glPopMatrix();
-        gl.glPopAttrib();
-        gl.glEnable(GL_TEXTURE_2D);
-
-    }
-
-    public void reInit(){
-        GameOver =false;
-        StartGame = false;
-        index = 1 ; indexR = 20 ; indexB = 30 ; indexO = 40;
-        playSound("Assets\\sounds\\pacman_beginning.wav",0);
-        xR = PointsList.get(indexR).getX(); yR = PointsList.get(indexR).getY();
-        xB = PointsList.get(indexB).getX(); yB = PointsList.get(indexB).getY();
-        xO = PointsList.get(indexO).getX(); yO = PointsList.get(indexO).getY();
-        Angle = 0 ;
-        FaceAnimations = 0; Face = 0;
-        x = PointsList.get(index).getX()-5; y = PointsList.get(index).getY();
-
     }
 
     public void init(GLAutoDrawable gld) {
@@ -120,10 +83,22 @@ public class Pacman extends BaseJogl {
         }
         addPoints();
         playSound("Assets\\sounds\\pacman_beginning.wav",0);
-        x  = PointsList.get(index).getX()-5; y = PointsList.get(index).getY();
-        xR = PointsList.get(indexR).getX(); yR = PointsList.get(indexR).getY();
-        xB = PointsList.get(indexB).getX(); yB = PointsList.get(indexB).getY();
-        xO = PointsList.get(indexO).getX(); yO = PointsList.get(indexO).getY();
+        pacman.x  = PointsList.get(pacman.index).getX()-5; pacman.y = PointsList.get(pacman.index).getY();
+        Enemies[0].x = PointsList.get(Enemies[0].index).getX(); Enemies[0].y = PointsList.get(Enemies[0].index).getY();
+        Enemies[1].x = PointsList.get(Enemies[1].index).getX(); Enemies[1].y = PointsList.get(Enemies[1].index).getY();
+        Enemies[2].x = PointsList.get(Enemies[2].index).getX(); Enemies[2].y = PointsList.get(Enemies[2].index).getY();
+    }
+    public void reInit(){
+        GameOver =false; StartGame = false; pacman.index = 1 ;
+
+        playSound("Assets\\sounds\\pacman_beginning.wav",0);
+        Enemies[0].index = 20 ; Enemies[0].x = PointsList.get(Enemies[0].index).getX(); Enemies[0].y = PointsList.get(Enemies[0].index).getY();
+        Enemies[1].index = 30 ; Enemies[1].x = PointsList.get(Enemies[1].index).getX(); Enemies[1].y = PointsList.get(Enemies[1].index).getY();
+        Enemies[2].index = 40 ; Enemies[2].x = PointsList.get(Enemies[2].index).getX(); Enemies[2].y = PointsList.get(Enemies[2].index).getY();
+
+        Angle = 0 ;
+        FaceAnimations = 0; Face = 0;
+        pacman.x = PointsList.get(pacman.index).getX()-5; pacman.y = PointsList.get(pacman.index).getY();
     }
 
     public void display(GLAutoDrawable gld) {
@@ -155,25 +130,19 @@ public class Pacman extends BaseJogl {
             }
 
             for(int i = 0; i< PointsList.size(); i++){
-                if(x == PointsList.get(i).getX() && y == PointsList.get(i).getY() && !PointsList.get(i).isChecked()){
+                if(pacman.x == PointsList.get(i).getX() && pacman.y == PointsList.get(i).getY() && !PointsList.get(i).isChecked()){
                     playSound("Assets\\sounds\\pacman_chomp.wav",-1); Score +=10; PointsList.get(i).setChecked(true);
                 }
             }
             for(int i = 0; i< FruitsList.size(); i++) {
-                if (x == FruitsList.get(i).getX() && y == FruitsList.get(i).getY() && !FruitsList.get(i).isChecked()) {
+                if (pacman.x == FruitsList.get(i).getX() && pacman.y == FruitsList.get(i).getY() && !FruitsList.get(i).isChecked()) {
                     playSound("Assets\\sounds\\pacman_eatfruit.wav",-1); Score +=20; FruitsList.get(i).setChecked(true);
                 }
             }
 
-            int me = Face + FaceAnimations % 3;
-            double[][] textureIdx = {
-                    {me, x, y},
-                    {19, xR, yR},
-                    {20, xB, yB},
-                    {21, xO, yO},
-            };
-            for (double[] i : textureIdx) {
-                DrawTexture(gl, (int) i[0], new double[]{i[1] / (WIDTH / 2.0) - 0.9, i[2] / (Height / 2.0) - 0.9},new double[]{0.05, 0.05});
+            DrawTexture(gl, Face + FaceAnimations % 3, new double[]{pacman.x / (WIDTH / 2.0) - 0.9, pacman.y / (Height / 2.0) - 0.9},new double[]{0.05, 0.05});
+            for (PacObject E : Enemies) {
+                DrawTexture(gl, E.texture, new double[]{E.x / (WIDTH / 2.0) - 0.9, E.y / (Height / 2.0) - 0.9},new double[]{0.05, 0.05});
             }
             updateScoreAndLevel(gl);
         }else {
@@ -216,11 +185,28 @@ public class Pacman extends BaseJogl {
         g.glDisable(GL.GL_BLEND);
     }
 
+    public void updateScoreAndLevel(GL gl){
+        gl.glMatrixMode(gl.GL_MODELVIEW);
+        gl.glLoadIdentity();
+        gl.glDisable(GL_TEXTURE_2D);
+        gl.glPushAttrib(GL_CURRENT_BIT);
+        gl.glColor4f(1, 0, 0, 0.5f);
+        gl.glPushMatrix();
+        GLUT glut = new GLUT();
+        gl.glRasterPos2d(-0.1, 0.958);
+        glut.glutBitmapString(GLUT.BITMAP_TIMES_ROMAN_24, "Score : " + Score);
+        gl.glRasterPos2d(-0.9, 0.958);
+        glut.glutBitmapString(GLUT.BITMAP_HELVETICA_18, "LV : " + Level);
+        gl.glPopMatrix();
+        gl.glPopAttrib();
+        gl.glEnable(GL_TEXTURE_2D);
+    }
+
     private boolean killRange() {
         return (
-                (Math.abs(y-yR) <= 5 && Math.abs(x-xR) <= 5) ||
-                        (Math.abs(y-yB) <= 5 && Math.abs(x-xB) <= 5) ||
-                        (Math.abs(y-yO) <= 5 && Math.abs(x-xO) <= 5)
+                (Math.abs(pacman.y-Enemies[0].y) <= 5 && Math.abs(pacman.x-Enemies[0].x) <= 5) ||
+                (Math.abs(pacman.y-Enemies[1].y) <= 5 && Math.abs(pacman.x-Enemies[1].x) <= 5) ||
+                (Math.abs(pacman.y-Enemies[2].y) <= 5 && Math.abs(pacman.x-Enemies[2].x) <= 5)
         );
     }
 
@@ -255,55 +241,55 @@ public class Pacman extends BaseJogl {
     }
 
     private void handleKeyPress() {
-        int T = PointsList.get(index).getTop();
-        int B = PointsList.get(index).getBottom();
-        int L = PointsList.get(index).getLeft();
-        int R = PointsList.get(index).getRight();
+        int T = PointsList.get(pacman.index).getTop();
+        int B = PointsList.get(pacman.index).getBottom();
+        int L = PointsList.get(pacman.index).getLeft();
+        int R = PointsList.get(pacman.index).getRight();
 
         if (isKeyPressed(38) && T != -1) {
-            if (PointsList.get(T).getY() == y) {
-                checkN(); index = T;
+            if (PointsList.get(T).getY() == pacman.y) {
+                checkN(); pacman.index = T;
             }
             else {
-                y += SPEED; Face = 6; FaceAnimations++;
+                pacman.y += SPEED; Face = 6; FaceAnimations++;
             }
         }
         else if (isKeyPressed(40) && B != -1) {
-            if (PointsList.get(B).getY() == y) {
-                checkN(); index = B;
+            if (PointsList.get(B).getY() == pacman.y) {
+                checkN(); pacman.index = B;
             }
             else {
-                y -= SPEED; Face = 9; FaceAnimations++;
+                pacman.y -= SPEED; Face = 9; FaceAnimations++;
             }
         }
         else if (isKeyPressed(37) && L != -1) {
             if (L == -2){
-                index = 18;
-                x = PointsList.get(index).getX();
-                y = PointsList.get(index).getY();
+                pacman.index = 18;
+                pacman.x = PointsList.get(pacman.index).getX();
+                pacman.y = PointsList.get(pacman.index).getY();
                 return;
             }
 
-            if (PointsList.get(L).getX() == x) {
-                checkN(); index = L;
+            if (PointsList.get(L).getX() == pacman.x) {
+                checkN(); pacman.index = L;
             }
             else {
-                x -= SPEED; Face = 3; FaceAnimations++;
+                pacman.x -= SPEED; Face = 3; FaceAnimations++;
             }
         }
         else if (isKeyPressed(39) && R != -1) {
             if (R == -2){
-                index = 66;
-                x = PointsList.get(index).getX();
-                y = PointsList.get(index).getY();
+                pacman.index = 66;
+                pacman.x = PointsList.get(pacman.index).getX();
+                pacman.y = PointsList.get(pacman.index).getY();
                 return;
             }
 
-            if (PointsList.get(R).getX() == x) {
-                checkN(); index = R;
+            if (PointsList.get(R).getX() == pacman.x) {
+                checkN(); pacman.index = R;
             }
             else {
-                x += SPEED; Face = 0; FaceAnimations++;
+                pacman.x += SPEED; Face = 0; FaceAnimations++;
             }
         }
         else
@@ -311,219 +297,77 @@ public class Pacman extends BaseJogl {
     }
 
     private void handleKeyPressEnemy() {
-        if (RandomR == 38) {
-            int T = PointsList.get(indexR).getTop();
-            if (T != -1) {
-                if (PointsList.get(T).getY() == yR) {
-                    RandomR = 37 + (int)(Math.random()*4);
-                    indexR = T;
+        for (PacObject E : Enemies) {
+            if (E.random == 38) {
+                int T = PointsList.get(E.index).getTop();
+                if (T != -1) {
+                    if (PointsList.get(T).getY() == E.y) {
+                        E.random = 37 + (int)(Math.random()*4);
+                        E.index = T;
+                    }
+                    else {
+                        E.y += SPEED;
+                    }
                 }
-                else {
-                    yR += SPEED;
-                }
+                else
+                    E.random = 37 + (int)(Math.random()*4);
             }
-            else
-                RandomR = 37 + (int)(Math.random()*4);
-        }
-        else if (RandomR == 40) {
-            int B = PointsList.get(indexR).getBottom();
-            if (B != -1) {
-                if (PointsList.get(B).getY() == yR) {
-                    RandomR = 37 + (int)(Math.random()*4);
-                    indexR = B;
+            else if (E.random == 40) {
+                int B = PointsList.get(E.index).getBottom();
+                if (B != -1) {
+                    if (PointsList.get(B).getY() == E.y) {
+                        E.random = 37 + (int)(Math.random()*4);
+                        E.index = B;
+                    }
+                    else {
+                        E.y -= SPEED;
+                    }
                 }
-                else {
-                    yR -= SPEED;
-                }
+                else
+                    E.random = 37 + (int)(Math.random()*4);
             }
-            else
-                RandomR = 37 + (int)(Math.random()*4);
-        }
 
-        else if (RandomR == 37) {
-            int L = PointsList.get(indexR).getLeft();
-            if (L == -2){
-                indexR = 18;
-                xR = PointsList.get(indexR).getX();
-                yR = PointsList.get(indexR).getY();
-                return;
-            }
-            if (L != -1) {
-                if (PointsList.get(L).getX() == xR) {
-                    RandomR = 37 + (int)(Math.random()*4);
-                    indexR = L;
+            else if (E.random == 37) {
+                int L = PointsList.get(E.index).getLeft();
+                if (L == -2){
+                    E.index = 18;
+                    E.x = PointsList.get(E.index).getX();
+                    E.y = PointsList.get(E.index).getY();
+                    return;
                 }
-                else {
-                    xR -= SPEED;
+                if (L != -1) {
+                    if (PointsList.get(L).getX() == E.x) {
+                        E.random = 37 + (int)(Math.random()*4);
+                        E.index = L;
+                    }
+                    else {
+                        E.x -= SPEED;
+                    }
                 }
+                else
+                    E.random = 37 + (int)(Math.random()*4);
             }
-            else
-                RandomR = 37 + (int)(Math.random()*4);
-        }
 
-        else if (RandomR == 39) {
-            int R = PointsList.get(indexR).getRight();
-            if (R == -2){
-                indexR = 66;
-                xR = PointsList.get(indexR).getX();
-                yR = PointsList.get(indexR).getY();
-                return;
+            else if (E.random == 39) {
+                int R = PointsList.get(E.index).getRight();
+                if (R == -2){
+                    E.index = 66;
+                    E.x = PointsList.get(E.index).getX();
+                    E.y = PointsList.get(E.index).getY();
+                    return;
+                }
+                if (R != -1) {
+                    if (PointsList.get(R).getX() == E.x) {
+                        E.random = 37 + (int)(Math.random()*4);
+                        E.index = R;
+                    }
+                    else {
+                        E.x += SPEED;
+                    }
+                }
+                else
+                    E.random = 37 + (int)(Math.random()*4);
             }
-            if (R != -1) {
-                if (PointsList.get(R).getX() == xR) {
-                    RandomR = 37 + (int)(Math.random()*4);
-                    indexR = R;
-                }
-                else {
-                    xR += SPEED;
-                }
-            }
-            else
-                RandomR = 37 + (int)(Math.random()*4);
-        }
-
-        if (RandomB == 38) {
-            int T = PointsList.get(indexB).getTop();
-            if (T != -1) {
-                if (PointsList.get(T).getY() == yB) {
-                    RandomB = 37 + (int)(Math.random()*4);
-                    indexB = T;
-                }
-                else {
-                    yB += SPEED;
-                }
-            }
-            else
-                RandomB = 37 + (int)(Math.random()*4);
-        }
-        //Down
-        else if (RandomB == 40) {
-            int B = PointsList.get(indexB).getBottom();
-            if (B != -1) {
-                if (PointsList.get(B).getY() == yB) {
-                    RandomB= 37 + (int)(Math.random()*4);
-                    indexB = B;
-                }
-                else {
-                    yB -= SPEED;
-                }
-            }
-            else
-                RandomB= 37 + (int)(Math.random()*4);
-        }
-        //Left
-        else if (RandomB== 37) {
-            int L = PointsList.get(indexB).getLeft();
-            if (L == -2){
-                indexB= 18;
-                xB= PointsList.get(indexB).getX();
-                yB = PointsList.get(indexB).getY();
-                return;
-            }
-            if (L != -1) {
-                if (PointsList.get(L).getX() == xB) {
-                    RandomB = 37 + (int)(Math.random()*4);
-                    indexB = L;
-                }
-                else {
-                    xB-= SPEED;
-                }
-            }
-            else
-                RandomB = 37 + (int)(Math.random()*4);
-        }
-        //Right
-        else if (RandomB == 39) {
-            int R = PointsList.get(indexB).getRight();
-            if (R == -2){
-                indexB= 66;
-                xB = PointsList.get(indexB).getX();
-                yB = PointsList.get(indexB).getY();
-                return;
-            }
-            if (R != -1) {
-                if (PointsList.get(R).getX() == xB) {
-                    RandomB= 37 + (int)(Math.random()*4);
-                    indexB = R;
-                }
-                else {
-                    xB += SPEED;
-                }
-            }
-            else
-                RandomB = 37 + (int)(Math.random()*4);
-        }
-
-        if (RandomO == 38) {
-            int T = PointsList.get(indexO).getTop();
-            if (T != -1) {
-                if (PointsList.get(T).getY() == yO) {
-                    RandomO = 37 + (int)(Math.random()*4);
-                    indexO = T;
-                }
-                else {
-                    yO += SPEED;
-                }
-            }
-            else
-                RandomO = 37 + (int)(Math.random()*4);
-        }
-        //Down
-        else if (RandomO == 40) {
-            int B = PointsList.get(indexO).getBottom();
-            if (B != -1) {
-                if (PointsList.get(B).getY() == yO) {
-                    RandomO= 37 + (int)(Math.random()*4);
-                    indexO = B;
-                }
-                else {
-                    yO -= SPEED;
-                }
-            }
-            else
-                RandomO= 37 + (int)(Math.random()*4);
-        }
-        //Left
-        else if (RandomO== 37) {
-            int L = PointsList.get(indexO).getLeft();
-            if (L == -2){
-                indexO= 18;
-                xO= PointsList.get(indexO).getX();
-                yO = PointsList.get(indexO).getY();
-                return;
-            }
-            if (L != -1) {
-                if (PointsList.get(L).getX() == xO) {
-                    RandomO= 37 + (int)(Math.random()*4);
-                    indexO= L;
-                }
-                else {
-                    xO-= SPEED;
-                }
-            }
-            else
-                RandomO = 37 + (int)(Math.random()*4);
-        }
-        //Right
-        else if (RandomO == 39) {
-            int R = PointsList.get(indexO).getRight();
-            if (R == -2){
-                indexO= 66;
-                xO = PointsList.get(indexO).getX();
-                yO = PointsList.get(indexO).getY();
-                return;
-            }
-            if (R != -1) {
-                if (PointsList.get(R).getX() == xO) {
-                    RandomO= 37 + (int)(Math.random()*4);
-                    indexO = R;
-                }
-                else {
-                    xO += SPEED;
-                }
-            }
-            else
-                RandomO = 37 + (int)(Math.random()*4);
         }
     }
 
