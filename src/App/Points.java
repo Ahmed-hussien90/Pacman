@@ -122,5 +122,5 @@ public class Points {
         return isChecked;
     }
     public double[][] getInitPoints(){ return initPoints;}
-    public double[][] getFruits(){ return Fruits;}
+    public double[][] getInitFruits(){ return Fruits;}
 }

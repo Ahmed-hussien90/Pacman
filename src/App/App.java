@@ -9,7 +9,7 @@ import javax.swing.*;
 public class App extends JFrame {
     GLCanvas glcanvas = new GLCanvas();
 
-    Animator animator = new FPSAnimator(50);
+    Animator animator = new FPSAnimator(100);
 
     Pacman listener = new Pacman();
 

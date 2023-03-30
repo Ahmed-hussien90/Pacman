@@ -19,7 +19,6 @@ public class Pacman extends BaseJogl {
     ArrayList<Points> FruitsList = new ArrayList<>();
     ArrayList<Texts> TextsList = new ArrayList<>();
     ArrayList<Integer> KeyList = new ArrayList<>();
-
     private final static String[] textureNames = {
         "pacman/r1.png"     , "pacman/r2.png"         , "pacman/r3.png",
         "pacman/l1.png"     , "pacman/l2.png"         , "pacman/l3.png",
@@ -32,21 +31,20 @@ public class Pacman extends BaseJogl {
     };
     PacObject pacman = new PacObject(19,1);
     PacObject[] Enemies = {
-            new PacObject(19, 20, 37 + (int)(Math.random()*4)),
-            new PacObject(20, 30, 37 + (int)(Math.random()*4)),
-            new PacObject(21, 40, 37 + (int)(Math.random()*4)),
+        new PacObject(19, 20, 37 + (int)(Math.random()*4)),
+        new PacObject(20, 30, 37 + (int)(Math.random()*4)),
+        new PacObject(21, 40, 37 + (int)(Math.random()*4)),
     };
-    private static int[] textures = new int[textureNames.length];
-    TextureReader.Texture textureArr[] = new TextureReader.Texture[textureNames.length];
+    int[] Texts = {14, 15, 16};
+    double[][] initPoints = new Points().getInitPoints();
+    double[][] Fruits = new Points().getInitFruits();
+    private final static int[] textures = new int[textureNames.length];
+    TextureReader.Texture[] textureArr = new TextureReader.Texture[textureNames.length];
     private static final int BUFFER_SIZE = 4096, WIDTH = 100, Height = 100;
     private final double SPEED = 0.25;
     private boolean StartGame = false,  GameOver = false;
     int keyCode, Level = 1, Angle = 0, Score = 0, FinalScore = 780, FaceAnimations = 0, Face = 0, n = 0;
-
-    private void addPoints() {
-        double[][] initPoints = new Points().getInitPoints();
-        double[][] Fruits = new Points().getFruits();
-
+    private void ResetPoints() {
         PointsList.clear();
         for (double[] points : initPoints) {
             PointsList.add(new Points((int) points[0], points[1], points[2], (int) points[3], (int) points[4], (int) points[5], (int) points[6], false));
@@ -57,9 +55,10 @@ public class Pacman extends BaseJogl {
             FruitsList.add(new Points((int) points[0], points[1], points[2], -1, -1, -1, -1, false));
         }
 
-        TextsList.add(new Texts(14,false)); //for Ready
-        TextsList.add(new Texts(15,false)); //for GameOver
-        TextsList.add(new Texts(16,false));  //for Win
+        TextsList.clear();
+        for (int T: Texts) {
+            TextsList.add(new Texts(T,false));
+        }
     }
     public void init(GLAutoDrawable gld) {
         GL gl = gld.getGL();
@@ -76,19 +75,20 @@ public class Pacman extends BaseJogl {
                 e.printStackTrace();
             }
         }
-        playSound("Assets\\sounds\\pacman_beginning.wav",0);
-        addPoints();
-        startPoint();
+        reInit();
     }
     public void reInit(){
-        GameOver =false; StartGame = false; pacman.index = 1 ;
-        playSound("Assets\\sounds\\pacman_beginning.wav",0);
-        Enemies[0].index = 20; Enemies[1].index = 30; Enemies[2].index = 40;
-        Angle = 0; FaceAnimations = 0; Face = 0;
-        startPoint();
-    }
-    public void startPoint() {
+        ResetPoints();
+
+        PlaySound("Assets\\sounds\\pacman_beginning.wav",0);
+
+        StartGame = GameOver = false;
+
+        pacman.index = 1; Angle = 0; FaceAnimations = 0; Face = 0; Score = 0;
+
         pacman.x = PointsList.get(pacman.index).getX()-5; pacman.y = PointsList.get(pacman.index).getY();
+
+        Enemies[0].index = 20; Enemies[1].index = 30; Enemies[2].index = 40;
         for (PacObject E: Enemies) {
             E.x = PointsList.get(E.index).getX(); E.y = PointsList.get(E.index).getY();
         }
@@ -97,45 +97,40 @@ public class Pacman extends BaseJogl {
         GL gl = gld.getGL();
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
         gl.glLoadIdentity();
+        Angle +=2;
 
         if(StartGame) {
             if(killRange()){ KeyList.clear(); GameOver = true; StartGame = false; n=0; }
 
             DrawTexture(gl, textureNames.length-1, new double[]{0,0},new double[]{1, 1});
 
-            for (Points p : PointsList) {
-                if(!p.isChecked()) {
+            for (Points p : PointsList)
+                if(!p.isChecked())
                     DrawTexture(gl, 12, new double[]{p.getX() / (WIDTH / 2.0) - 0.9, p.getY() / (Height / 2.0) - 0.9},new double[]{0.075, 0.075});
-                }
-            }
-            Angle +=2;
-            for (Points f : FruitsList) {
-                if(!f.isChecked()) {
+
+            for (Points f : FruitsList)
+                if(!f.isChecked())
                     DrawTexture(gl, 13, new double[]{f.getX() / (WIDTH / 2.0) - 0.9, f.getY() / (Height / 2.0) - 0.9},new double[]{0.03, 0.03});
-                }
-            }
-            for (Texts t : TextsList) {
-                if(t.isAppear) {
+
+            for (Texts t : TextsList)
+                if(t.isAppear)
                     DrawTexture(gl, t.getIndex(), new double[]{0,  0.07},new double[]{0.17, 0.13});
-                }
-            }
 
-            for(int i = 0; i< PointsList.size(); i++){
-                if(pacman.x == PointsList.get(i).getX() && pacman.y == PointsList.get(i).getY() && !PointsList.get(i).isChecked()){
-                    playSound("Assets\\sounds\\pacman_chomp.wav",-1); Score +=10; PointsList.get(i).setChecked(true);
+            for(Points P : PointsList){
+                if(pacman.x == P.getX() && pacman.y == P.getY() && !P.isChecked()){
+                    PlaySound("Assets\\sounds\\pacman_chomp.wav",-1); Score +=10; P.setChecked(true);
                 }
             }
-            for(int i = 0; i< FruitsList.size(); i++) {
-                if (pacman.x == FruitsList.get(i).getX() && pacman.y == FruitsList.get(i).getY() && !FruitsList.get(i).isChecked()) {
-                    playSound("Assets\\sounds\\pacman_eatfruit.wav",-1); Score +=20; FruitsList.get(i).setChecked(true);
+            for(Points F : FruitsList) {
+                if (pacman.x == F.getX() && pacman.y == F.getY() && !F.isChecked()) {
+                    PlaySound("Assets\\sounds\\pacman_eatfruit.wav",-1); Score +=20; F.setChecked(true);
                 }
             }
-
             DrawTexture(gl, Face + FaceAnimations % 3, new double[]{pacman.x / (WIDTH / 2.0) - 0.9, pacman.y / (Height / 2.0) - 0.9},new double[]{0.05, 0.05});
             for (PacObject E : Enemies) {
                 DrawTexture(gl, E.texture, new double[]{E.x / (WIDTH / 2.0) - 0.9, E.y / (Height / 2.0) - 0.9},new double[]{0.05, 0.05});
             }
-            updateScoreAndLevel(gl);
+            UpdateScoreAndLevel(gl);
         } else {
             DrawTexture(gl, 17, new double[]{0,0},new double[]{1, 1});
             DrawTexture(gl, 18, new double[]{0,-0.6},new double[]{0.3, 0.3});
@@ -150,16 +145,15 @@ public class Pacman extends BaseJogl {
         }
 
         if (GameOver) {
-            playSound("Assets\\sounds\\pacman_death.wav", 1);
+            PlaySound("Assets\\sounds\\pacman_death.wav", 1);
             GameOver = false;
         }
 
         if (Score == FinalScore) {
-            playSound("Assets\\sounds\\Victory.wav", 2);
+            PlaySound("Assets\\sounds\\Victory.wav", 2);
             Score = 0;
         }
-    }
-    private void DrawTexture(GL g, int textureIdx, double[] position, double[] scale){
+    }    private void DrawTexture(GL g, int textureIdx, double[] position, double[] scale){
         g.glEnable(GL.GL_BLEND);
         g.glBindTexture(GL_TEXTURE_2D, textures[textureIdx]);
         g.glPushMatrix();
@@ -175,7 +169,7 @@ public class Pacman extends BaseJogl {
         g.glPopMatrix();
         g.glDisable(GL.GL_BLEND);
     }
-    public void updateScoreAndLevel(GL gl){
+    public void UpdateScoreAndLevel(GL gl){
         gl.glMatrixMode(gl.GL_MODELVIEW);
         gl.glLoadIdentity();
         gl.glDisable(GL_TEXTURE_2D);
@@ -183,10 +177,8 @@ public class Pacman extends BaseJogl {
         gl.glColor4f(1, 0, 0, 0.5f);
         gl.glPushMatrix();
         GLUT glut = new GLUT();
-        gl.glRasterPos2d(-0.1, 0.958);
-        glut.glutBitmapString(GLUT.BITMAP_TIMES_ROMAN_24, "Score : " + Score);
-        gl.glRasterPos2d(-0.9, 0.958);
-        glut.glutBitmapString(GLUT.BITMAP_HELVETICA_18, "LV : " + Level);
+        gl.glRasterPos2d(-0.1, 0.958); glut.glutBitmapString(GLUT.BITMAP_TIMES_ROMAN_24, "Score : " + Score);
+        gl.glRasterPos2d(-0.9, 0.958); glut.glutBitmapString(GLUT.BITMAP_HELVETICA_18, "LV : " + Level);
         gl.glPopMatrix();
         gl.glPopAttrib();
         gl.glEnable(GL_TEXTURE_2D);
@@ -341,7 +333,7 @@ public class Pacman extends BaseJogl {
     private void checkN(){
         if (n < KeyList.size() - 1) { n++;}
     }
-    public synchronized void playSound(final String url,int idx) { new Thread(new Runnable() { public void run() {
+    public synchronized void PlaySound(final String url, int idx) { new Thread(new Runnable() { public void run() {
         File soundFile = new File(url);
         try {
             AudioInputStream sampleStream = AudioSystem.getAudioInputStream(soundFile);
@@ -366,7 +358,6 @@ public class Pacman extends BaseJogl {
             }
 
             if(idx == 1||idx== 2){
-                addPoints();
                 reInit();
             }
         } catch (UnsupportedAudioFileException e) {
