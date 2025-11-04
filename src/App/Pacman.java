@@ -6,11 +6,15 @@ import lombok.Setter;
 public class Pacman {
     @Setter @Getter
     private double x, y;
-    @Getter @Setter
+    @Setter @Getter
     private int face, faceAnimated;
+    @Setter @Getter
+    private int texture;
 
-    public int texture, index, random;
-    public boolean isMoving;
+    @Setter @Getter
+    private int index, random;
+    @Setter @Getter
+    private boolean isMoving;
 
     Pacman(int texture, int index) {
         this.texture = texture;

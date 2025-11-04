@@ -37,15 +37,16 @@ public class PacmanApp extends BaseJogl {
     };
     private final static int[] textures = new int[textureNames.length];
     Pacman pacman;
-    List<Pacman> Enemies = new ArrayList<>();
+    List<Pacman> enemies;
 
     int[] Texts = {14, 15, 16};
 
-    private boolean StartGame = false;
-    int Level = 1, angle = 0, score = 0, n = 0;
-    double pacmanSpeed = 0.6, enemySpeed = 0.3;
+    private boolean StartGame, PauseGame;
+    int level, angle, score, n;
+    double pacmanSpeed = 0.4, enemySpeed = 0.1;
 
     List<Integer> directions = List.of(UP.getCode(), LEFT.getCode(), RIGHT.getCode(), DOWN.getCode());
+
     Map<Integer, MoveCommand> moveCommands = Map.of(
             UP.getCode(), new MoveUp(),
             DOWN.getCode(), new MoveDown(),
@@ -97,16 +98,24 @@ public class PacmanApp extends BaseJogl {
         TextsList.forEach(text -> text.setAppear(false));
 
         TextsList.get(0).setAppear(true);
-        SoundPlayer.playAsync("Assets\\sounds\\pacman_beginning.wav", () -> TextsList.get(0).setAppear(false));
 
         StartGame = false;
+        PauseGame = true;
+        SoundPlayer.playAsync("Assets\\sounds\\pacman_beginning.wav", () -> {
+            PauseGame = false;
+            TextsList.get(0).setAppear(false);
+        });
+
+
         score = 0;
+        n = 0;
 
         pacman = new Pacman(19, 1);
 
+        enemies = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             int index = (int) (Math.random() * Points.PointsList.size());
-            Enemies.add(new Pacman(19 + i, index, 37 + (int) (Math.random() * 4)));
+            enemies.add(new Pacman(19 + i, index, 37 + (int) (Math.random() * 4)));
         }
     }
 
@@ -153,38 +162,38 @@ public class PacmanApp extends BaseJogl {
             }
         }
 
-        drawTexture(gl, pacman.getFaceAnimated(), pacman.getPositionView(), new double[]{0.05, 0.05});
+        if (!PauseGame) {
+            if (!KeyList.isEmpty()) {
+                moveCommands.get(KeyList.get(n)).execute(pacman, pacmanSpeed);
 
-        Enemies.forEach(e -> drawTexture(gl, e.texture, e.getPositionView(), new double[]{0.05, 0.05}));
-
-        if (!KeyList.isEmpty()) {
-            moveCommands.get(KeyList.get(n)).execute(pacman, pacmanSpeed);
-
-            if (!pacman.isMoving) {
-                if (n < KeyList.size() - 1) {
-                    n++;
+                if (!pacman.isMoving()) {
+                    if (n < KeyList.size() - 1) {
+                        n++;
+                    }
                 }
             }
+
+            enemies.forEach(e -> {
+                moveCommands.get(e.getRandom()).execute(e, enemySpeed * level);
+
+                if (!e.isMoving()) {
+                    e.setRandom(37 + (int) (Math.random() * 4));
+                }
+            });
         }
 
+        drawTexture(gl, pacman.getFaceAnimated(), pacman.getPositionView(), new double[]{0.05, 0.05});
 
-        Enemies.forEach(e ->{
-            moveCommands.get(e.random).execute(e, enemySpeed * Level);
+        enemies.forEach(e -> drawTexture(gl, e.getTexture(), e.getPositionView(), new double[]{0.05, 0.05}));
 
-            if (!e.isMoving) {
-                e.random = 37 + (int) (Math.random() * 4);
-            }
-        });
+        if (!PauseGame && (isKilled() || isWon())) {
+            PauseGame = true;
 
-        if (isKilled() || isWon()) {
-            n = 0;
             KeyList.clear();
 
             TextsList.get(isKilled() ? 1 : 2).setAppear(true);
 
-            StartGame = false;
-
-            SoundPlayer.playAsync(isKilled() ? "Assets\\sounds\\pacman_death.wav" : "Assets\\sounds\\Victory.wav", this::reInit);
+            SoundPlayer.playAsync("Assets\\sounds\\" + (isKilled() ? "pacman_death.wav" : "Victory.wav"), this::reInit);
         }
 
         updateScoreAndLevel(gl);
@@ -204,11 +213,11 @@ public class PacmanApp extends BaseJogl {
             StartGame = true;
 
             if (539 < y && y < 597)
-                Level = 1;
+                level = 1;
             else if (624 < y && y < 680)
-                Level = 2;
+                level = 2;
             else if (708 < y && y < 766)
-                Level = 3;
+                level = 3;
             else
                 StartGame = false;
         }
@@ -242,7 +251,6 @@ public class PacmanApp extends BaseJogl {
 
     public void updateScoreAndLevel(GL gl) {
         gl.glMatrixMode(GL.GL_MODELVIEW);
-        gl.glLoadIdentity();
         gl.glDisable(GL_TEXTURE_2D);
         gl.glPushAttrib(GL_CURRENT_BIT);
         gl.glColor4f(1, 0, 0, 0.5f);
@@ -251,7 +259,7 @@ public class PacmanApp extends BaseJogl {
         gl.glRasterPos2d(-0.1, 0.958);
         glut.glutBitmapString(GLUT.BITMAP_TIMES_ROMAN_24, "Score : " + score);
         gl.glRasterPos2d(-0.9, 0.958);
-        glut.glutBitmapString(GLUT.BITMAP_HELVETICA_18, "LV : " + Level);
+        glut.glutBitmapString(GLUT.BITMAP_HELVETICA_18, "LV : " + level);
         gl.glPopMatrix();
         gl.glPopAttrib();
         gl.glEnable(GL_TEXTURE_2D);
@@ -260,7 +268,7 @@ public class PacmanApp extends BaseJogl {
     private boolean isKilled() {
         boolean result = false;
 
-        for (Pacman e : Enemies) {
+        for (Pacman e : enemies) {
             result |= isPacmanTouched(e.getX(), e.getY(), 4);
         }
 

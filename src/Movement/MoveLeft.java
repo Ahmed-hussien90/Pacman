@@ -10,25 +10,25 @@ public class MoveLeft implements MoveCommand {
 
     @Override
     public void execute(Pacman pacman, double speed) {
-        int direction = Points.PointsList.get(pacman.index).getLeft();
+        int direction = Points.PointsList.get(pacman.getIndex()).getLeft();
 
-        pacman.isMoving = false;
+        pacman.setMoving(false);
         if (direction != -1) {
             if (direction == -2) {
-                pacman.index = 18;
-                pacman.setX(Points.PointsList.get(pacman.index).getX());
-                pacman.setY(Points.PointsList.get(pacman.index).getY());
-                pacman.isMoving = true;
+                pacman.setIndex(18);
+                pacman.setX(Points.PointsList.get(pacman.getIndex()).getX());
+                pacman.setY(Points.PointsList.get(pacman.getIndex()).getY());
+                pacman.setMoving(true);
                 return;
             }
 
             if (Math.abs(Points.PointsList.get(direction).getX() - pacman.getX()) <= speed) {
-                pacman.index = direction;
+                pacman.setIndex(direction);
                 pacman.setX(Points.PointsList.get(direction).getX());
             } else {
                 pacman.setX(pacman.getX() -speed);
                 pacman.setFace(3);
-                pacman.isMoving = true;
+                pacman.setMoving(true);
             }
         }
     }
