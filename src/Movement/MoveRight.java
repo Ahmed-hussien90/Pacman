@@ -1,33 +1,32 @@
 package Movement;
 
-import App.PacObject;
+import App.Pacman;
 import App.Points;
 
-import java.util.ArrayList;
 
 public class MoveRight implements MoveCommand {
     public MoveRight() {
     }
 
     @Override
-    public void execute(PacObject pacman, ArrayList<Points> pointsList, double speed) {
-        int direction = pointsList.get(pacman.index).getRight();
+    public void execute(Pacman pacman, double speed) {
+        int direction = Points.PointsList.get(pacman.index).getRight();
 
         pacman.isMoving = false;
         if (direction != -1) {
             if (direction == -2) {
                 pacman.index = 66;
-                pacman.x = pointsList.get(pacman.index).getX();
-                pacman.y = pointsList.get(pacman.index).getY();
+                pacman.setX(Points.PointsList.get(pacman.index).getX());
+                pacman.setY(Points.PointsList.get(pacman.index).getY());
                 return;
             }
 
-            if (Math.abs(pointsList.get(direction).getX() - pacman.x) <= speed) {
+            if (Math.abs(Points.PointsList.get(direction).getX() - pacman.getX()) <= speed) {
                 pacman.index = direction;
-                pacman.x = pointsList.get(direction).getX();
+                pacman.setX(Points.PointsList.get(direction).getX());
             } else {
-                pacman.x += speed;
-                pacman.face = 0;
+                pacman.setX(pacman.getX() +speed);
+                pacman.setFace(0);
                 pacman.isMoving = true;
             }
         }

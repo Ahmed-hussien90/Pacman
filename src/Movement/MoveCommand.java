@@ -1,11 +1,11 @@
 package Movement;
 
-import App.PacObject;
+import App.Pacman;
 import App.Points;
 
-import java.util.ArrayList;
+import java.util.List;
 
 
 public interface MoveCommand {
-    void execute(PacObject pacman, ArrayList<Points> pointsList, double speed);
+    void execute(Pacman pacman, double speed);
 }

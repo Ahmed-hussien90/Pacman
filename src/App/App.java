@@ -11,7 +11,7 @@ public class App extends JFrame {
 
     Animator animator = new FPSAnimator(100);
 
-    Pacman listener = new Pacman();
+    PacmanApp listener = new PacmanApp();
 
     public static void main(String[] args) {
         new App().animator.start();

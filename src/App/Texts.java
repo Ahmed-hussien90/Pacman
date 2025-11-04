@@ -1,27 +1,17 @@
 package App;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class Texts {
-    int index;
-    boolean isAppear;
+    @Getter
+    private int index;
+
+    @Setter @Getter
+    private boolean isAppear;
 
     public Texts(int index, boolean isAppear) {
         this.index = index;
         this.isAppear = isAppear;
-    }
-
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
-    }
-
-    public boolean isAppear() {
-        return isAppear;
-    }
-
-    public void setAppear(boolean appear) {
-        isAppear = appear;
     }
 }

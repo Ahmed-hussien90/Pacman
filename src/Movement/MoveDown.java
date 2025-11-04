@@ -1,9 +1,7 @@
 package Movement;
 
-import App.PacObject;
+import App.Pacman;
 import App.Points;
-
-import java.util.ArrayList;
 
 
 public class MoveDown implements MoveCommand {
@@ -11,17 +9,17 @@ public class MoveDown implements MoveCommand {
     }
 
     @Override
-    public void execute(PacObject pacman, ArrayList<Points> pointsList, double speed) {
-        int direction = pointsList.get(pacman.index).getBottom();
+    public void execute(Pacman pacman, double speed) {
+        int direction = Points.PointsList.get(pacman.index).getBottom();
 
         pacman.isMoving = false;
         if(direction != -1){
-            if (Math.abs(pointsList.get(direction).getY() - pacman.y) <= speed) {
+            if (Math.abs(Points.PointsList.get(direction).getY() - pacman.getY()) <= speed) {
                 pacman.index = direction;
-                pacman.y = pointsList.get(direction).getY();
+                pacman.setY(Points.PointsList.get(direction).getY());
             } else {
-                pacman.y -= speed;
-                pacman.face = 9;
+                pacman.setY(pacman.getY() -speed);
+                pacman.setFace(9);
                 pacman.isMoving = true;
             }
         }

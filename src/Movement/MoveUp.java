@@ -1,26 +1,24 @@
 package Movement;
 
-import App.PacObject;
+import App.Pacman;
 import App.Points;
-
-import java.util.ArrayList;
 
 public class MoveUp implements MoveCommand {
     public MoveUp() {
     }
 
     @Override
-    public void execute(PacObject pacman, ArrayList<Points> pointsList, double speed) {
-        int direction = pointsList.get(pacman.index).getTop();
+    public void execute(Pacman pacman, double speed) {
+        int direction = Points.PointsList.get(pacman.index).getTop();
 
         pacman.isMoving = false;
         if (direction != -1) {
-            if (Math.abs(pointsList.get(direction).getY() - pacman.y) <= speed) {
+            if (Math.abs(Points.PointsList.get(direction).getY() - pacman.getY()) <= speed) {
                 pacman.index = direction;
-                pacman.y = pointsList.get(direction).getY();
+                pacman.setY(Points.PointsList.get(direction).getY());
             } else {
-                pacman.y += speed;
-                pacman.face = 6;
+                pacman.setY(pacman.getY() +speed);
+                pacman.setFace(6);
                 pacman.isMoving = true;
             }
         }
