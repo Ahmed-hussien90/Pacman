@@ -14,7 +14,7 @@ public class Points {
     @Getter
     private final int top, left, bottom, right;
     @Setter @Getter
-    private boolean isChecked;
+    private boolean isEaten;
 
     public static List<Points> PointsList, FruitsList;
 
@@ -106,7 +106,7 @@ public class Points {
 
 
 
-    private Points(int index, double x, double y, int top, int bottom, int left, int right, boolean isChecked) {
+    private Points(int index, double x, double y, int top, int bottom, int left, int right, boolean isEaten) {
         this.index = index;
         this.x = x;
         this.y = y;
@@ -114,10 +114,13 @@ public class Points {
         this.left = left;
         this.bottom = bottom;
         this.right = right;
-        this.isChecked = isChecked;
+        this.isEaten = isEaten;
     }
 
     public double[] getPositionView() {
-        return new double[]{this.getX() / (100 / 2.0) - 0.9, this.getY() / (100 / 2.0) - 0.9};
+        return new double[]{
+                this.x / (100 / 2.0) - 0.9,
+                this.y / (100 / 2.0) - 0.9
+        };
     }
 }

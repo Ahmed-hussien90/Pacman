@@ -2,11 +2,9 @@ package Movement;
 
 import App.Pacman;
 import App.Points;
+import static DataSources.KeyCode.*;
 
 public class MoveUp implements MoveCommand {
-    public MoveUp() {
-    }
-
     @Override
     public void execute(Pacman pacman, double speed) {
         int direction = Points.PointsList.get(pacman.getIndex()).getTop();
@@ -18,10 +16,14 @@ public class MoveUp implements MoveCommand {
                 pacman.setY(Points.PointsList.get(direction).getY());
             } else {
                 pacman.setY(pacman.getY() +speed);
-                pacman.setFace(6);
+                pacman.setFace(UP);
                 pacman.setMoving(true);
 
             }
         }
+    }
+
+    public int getTarget(Pacman pacman){
+        return Points.PointsList.get(pacman.getIndex()).getTop();
     }
 }

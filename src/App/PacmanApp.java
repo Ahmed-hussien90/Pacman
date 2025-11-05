@@ -1,5 +1,7 @@
 package App;
 
+import DataSources.KeyCode;
+import DataSources.Textures;
 import Movement.*;
 import Texture.TextureReader;
 import com.sun.opengl.util.GLUT;
@@ -10,48 +12,35 @@ import javax.media.opengl.glu.GLU;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.*;
 
 import static DataSources.KeyCode.*;
-
-import java.util.List;
-import java.util.Map;
+import static DataSources.Textures.*;
+import static DataSources.Sound.*;
 
 import static javax.media.opengl.GL.GL_CURRENT_BIT;
 import static javax.media.opengl.GL.GL_TEXTURE_2D;
 
 public class PacmanApp extends BaseJogl {
     ArrayList<Texts> TextsList = new ArrayList<>();
-    ArrayList<Integer> KeyList = new ArrayList<>();
+    List<KeyCode> keyList = new ArrayList<>();
 
     String filePath = "Assets/";
-    private final static String[] textureNames = {
-            "pacman/r1.png", "pacman/r2.png", "pacman/r3.png",
-            "pacman/l1.png", "pacman/l2.png", "pacman/l3.png",
-            "pacman/t1.png", "pacman/t2.png", "pacman/t3.png",
-            "pacman/b1.png", "pacman/b2.png", "pacman/b3.png",
-            "extra/dot.png", "extra/apple.png", "Ready.png",
-            "GameOver.png", "Win.png", "menu.jpg", "levels.png",
-            "ghosts/blinky.png", "ghosts/pinky.png", "ghosts/clyde.png",
-            "Background.jpeg"
-    };
-    private final static int[] textures = new int[textureNames.length];
+    String soundPath = "Assets/sounds/";
+
+    private final static int[] textures = new int[23];
     Pacman pacman;
     List<Pacman> enemies;
 
-    int[] Texts = {14, 15, 16};
-
     private boolean StartGame, PauseGame;
-    int level, angle, score, n;
+    int level, angle, score;
     double pacmanSpeed = 0.4, enemySpeed = 0.1;
 
-    List<Integer> directions = List.of(UP.getCode(), LEFT.getCode(), RIGHT.getCode(), DOWN.getCode());
-
-    Map<Integer, MoveCommand> moveCommands = Map.of(
-            UP.getCode(), new MoveUp(),
-            DOWN.getCode(), new MoveDown(),
-            LEFT.getCode(), new MoveLeft(),
-            RIGHT.getCode(), new MoveRight()
+    Map<KeyCode, MoveCommand> moveCommands = Map.of(
+            UP, new MoveUp(),
+            DOWN, new MoveDown(),
+            LEFT, new MoveLeft(),
+            RIGHT, new MoveRight()
     );
 
     public void init(GLAutoDrawable gld) {
@@ -59,41 +48,46 @@ public class PacmanApp extends BaseJogl {
         gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         gl.glEnable(GL_TEXTURE_2D);
         gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
-        gl.glGenTextures(textureNames.length, textures, 0);
+        gl.glGenTextures(textures.length, textures, 0);
 
         int i = 0;
         TextureReader.Texture texture;
-        for (String fileName : textureNames) {
-            try {
-                texture = TextureReader.readTexture(filePath + "//" + fileName, true);
 
-                gl.glBindTexture(GL_TEXTURE_2D, textures[i++]);
+        for (Textures paths : Textures.values()) {
+            for(String path: paths.getPath()) {
+                try {
+                    texture = TextureReader.readTexture(filePath + "//" + path, true);
 
-                new GLU().gluBuild2DMipmaps(
-                        GL_TEXTURE_2D,
-                        GL.GL_RGBA,
-                        texture.getWidth(),
-                        texture.getHeight(),
-                        GL.GL_RGBA,
-                        GL.GL_UNSIGNED_BYTE,
-                        texture.getPixels()
-                );
-            } catch (IOException e) {
-                e.printStackTrace();
+                    gl.glBindTexture(GL_TEXTURE_2D, textures[i++]);
+
+                    new GLU().gluBuild2DMipmaps(
+                            GL_TEXTURE_2D,
+                            GL.GL_RGBA,
+                            texture.getWidth(),
+                            texture.getHeight(),
+                            GL.GL_RGBA,
+                            GL.GL_UNSIGNED_BYTE,
+                            texture.getPixels()
+                    );
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
-        for (int T : Texts) {
-            TextsList.add(new Texts(T, false));
-        }
+
+        TextsList.add(new Texts(Texts.getIndex(0), false));
+        TextsList.add(new Texts(Texts.getIndex(1), false));
+        TextsList.add(new Texts(Texts.getIndex(2), false));
 
         reInit();
     }
 
     public void reInit() {
-        Points.PointsList.forEach(point -> point.setChecked(false));
+        Points.PointsList.forEach(point -> point.setEaten(false));
 
-        Points.FruitsList.forEach(fruit -> fruit.setChecked(false));
+        Points.FruitsList.forEach(fruit -> fruit.setEaten(false));
 
         TextsList.forEach(text -> text.setAppear(false));
 
@@ -101,21 +95,20 @@ public class PacmanApp extends BaseJogl {
 
         StartGame = false;
         PauseGame = true;
-        SoundPlayer.playAsync("Assets\\sounds\\pacman_beginning.wav", () -> {
+        SoundPlayer.playAsync(soundPath + Begin.getSound(), () -> {
             PauseGame = false;
             TextsList.get(0).setAppear(false);
         });
 
 
         score = 0;
-        n = 0;
 
-        pacman = new Pacman(19, 1);
+        pacman = new Pacman(PacmanRight.getIndex(0), 1);
 
         enemies = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             int index = (int) (Math.random() * Points.PointsList.size());
-            enemies.add(new Pacman(19 + i, index, 37 + (int) (Math.random() * 4)));
+            enemies.add(new Pacman(Ghost.getIndex(i), index, 37 + (int) (Math.random() * 4)));
         }
     }
 
@@ -125,51 +118,63 @@ public class PacmanApp extends BaseJogl {
         gl.glLoadIdentity();
 
         if (!StartGame) {
-            drawTexture(gl, 17, new double[]{0, 0}, new double[]{1, 1});
-            drawTexture(gl, 18, new double[]{0, -0.6}, new double[]{0.3, 0.3});
+            drawTexture(gl, Menu.getIndex(0), new double[]{0, 0}, new double[]{1, 1});
+            drawTexture(gl, Levels.getIndex(0), new double[]{0, -0.6}, new double[]{0.3, 0.3});
             return;
         }
 
-        drawTexture(gl, textureNames.length - 1, new double[]{0, 0}, new double[]{1, 1});
+        drawTexture(gl, Background.getIndex(0), new double[]{0, 0}, new double[]{1, 1});
 
         for (Points p : Points.PointsList) {
-            if (!p.isChecked()) {
-                drawTexture(gl, 12, p.getPositionView(), new double[]{0.075, 0.075});
+            if (!p.isEaten()) {
+                drawTexture(gl, Point.getIndex(0), p.getPositionView(), new double[]{0.075, 0.075});
 
                 if (isPacmanTouched(p.getX(), p.getY(), 1)) {
-                    SoundPlayer.playAsync("Assets\\sounds\\pacman_chomp.wav", null);
+                    SoundPlayer.playAsync(soundPath + PointEaten.getSound(), null);
                     score += 10;
-                    p.setChecked(true);
+                    p.setEaten(true);
                 }
             }
         }
 
         for (Points f : Points.FruitsList) {
-            if (!f.isChecked()) {
-                drawTexture(gl, 13, f.getPositionView(), new double[]{0.03, 0.03});
+            if (!f.isEaten()) {
+                drawTexture(gl, Fruits.getIndex(0), f.getPositionView(), new double[]{0.03, 0.03});
 
                 if (isPacmanTouched(f.getX(), f.getY(), 1)) {
-                    SoundPlayer.playAsync("Assets\\sounds\\pacman_eatfruit.wav", null);
+                    SoundPlayer.playAsync(soundPath + FruitEaten.getSound(), null);
                     score += 20;
-                    f.setChecked(true);
+                    f.setEaten(true);
                 }
             }
         }
 
         for (Texts t : TextsList) {
             if (t.isAppear()) {
-                drawTexture(gl, t.getIndex(), new double[]{0, 0.07}, new double[]{0.17, 0.13});
+                drawTexture(gl, t.getIndex(), t.getPositionView(), t.getScale());
             }
         }
 
         if (!PauseGame) {
-            if (!KeyList.isEmpty()) {
-                moveCommands.get(KeyList.get(n)).execute(pacman, pacmanSpeed);
+            if (!keyList.isEmpty()) {
+                if(keyList.size() > 1 && pacman.isMoving()) {
+                    int target = moveCommands.get(keyList.get(0)).getTarget(pacman);
 
-                if (!pacman.isMoving()) {
-                    if (n < KeyList.size() - 1) {
-                        n++;
+                    if(KeyCode.isOpposite(keyList.get(0), keyList.get(1))) {
+                        if(target != -1) {
+                            pacman.setIndex(target);
+                        }
+                        keyList.remove(0);
+                    } else if(moveCommands.get(keyList.get(1)).getTarget(new Pacman(target)) == -1) {
+                        keyList.add(0, keyList.get(0));
+
                     }
+                }
+
+                moveCommands.get(keyList.get(0)).execute(pacman, pacmanSpeed);
+
+                if (!pacman.isMoving() && keyList.size() > 1) {
+                    keyList.remove(0);
                 }
             }
 
@@ -177,32 +182,33 @@ public class PacmanApp extends BaseJogl {
                 moveCommands.get(e.getRandom()).execute(e, enemySpeed * level);
 
                 if (!e.isMoving()) {
-                    e.setRandom(37 + (int) (Math.random() * 4));
+                    e.setRandom();
                 }
             });
         }
 
-        drawTexture(gl, pacman.getFaceAnimated(), pacman.getPositionView(), new double[]{0.05, 0.05});
+        drawTexture(gl, pacman.getFaceAnimated(), pacman.getPositionView(), pacman.getScale());
 
-        enemies.forEach(e -> drawTexture(gl, e.getTexture(), e.getPositionView(), new double[]{0.05, 0.05}));
+        enemies.forEach(e -> drawTexture(gl, e.getTexture(), e.getPositionView(), e.getScale()));
 
         if (!PauseGame && (isKilled() || isWon())) {
             PauseGame = true;
 
-            KeyList.clear();
+            keyList.clear();
 
             TextsList.get(isKilled() ? 1 : 2).setAppear(true);
 
-            SoundPlayer.playAsync("Assets\\sounds\\" + (isKilled() ? "pacman_death.wav" : "Victory.wav"), this::reInit);
+            SoundPlayer.playAsync(soundPath + (isKilled() ? Death.getSound() : Victory.getSound()), this::reInit);
         }
 
-        updateScoreAndLevel(gl);
+        writeText(gl, new double[]{-0.1, 0.958}, "Score : " + score);
+        writeText(gl, new double[]{-0.9, 0.958}, "Level : " + level);
     }
 
     public void keyPressed(final KeyEvent e) {
-        int key = e.getKeyCode();
-        if (directions.contains(key)) {
-            KeyList.add(key);
+        KeyCode key = KeyCode.getKeyCode(e.getKeyCode());
+        if (key != null) {
+            keyList.add(key);
         }
     }
 
@@ -230,7 +236,8 @@ public class PacmanApp extends BaseJogl {
 
         g.glTranslated(position[0], position[1], 0);
         g.glScaled(scale[0], scale[1], 1);
-        if (textureIdx == 13) {
+
+        if (textureIdx == 16) {
             g.glRotated((double) (angle++ / 2) % 360, 0, 0, 1);
         }
 
@@ -249,17 +256,14 @@ public class PacmanApp extends BaseJogl {
         g.glDisable(GL.GL_BLEND);
     }
 
-    public void updateScoreAndLevel(GL gl) {
+    public void writeText(GL gl, double[] position, String text) {
         gl.glMatrixMode(GL.GL_MODELVIEW);
         gl.glDisable(GL_TEXTURE_2D);
         gl.glPushAttrib(GL_CURRENT_BIT);
         gl.glColor4f(1, 0, 0, 0.5f);
         gl.glPushMatrix();
-        GLUT glut = new GLUT();
-        gl.glRasterPos2d(-0.1, 0.958);
-        glut.glutBitmapString(GLUT.BITMAP_TIMES_ROMAN_24, "Score : " + score);
-        gl.glRasterPos2d(-0.9, 0.958);
-        glut.glutBitmapString(GLUT.BITMAP_HELVETICA_18, "LV : " + level);
+        gl.glRasterPos2d(position[0], position[1]);
+        new GLUT().glutBitmapString(GLUT.BITMAP_TIMES_ROMAN_24, text);
         gl.glPopMatrix();
         gl.glPopAttrib();
         gl.glEnable(GL_TEXTURE_2D);
@@ -269,7 +273,7 @@ public class PacmanApp extends BaseJogl {
         boolean result = false;
 
         for (Pacman e : enemies) {
-            result |= isPacmanTouched(e.getX(), e.getY(), 4);
+            result |= isPacmanTouched(e.getX(), e.getY(), 2);
         }
 
         return result;

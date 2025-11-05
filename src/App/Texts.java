@@ -5,7 +5,7 @@ import lombok.Setter;
 
 public class Texts {
     @Getter
-    private int index;
+    private final int index;
 
     @Setter @Getter
     private boolean isAppear;
@@ -13,5 +13,13 @@ public class Texts {
     public Texts(int index, boolean isAppear) {
         this.index = index;
         this.isAppear = isAppear;
+    }
+
+    public double[] getPositionView() {
+        return new double[]{0, 0.07};
+    }
+
+    public double[] getScale() {
+        return new double[]{0.17, 0.13};
     }
 }
