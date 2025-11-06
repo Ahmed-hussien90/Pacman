@@ -24,14 +24,12 @@ import static javax.media.opengl.GL.GL_TEXTURE_2D;
 public class PacmanApp extends BaseJogl {
     ArrayList<Texts> TextsList = new ArrayList<>();
     List<KeyCode> keyList = new ArrayList<>();
-
     String filePath = "Assets/";
     String soundPath = "Assets/sounds/";
-
-    private final static int[] textures = new int[23];
     Pacman pacman;
     List<Pacman> enemies;
 
+    private final static int[] textures = new int[23];
     private boolean StartGame, PauseGame;
     int level, angle, score;
     double pacmanSpeed = 0.4, enemySpeed = 0.1;
@@ -106,6 +104,7 @@ public class PacmanApp extends BaseJogl {
         pacman = new Pacman(PacmanRight.getIndex(0), 1);
 
         enemies = new ArrayList<>();
+
         for (int i = 0; i < 3; i++) {
             int index = (int) (Math.random() * Points.PointsList.size());
             enemies.add(new Pacman(Ghost.getIndex(i), index, 37 + (int) (Math.random() * 4)));
@@ -118,16 +117,16 @@ public class PacmanApp extends BaseJogl {
         gl.glLoadIdentity();
 
         if (!StartGame) {
-            drawTexture(gl, Menu.getIndex(0), new double[]{0, 0}, new double[]{1, 1});
-            drawTexture(gl, Levels.getIndex(0), new double[]{0, -0.6}, new double[]{0.3, 0.3});
+            drawTexture(gl, Menu.getIndex(0), Menu.getPosition(), Menu.getScale());
+            drawTexture(gl, Levels.getIndex(0), Levels.getPosition(), Levels.getScale());
             return;
         }
 
-        drawTexture(gl, Background.getIndex(0), new double[]{0, 0}, new double[]{1, 1});
+        drawTexture(gl, Background.getIndex(0), Background.getPosition(), Background.getScale());
 
         for (Points p : Points.PointsList) {
             if (!p.isEaten()) {
-                drawTexture(gl, Point.getIndex(0), p.getPositionView(), new double[]{0.075, 0.075});
+                drawTexture(gl, Point.getIndex(0), p.getPositionView(), Point.getScale());
 
                 if (isPacmanTouched(p.getX(), p.getY(), 1)) {
                     SoundPlayer.playAsync(soundPath + PointEaten.getSound(), null);
@@ -139,7 +138,7 @@ public class PacmanApp extends BaseJogl {
 
         for (Points f : Points.FruitsList) {
             if (!f.isEaten()) {
-                drawTexture(gl, Fruits.getIndex(0), f.getPositionView(), new double[]{0.03, 0.03});
+                drawTexture(gl, Fruits.getIndex(0), f.getPositionView(), Fruits.getScale());
 
                 if (isPacmanTouched(f.getX(), f.getY(), 1)) {
                     SoundPlayer.playAsync(soundPath + FruitEaten.getSound(), null);
@@ -151,7 +150,7 @@ public class PacmanApp extends BaseJogl {
 
         for (Texts t : TextsList) {
             if (t.isAppear()) {
-                drawTexture(gl, t.getIndex(), t.getPositionView(), t.getScale());
+                drawTexture(gl, t.getIndex(), Texts.getPosition(), Texts.getScale());
             }
         }
 

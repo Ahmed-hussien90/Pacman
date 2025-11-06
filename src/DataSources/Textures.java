@@ -6,35 +6,83 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum Textures {
-    PacmanRight(new String[]{"pacman/r1.png", "pacman/r2.png", "pacman/r3.png"}),
+    PacmanRight(
+            new String[]{"pacman/r1.png", "pacman/r2.png", "pacman/r3.png"}
+    ),
 
-    PacmanLeft(new String[]{"pacman/l1.png", "pacman/l2.png", "pacman/l3.png"}),
+    PacmanLeft(
+            new String[]{"pacman/l1.png", "pacman/l2.png", "pacman/l3.png"}
+    ),
 
-    PacmanTop(new String[]{"pacman/t1.png", "pacman/t2.png", "pacman/t3.png"}),
+    PacmanTop(
+            new String[]{"pacman/t1.png", "pacman/t2.png", "pacman/t3.png"}
+    ),
 
-    PacmanBottom(new String[]{"pacman/b1.png", "pacman/b2.png", "pacman/b3.png"}),
+    PacmanBottom(
+            new String[]{"pacman/b1.png", "pacman/b2.png", "pacman/b3.png"}
+    ),
 
-    Ghost(new String[]{"ghosts/blinky.png", "ghosts/pinky.png", "ghosts/clyde.png"}),
+    Ghost(
+            new String[]{"ghosts/blinky.png", "ghosts/pinky.png", "ghosts/clyde.png"}
+    ),
 
-    Point(new String[]{"extra/dot.png"}),
+    Point(
+            new String[]{"extra/dot.png"},
+            new double[]{0.075, 0.075}
+    ),
 
-    Fruits(new String[]{"extra/strawberry.png"}),
+    Fruits(
+            new String[]{"extra/strawberry.png"},
+            new double[]{0.03, 0.03}
+    ),
 
-    Texts(new String[]{"Ready.png", "GameOver.png", "Win.png"}),
+    Texts(
+            new String[]{"Ready.png", "GameOver.png", "Win.png"},
+            new double[]{0.17, 0.13},
+            new double[]{0, 0.07}
+    ),
 
-    Menu(new String[]{"menu.jpg"}),
+    Menu(
+            new String[]{"menu.jpg"},
+            new double[]{1, 1},
+            new double[]{0, 0}
+    ),
 
-    Levels(new String[]{ "levels.png"}),
+    Levels(
+            new String[]{"levels.png"},
+            new double[]{0.3, 0.3},
+            new double[]{0, -0.6}
+    ),
 
-    Background(new String[]{"background.jpeg"});
+    Background(
+            new String[]{"background.jpeg"},
+            new double[]{1, 1},
+            new double[]{0, 0}
+    );
 
     @Getter
     private final String[] path;
+    @Getter
+    private double[] scale;
+    @Getter
+    private double[] position;
+
     private static final Map<Textures, Integer> startIndexMap = new HashMap<>();
 
 
     Textures(String[] path) {
         this.path = path;
+    }
+
+    Textures(String[] path, double[] scale) {
+        this.path = path;
+        this.scale = scale;
+    }
+
+    Textures(String[] path, double[] scale, double[] position) {
+        this.path = path;
+        this.scale = scale;
+        this.position = position;
     }
 
     static {

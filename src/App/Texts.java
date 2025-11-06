@@ -14,12 +14,4 @@ public class Texts {
         this.index = index;
         this.isAppear = isAppear;
     }
-
-    public double[] getPositionView() {
-        return new double[]{0, 0.07};
-    }
-
-    public double[] getScale() {
-        return new double[]{0.17, 0.13};
-    }
 }
