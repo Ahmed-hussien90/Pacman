@@ -26,6 +26,12 @@ public class Pacman {
     private double speed;
 
     @Getter
+    private KeyCode faceDirection;
+
+    @Getter
+    private int health = 100;
+
+    @Getter
     private LinkedList<Integer> homePath = new LinkedList<>();
 
     Pacman(int texture, int index, double speed) {
@@ -38,6 +44,7 @@ public class Pacman {
     }
 
     public void setFace(KeyCode direction) {
+        this.faceDirection = direction;
         this.face = switch (direction) {
             case RIGHT -> PacmanRight.getIndex(0);
             case LEFT -> PacmanLeft.getIndex(0);
@@ -82,5 +89,17 @@ public class Pacman {
         else if(Points.PointsList.get(this.index).getLeft() == targetIndex) return KeyCode.LEFT;
 
         return KeyCode.RIGHT;
+    }
+
+    public void decreaseHealth(int points, double speed) {
+        if(this.health <= 0) return;
+
+        this.health -= points;
+        if (this.health <= 0) {
+            this.health = 0;
+            this.speed = speed;
+            this.texture = Ghost.getIndex(3);
+            this.setHomePath(82);
+        }
     }
 }

@@ -29,6 +29,7 @@ public class PacmanApp extends BaseJogl {
     String soundPath = "Assets/sounds/";
     Pacman pacman;
     List<Pacman> enemies;
+    Map<Pacman, KeyCode> fires = new HashMap<>();
     KeyCode target;
     int index;
 
@@ -36,7 +37,7 @@ public class PacmanApp extends BaseJogl {
     private final static int[] textures = new int[Textures.getTotal()];
     private boolean StartGame, pauseGame;
     int level, angle, score;
-    double pacmanSpeed = 0.4, enemySpeed = 0.15;
+    double pacmanSpeed = 0.4, enemySpeed = 0.15, fireSpeed = pacmanSpeed * 3;
 
     Map<KeyCode, MoveCommand> moveCommands = Map.of(
             UP, new MoveUp(),
@@ -107,11 +108,10 @@ public class PacmanApp extends BaseJogl {
 
         enemies = new ArrayList<>();
 
-        int index;
-        for (int i = 0; i < 3; i++) {
-            index = Points.PointsList.keySet().stream().skip(new Random().nextInt(Points.PointsList.size())).findFirst().get();
-            enemies.add(new Pacman(Ghost.getIndex(i), index, enemySpeed));
-        }
+
+        enemies.add(new Pacman(Ghost.getIndex(0), 80, enemySpeed * level));
+        enemies.add(new Pacman(Ghost.getIndex(1), 82, enemySpeed * level));
+        enemies.add(new Pacman(Ghost.getIndex(2), 83, enemySpeed * level));
     }
 
     public void display(GLAutoDrawable gld) {
@@ -127,25 +127,17 @@ public class PacmanApp extends BaseJogl {
 
         drawTexture(Background.getIndex(0), Background.getPosition(), Background.getScale());
 
-
-        System.out.println(pacman.getIndex());
         Points.PointsList.forEach((id, p) -> {
             if (!p.isEaten()) {
                 drawTexture(p.getTexture().getIndex(0), p.getPositionView(), p.getTexture().getScale());
 
-                if (isPacmanTouched(p.getX(), p.getY(), 1)) {
+                if (isPacmanTouched(pacman, p.getX(), p.getY(), 1)) {
                     SoundPlayer.playAsync(soundPath + PointEaten.getSound(), null);
                     score += 10;
                     p.setEaten(true);
                 }
             }
         });
-
-        for (Texts t : TextsList) {
-            if (t.isAppear()) {
-                drawTexture(t.getIndex(), Texts.getPosition(), Texts.getScale());
-            }
-        }
 
         if (!pauseGame) {
             if (!pacmanKeyList.isEmpty()) {
@@ -178,7 +170,7 @@ public class PacmanApp extends BaseJogl {
                     }
                 } else {
                     target = e.getRandom();
-                    e.setSpeed(enemySpeed);
+                    e.setSpeed(enemySpeed * level);
                     if (!e.isMoving()) {
                         e.setRandom();
                     }
@@ -189,7 +181,33 @@ public class PacmanApp extends BaseJogl {
 
         drawTexture(pacman.getFaceAnimated(), pacman.getPositionView(), pacman.getScale());
 
+        fires.entrySet().removeIf((fire) -> !fire.getKey().isMoving() && fire.getValue() != null && Points.PointsList.get(fire.getKey().getIndex()).getTargetIndex(fire.getValue()) == -1);
+
+        fires.entrySet().removeIf(fire -> {
+
+            if (fire.getValue() != null) {
+                moveCommands.get(fire.getValue()).execute(fire.getKey());
+            }
+
+            drawTexture(fire.getKey().getTexture(), fire.getKey().getPositionView(), Fire.getScale());
+
+            return enemies.stream().anyMatch(e -> {
+                if (isPacmanTouched(e, fire.getKey().getX(), fire.getKey().getY(), 3)) {
+                    e.decreaseHealth(25, enemySpeed * level * 3);
+                    return true;
+                }
+                return false;
+            });
+        });
+
+
         enemies.forEach(e -> drawTexture(e.getTexture(), e.getPositionView(), e.getScale()));
+
+        for (Texts t : TextsList) {
+            if (t.isAppear()) {
+                drawTexture(t.getIndex(), Texts.getPosition(), Texts.getScale());
+            }
+        }
 
         if (!pauseGame && (isPacmanKilled() || isPacmanWon())) {
             pauseGame = true;
@@ -212,8 +230,17 @@ public class PacmanApp extends BaseJogl {
         }
 
         if (e.getKeyCode() == 32) {
-            enemies.get(0).setSpeed(enemySpeed * level * 5);
-            enemies.get(0).setHomePath(82);
+            int index =  switch (pacman.getFaceDirection()) {
+                case UP -> 0;
+                case DOWN -> 1;
+                case LEFT -> 2;
+                case RIGHT -> 3;
+            };
+            
+            Pacman f = new Pacman(Fire.getIndex(index) , pacman.getIndex(), fireSpeed);
+            f.setX(pacman.getX());
+            f.setY(pacman.getY());
+            fires.put(f, pacman.getFaceDirection());
         }
     }
 
@@ -280,7 +307,7 @@ public class PacmanApp extends BaseJogl {
         boolean result = false;
 
         for (Pacman e : enemies) {
-            result |= isPacmanTouched(e.getX(), e.getY(), 2);
+            result |= isPacmanTouched(pacman, e.getX(), e.getY(), 2);
         }
 
         return result;
@@ -290,7 +317,7 @@ public class PacmanApp extends BaseJogl {
         return score == (10 * Points.PointsList.size());
     }
 
-    private boolean isPacmanTouched(double x, double y, double distance) {
+    private boolean isPacmanTouched(Pacman pacman, double x, double y, double distance) {
         return Math.abs(pacman.getY() - y) <= distance && Math.abs(pacman.getX() - x) <= distance;
     }
 }

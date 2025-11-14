@@ -26,6 +26,11 @@ public enum Textures {
             new String[]{"ghosts/blinky.png", "ghosts/pinky.png", "ghosts/clyde.png", "ghosts/blue_ghost.png"}
     ),
 
+    Fire(
+            new String[]{"fire/t.png", "fire/b.png", "fire/l.png", "fire/r.png"},
+            new double[]{0.075, 0.075}
+    ),
+
     Point(
             new String[]{"extra/dot.png"},
             new double[]{0.075, 0.075}

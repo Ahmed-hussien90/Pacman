@@ -1,5 +1,6 @@
 package App;
 
+import DataSources.KeyCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -126,5 +127,14 @@ public class Points {
         if(this.right != -1 && this.right != -2) dir.put(this.right, (int)Math.abs(this.x - PointsList.get(this.right).getX()));
 
         return dir;
+    }
+
+    public int getTargetIndex(KeyCode keyCode) {
+        return switch (keyCode) {
+            case UP -> this.top;
+            case DOWN -> this.bottom;
+            case RIGHT -> this.right;
+            case LEFT -> this.left;
+        };
     }
 }
