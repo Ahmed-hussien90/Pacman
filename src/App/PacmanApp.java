@@ -37,7 +37,7 @@ public class PacmanApp extends BaseJogl {
     private final static int[] textures = new int[Textures.getTotal()];
     private boolean StartGame, pauseGame;
     int level, angle, score;
-    double pacmanSpeed = 0.4, enemySpeed = 0.15, fireSpeed = pacmanSpeed * 3;
+    double pacmanSpeed = 0.4, enemySpeed = 0.15, fireSpeed = pacmanSpeed * 2;
 
     Map<KeyCode, MoveCommand> moveCommands = Map.of(
             UP, new MoveUp(),
@@ -165,17 +165,18 @@ public class PacmanApp extends BaseJogl {
                 if (!e.getHomePath().isEmpty()) {
                     index = e.getHomePath().peek();
                     target = e.getTargetKeyCode(index);
+                    moveCommands.get(target).execute(e);
                     if (e.getIndex() == index) {
                         e.getHomePath().pop();
                     }
                 } else {
                     target = e.getRandom();
                     e.setSpeed(enemySpeed * level);
+                    moveCommands.get(target).execute(e);
                     if (!e.isMoving()) {
                         e.setRandom();
                     }
                 }
-                moveCommands.get(target).execute(e);
             });
         }
 
@@ -193,7 +194,7 @@ public class PacmanApp extends BaseJogl {
 
             return enemies.stream().anyMatch(e -> {
                 if (isPacmanTouched(e, fire.getKey().getX(), fire.getKey().getY(), 3)) {
-                    e.decreaseHealth(25, enemySpeed * level * 3);
+                    e.decreaseHealth(100, enemySpeed * level * 3);
                     return true;
                 }
                 return false;
@@ -224,23 +225,25 @@ public class PacmanApp extends BaseJogl {
     }
 
     public void keyPressed(final KeyEvent e) {
-        KeyCode key = KeyCode.getKeyCode(e.getKeyCode());
-        if (key != null) {
-            pacmanKeyList.add(key);
-        }
+        if (!pauseGame) {
+            KeyCode key = KeyCode.getKeyCode(e.getKeyCode());
+            if (key != null) {
+                pacmanKeyList.add(key);
+            }
 
-        if (e.getKeyCode() == 32) {
-            int index =  switch (pacman.getFaceDirection()) {
-                case UP -> 0;
-                case DOWN -> 1;
-                case LEFT -> 2;
-                case RIGHT -> 3;
-            };
-            
-            Pacman f = new Pacman(Fire.getIndex(index) , pacman.getIndex(), fireSpeed);
-            f.setX(pacman.getX());
-            f.setY(pacman.getY());
-            fires.put(f, pacman.getFaceDirection());
+            if (e.getKeyCode() == 32) {
+                int index = switch (pacman.getFaceDirection()) {
+                    case UP -> 0;
+                    case DOWN -> 1;
+                    case LEFT -> 2;
+                    case RIGHT -> 3;
+                };
+
+                Pacman f = new Pacman(Fire.getIndex(index), pacman.getIndex(), fireSpeed);
+                f.setX(pacman.getX());
+                f.setY(pacman.getY());
+                fires.put(f, pacman.getFaceDirection());
+            }
         }
     }
 
@@ -307,7 +310,7 @@ public class PacmanApp extends BaseJogl {
         boolean result = false;
 
         for (Pacman e : enemies) {
-            result |= isPacmanTouched(pacman, e.getX(), e.getY(), 2);
+            result |=  !e.isDead() && isPacmanTouched(pacman, e.getX(), e.getY(), 2);
         }
 
         return result;

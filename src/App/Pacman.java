@@ -10,8 +10,10 @@ import java.util.LinkedList;
 public class Pacman {
     @Setter @Getter
     private double x, y;
+
     @Getter
     private int face, faceAnimated;
+
     @Setter @Getter
     private int texture;
 
@@ -19,8 +21,9 @@ public class Pacman {
     private int index;
 
     private int random;
+
     @Setter @Getter
-    private boolean isMoving;
+    private boolean isMoving, isDead;
 
     @Setter @Getter
     private double speed;
@@ -41,6 +44,7 @@ public class Pacman {
         this.y = Points.PointsList.get(this.index).getY();
         this.random = 37 + (int) (Math.random() * 4);
         this.speed = speed;
+        this.faceDirection = KeyCode.RIGHT;
     }
 
     public void setFace(KeyCode direction) {
@@ -99,6 +103,7 @@ public class Pacman {
             this.health = 0;
             this.speed = speed;
             this.texture = Ghost.getIndex(3);
+            this.isDead = true;
             this.setHomePath(82);
         }
     }
