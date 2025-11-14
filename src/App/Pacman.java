@@ -5,6 +5,8 @@ import static DataSources.Textures.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.LinkedList;
+
 public class Pacman {
     @Setter @Getter
     private double x, y;
@@ -20,22 +22,19 @@ public class Pacman {
     @Setter @Getter
     private boolean isMoving;
 
-    Pacman(int index) {
-        this.index = index;
-    }
+    @Setter @Getter
+    private double speed;
 
-    Pacman(int texture, int index) {
+    @Getter
+    private LinkedList<Integer> homePath = new LinkedList<>();
+
+    Pacman(int texture, int index, double speed) {
         this.texture = texture;
         this.index = index;
         this.x = Points.PointsList.get(this.index).getX();
         this.y = Points.PointsList.get(this.index).getY();
-    }
-    Pacman(int texture, int index, int random) {
-        this.texture = texture;
-        this.index = index;
-        this.random = random;
-        this.x = Points.PointsList.get(this.index).getX();
-        this.y = Points.PointsList.get(this.index).getY();
+        this.random = 37 + (int) (Math.random() * 4);
+        this.speed = speed;
     }
 
     public void setFace(KeyCode direction) {
@@ -69,5 +68,19 @@ public class Pacman {
 
     public KeyCode getRandom() {
         return KeyCode.getKeyCode(this.random);
+    }
+
+    public void setHomePath(int to) {
+        this.homePath = ShortestPath.findPath(this.index, to);
+    }
+
+    public KeyCode getTargetKeyCode(int targetIndex) {
+        if(Points.PointsList.get(this.index).getTop() == targetIndex) return KeyCode.UP;
+
+        else if(Points.PointsList.get(this.index).getBottom() == targetIndex) return KeyCode.DOWN;
+
+        else if(Points.PointsList.get(this.index).getLeft() == targetIndex) return KeyCode.LEFT;
+
+        return KeyCode.RIGHT;
     }
 }

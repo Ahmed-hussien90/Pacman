@@ -22,17 +22,21 @@ import static javax.media.opengl.GL.GL_CURRENT_BIT;
 import static javax.media.opengl.GL.GL_TEXTURE_2D;
 
 public class PacmanApp extends BaseJogl {
+    GL gl;
     ArrayList<Texts> TextsList = new ArrayList<>();
-    List<KeyCode> keyList = new ArrayList<>();
+    LinkedList<KeyCode> pacmanKeyList = new LinkedList<>();
     String filePath = "Assets/";
     String soundPath = "Assets/sounds/";
     Pacman pacman;
     List<Pacman> enemies;
+    KeyCode target;
+    int index;
 
-    private final static int[] textures = new int[23];
-    private boolean StartGame, PauseGame;
+
+    private final static int[] textures = new int[Textures.getTotal()];
+    private boolean StartGame, pauseGame;
     int level, angle, score;
-    double pacmanSpeed = 0.4, enemySpeed = 0.1;
+    double pacmanSpeed = 0.4, enemySpeed = 0.15;
 
     Map<KeyCode, MoveCommand> moveCommands = Map.of(
             UP, new MoveUp(),
@@ -52,7 +56,7 @@ public class PacmanApp extends BaseJogl {
         TextureReader.Texture texture;
 
         for (Textures paths : Textures.values()) {
-            for(String path: paths.getPath()) {
+            for (String path : paths.getPath()) {
                 try {
                     texture = TextureReader.readTexture(filePath + "//" + path, true);
 
@@ -67,8 +71,7 @@ public class PacmanApp extends BaseJogl {
                             GL.GL_UNSIGNED_BYTE,
                             texture.getPixels()
                     );
-                }
-                catch (IOException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
@@ -83,50 +86,52 @@ public class PacmanApp extends BaseJogl {
     }
 
     public void reInit() {
-        Points.PointsList.forEach(point -> point.setEaten(false));
-
-        Points.FruitsList.forEach(fruit -> fruit.setEaten(false));
+        Points.PointsList.forEach((id, point) -> point.setEaten(false));
 
         TextsList.forEach(text -> text.setAppear(false));
 
         TextsList.get(0).setAppear(true);
 
         StartGame = false;
-        PauseGame = true;
+        pauseGame = true;
+
         SoundPlayer.playAsync(soundPath + Begin.getSound(), () -> {
-            PauseGame = false;
+            pauseGame = false;
             TextsList.get(0).setAppear(false);
         });
 
 
         score = 0;
 
-        pacman = new Pacman(PacmanRight.getIndex(0), 1);
+        pacman = new Pacman(PacmanRight.getIndex(0), 1, pacmanSpeed);
 
         enemies = new ArrayList<>();
 
+        int index;
         for (int i = 0; i < 3; i++) {
-            int index = (int) (Math.random() * Points.PointsList.size());
-            enemies.add(new Pacman(Ghost.getIndex(i), index, 37 + (int) (Math.random() * 4)));
+            index = Points.PointsList.keySet().stream().skip(new Random().nextInt(Points.PointsList.size())).findFirst().get();
+            enemies.add(new Pacman(Ghost.getIndex(i), index, enemySpeed));
         }
     }
 
     public void display(GLAutoDrawable gld) {
-        GL gl = gld.getGL();
+        gl = gld.getGL();
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
         gl.glLoadIdentity();
 
         if (!StartGame) {
-            drawTexture(gl, Menu.getIndex(0), Menu.getPosition(), Menu.getScale());
-            drawTexture(gl, Levels.getIndex(0), Levels.getPosition(), Levels.getScale());
+            drawTexture(Menu.getIndex(0), Menu.getPosition(), Menu.getScale());
+            drawTexture(Levels.getIndex(0), Levels.getPosition(), Levels.getScale());
             return;
         }
 
-        drawTexture(gl, Background.getIndex(0), Background.getPosition(), Background.getScale());
+        drawTexture(Background.getIndex(0), Background.getPosition(), Background.getScale());
 
-        for (Points p : Points.PointsList) {
+
+        System.out.println(pacman.getIndex());
+        Points.PointsList.forEach((id, p) -> {
             if (!p.isEaten()) {
-                drawTexture(gl, Point.getIndex(0), p.getPositionView(), Point.getScale());
+                drawTexture(p.getTexture().getIndex(0), p.getPositionView(), p.getTexture().getScale());
 
                 if (isPacmanTouched(p.getX(), p.getY(), 1)) {
                     SoundPlayer.playAsync(soundPath + PointEaten.getSound(), null);
@@ -134,128 +139,131 @@ public class PacmanApp extends BaseJogl {
                     p.setEaten(true);
                 }
             }
-        }
-
-        for (Points f : Points.FruitsList) {
-            if (!f.isEaten()) {
-                drawTexture(gl, Fruits.getIndex(0), f.getPositionView(), Fruits.getScale());
-
-                if (isPacmanTouched(f.getX(), f.getY(), 1)) {
-                    SoundPlayer.playAsync(soundPath + FruitEaten.getSound(), null);
-                    score += 20;
-                    f.setEaten(true);
-                }
-            }
-        }
+        });
 
         for (Texts t : TextsList) {
             if (t.isAppear()) {
-                drawTexture(gl, t.getIndex(), Texts.getPosition(), Texts.getScale());
+                drawTexture(t.getIndex(), Texts.getPosition(), Texts.getScale());
             }
         }
 
-        if (!PauseGame) {
-            if (!keyList.isEmpty()) {
-                if(keyList.size() > 1 && pacman.isMoving()) {
-                    int target = moveCommands.get(keyList.get(0)).getTarget(pacman);
+        if (!pauseGame) {
+            if (!pacmanKeyList.isEmpty()) {
+                if (pacmanKeyList.size() > 1 && pacman.isMoving()) {
+                    int target = moveCommands.get(pacmanKeyList.getFirst()).getTarget(pacman);
 
-                    if(KeyCode.isOpposite(keyList.get(0), keyList.get(1))) {
-                        if(target != -1) {
+                    if (KeyCode.isOpposite(pacmanKeyList.getFirst(), pacmanKeyList.get(1))) {
+                        if (target != -1) {
                             pacman.setIndex(target);
                         }
-                        keyList.remove(0);
-                    } else if(moveCommands.get(keyList.get(1)).getTarget(new Pacman(target)) == -1) {
-                        keyList.add(0, keyList.get(0));
-
+                        pacmanKeyList.removeFirst();
+                    } else if (moveCommands.get(pacmanKeyList.get(1)).getTarget(new Pacman(PacmanRight.getIndex(0), target, pacmanSpeed)) == -1) {
+                        pacmanKeyList.addFirst(pacmanKeyList.getFirst());
                     }
+
                 }
 
-                moveCommands.get(keyList.get(0)).execute(pacman, pacmanSpeed);
-
-                if (!pacman.isMoving() && keyList.size() > 1) {
-                    keyList.remove(0);
+                moveCommands.get(pacmanKeyList.getFirst()).execute(pacman);
+                if (!pacman.isMoving() && pacmanKeyList.size() > 1) {
+                    pacmanKeyList.removeFirst();
                 }
             }
 
             enemies.forEach(e -> {
-                moveCommands.get(e.getRandom()).execute(e, enemySpeed * level);
-
-                if (!e.isMoving()) {
-                    e.setRandom();
+                if (!e.getHomePath().isEmpty()) {
+                    index = e.getHomePath().peek();
+                    target = e.getTargetKeyCode(index);
+                    if (e.getIndex() == index) {
+                        e.getHomePath().pop();
+                    }
+                } else {
+                    target = e.getRandom();
+                    e.setSpeed(enemySpeed);
+                    if (!e.isMoving()) {
+                        e.setRandom();
+                    }
                 }
+                moveCommands.get(target).execute(e);
             });
         }
 
-        drawTexture(gl, pacman.getFaceAnimated(), pacman.getPositionView(), pacman.getScale());
+        drawTexture(pacman.getFaceAnimated(), pacman.getPositionView(), pacman.getScale());
 
-        enemies.forEach(e -> drawTexture(gl, e.getTexture(), e.getPositionView(), e.getScale()));
+        enemies.forEach(e -> drawTexture(e.getTexture(), e.getPositionView(), e.getScale()));
 
-        if (!PauseGame && (isKilled() || isWon())) {
-            PauseGame = true;
+        if (!pauseGame && (isPacmanKilled() || isPacmanWon())) {
+            pauseGame = true;
 
-            keyList.clear();
+            pacmanKeyList.clear();
 
-            TextsList.get(isKilled() ? 1 : 2).setAppear(true);
+            TextsList.get(isPacmanKilled() ? 1 : 2).setAppear(true);
 
-            SoundPlayer.playAsync(soundPath + (isKilled() ? Death.getSound() : Victory.getSound()), this::reInit);
+            SoundPlayer.playAsync(soundPath + (isPacmanKilled() ? Death.getSound() : Victory.getSound()), this::reInit);
         }
 
-        writeText(gl, new double[]{-0.1, 0.958}, "Score : " + score);
-        writeText(gl, new double[]{-0.9, 0.958}, "Level : " + level);
+        writeText(new double[]{-0.1, 0.958}, "Score : " + score);
+        writeText(new double[]{-0.9, 0.958}, "Level : " + level);
     }
 
     public void keyPressed(final KeyEvent e) {
         KeyCode key = KeyCode.getKeyCode(e.getKeyCode());
         if (key != null) {
-            keyList.add(key);
+            pacmanKeyList.add(key);
+        }
+
+        if (e.getKeyCode() == 32) {
+            enemies.get(0).setSpeed(enemySpeed * level * 5);
+            enemies.get(0).setHomePath(82);
         }
     }
 
     public void mouseClicked(final MouseEvent e) {
         double x = e.getX(), y = e.getY();
 
-        if (!StartGame && (355 < x && x < 485)) {
+        if (!StartGame && (300 < x && x < 522)) {
             StartGame = true;
 
-            if (539 < y && y < 597)
+            if (530 < y && y < 603)
                 level = 1;
-            else if (624 < y && y < 680)
+            else if (610 < y && y < 690)
                 level = 2;
-            else if (708 < y && y < 766)
+            else if (700 < y && y < 775)
                 level = 3;
             else
                 StartGame = false;
+
+            enemies.forEach(en -> en.setSpeed(enemySpeed * level));
         }
     }
 
-    private void drawTexture(GL g, int textureIdx, double[] position, double[] scale) {
-        g.glEnable(GL.GL_BLEND);
-        g.glBindTexture(GL_TEXTURE_2D, textures[textureIdx]);
-        g.glPushMatrix();
+    private void drawTexture(int textureIdx, double[] position, double[] scale) {
+        gl.glEnable(GL.GL_BLEND);
+        gl.glBindTexture(GL_TEXTURE_2D, textures[textureIdx]);
+        gl.glPushMatrix();
 
-        g.glTranslated(position[0], position[1], 0);
-        g.glScaled(scale[0], scale[1], 1);
+        gl.glTranslated(position[0], position[1], 0);
+        gl.glScaled(scale[0], scale[1], 1);
 
-        if (textureIdx == 16) {
-            g.glRotated((double) (angle++ / 2) % 360, 0, 0, 1);
+        if (textureIdx == Fruit.getIndex(0)) {
+            gl.glRotated((double) (angle++ / 2) % 360, 0, 0, 1);
         }
 
-        g.glBegin(GL.GL_QUADS);
-        g.glTexCoord2f(0.0f, 0.0f);
-        g.glVertex3f(-1.0f, -1.0f, -1.0f);
-        g.glTexCoord2f(1.0f, 0.0f);
-        g.glVertex3f(1.0f, -1.0f, -1.0f);
-        g.glTexCoord2f(1.0f, 1.0f);
-        g.glVertex3f(1.0f, 1.0f, -1.0f);
-        g.glTexCoord2f(0.0f, 1.0f);
-        g.glVertex3f(-1.0f, 1.0f, -1.0f);
-        g.glEnd();
+        gl.glBegin(GL.GL_QUADS);
+        gl.glTexCoord2f(0.0f, 0.0f);
+        gl.glVertex3f(-1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1.0f, 0.0f);
+        gl.glVertex3f(1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1.0f, 1.0f);
+        gl.glVertex3f(1.0f, 1.0f, -1.0f);
+        gl.glTexCoord2f(0.0f, 1.0f);
+        gl.glVertex3f(-1.0f, 1.0f, -1.0f);
+        gl.glEnd();
 
-        g.glPopMatrix();
-        g.glDisable(GL.GL_BLEND);
+        gl.glPopMatrix();
+        gl.glDisable(GL.GL_BLEND);
     }
 
-    public void writeText(GL gl, double[] position, String text) {
+    public void writeText(double[] position, String text) {
         gl.glMatrixMode(GL.GL_MODELVIEW);
         gl.glDisable(GL_TEXTURE_2D);
         gl.glPushAttrib(GL_CURRENT_BIT);
@@ -268,7 +276,7 @@ public class PacmanApp extends BaseJogl {
         gl.glEnable(GL_TEXTURE_2D);
     }
 
-    private boolean isKilled() {
+    private boolean isPacmanKilled() {
         boolean result = false;
 
         for (Pacman e : enemies) {
@@ -278,8 +286,8 @@ public class PacmanApp extends BaseJogl {
         return result;
     }
 
-    private boolean isWon() {
-        return score == (10 * Points.PointsList.size()) + (20 * Points.FruitsList.size());
+    private boolean isPacmanWon() {
+        return score == (10 * Points.PointsList.size());
     }
 
     private boolean isPacmanTouched(double x, double y, double distance) {

@@ -6,7 +6,7 @@ import static DataSources.KeyCode.*;
 
 public class MoveRight implements MoveCommand {
     @Override
-    public void execute(Pacman pacman, double speed) {
+    public void execute(Pacman pacman) {
         int direction = Points.PointsList.get(pacman.getIndex()).getRight();
 
         pacman.setMoving(false);
@@ -18,11 +18,11 @@ public class MoveRight implements MoveCommand {
                 return;
             }
 
-            if (Math.abs(Points.PointsList.get(direction).getX() - pacman.getX()) <= speed) {
+            if (Math.abs(Points.PointsList.get(direction).getX() - pacman.getX()) <= pacman.getSpeed()) {
                 pacman.setIndex(direction);
                 pacman.setX(Points.PointsList.get(direction).getX());
             } else {
-                pacman.setX(pacman.getX() +speed);
+                pacman.setX(pacman.getX() +pacman.getSpeed());
                 pacman.setFace(RIGHT);
                 pacman.setMoving(true);
             }

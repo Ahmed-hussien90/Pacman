@@ -23,7 +23,7 @@ public enum Textures {
     ),
 
     Ghost(
-            new String[]{"ghosts/blinky.png", "ghosts/pinky.png", "ghosts/clyde.png"}
+            new String[]{"ghosts/blinky.png", "ghosts/pinky.png", "ghosts/clyde.png", "ghosts/blue_ghost.png"}
     ),
 
     Point(
@@ -31,7 +31,7 @@ public enum Textures {
             new double[]{0.075, 0.075}
     ),
 
-    Fruits(
+    Fruit(
             new String[]{"extra/strawberry.png"},
             new double[]{0.03, 0.03}
     ),
@@ -66,9 +66,10 @@ public enum Textures {
     private double[] scale;
     @Getter
     private double[] position;
+    @Getter
+    private static final int total;
 
     private static final Map<Textures, Integer> startIndexMap = new HashMap<>();
-
 
     Textures(String[] path) {
         this.path = path;
@@ -91,6 +92,7 @@ public enum Textures {
             startIndexMap.put(t, index);
             index += t.path.length;
         }
+        total = index ;
     }
 
     public int getIndex(int index) {

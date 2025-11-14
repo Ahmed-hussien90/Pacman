@@ -8,8 +8,8 @@ public class SoundPlayer {
 
     private static final int BUFFER_SIZE = 4096;
 
-    public static CompletableFuture<Void> playAsync(String path, Runnable onEnd) {
-        return CompletableFuture.runAsync(() -> {
+    public static void playAsync(String path, Runnable onEnd) {
+        CompletableFuture.runAsync(() -> {
             try (AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File(path))) {
                 AudioFormat format = audioStream.getFormat();
                 DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
@@ -29,8 +29,7 @@ public class SoundPlayer {
 
                     if (onEnd != null) onEnd.run();
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         });
