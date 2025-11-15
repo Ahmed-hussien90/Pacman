@@ -1,6 +1,7 @@
 package App;
 
 import DataSources.KeyCode;
+import DataSources.Sound;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,12 +10,16 @@ import java.util.*;
 import DataSources.Textures;
 
 import static DataSources.KeyCode.*;
+import static DataSources.Sound.*;
 import static DataSources.Textures.Fruit;
 import static DataSources.Textures.Point;
 
 public class Points {
     @Getter
     private final Textures texture;
+    @Getter
+    private final Sound sound;
+
     @Getter
     private final double x, y;
     @Getter
@@ -112,6 +117,12 @@ public class Points {
         this.bottom = bottom;
         this.right = right;
         this.isEaten = isEaten;
+
+        this.sound = switch (texture) {
+            case Fruit -> FruitEaten;
+            case Point -> PointEaten;
+            default -> null;
+        };
     }
 
     public double getXView() {

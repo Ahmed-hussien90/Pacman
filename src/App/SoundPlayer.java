@@ -1,5 +1,6 @@
 package App;
 
+import DataSources.Sound;
 import lombok.Setter;
 
 import javax.sound.sampled.*;
@@ -13,9 +14,9 @@ public class SoundPlayer {
     @Setter
     private static boolean isMuted;
 
-    public static void playAsync(String path, Runnable onEnd) {
+    public static void playAsync(Sound path, Runnable onEnd) {
         CompletableFuture.runAsync(() -> {
-            try (AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File(path))) {
+            try (AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File(path.getSound()))) {
                 AudioFormat format = audioStream.getFormat();
                 DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
                 try (SourceDataLine audioLine = (SourceDataLine) AudioSystem.getLine(info)) {

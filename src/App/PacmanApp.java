@@ -24,9 +24,8 @@ public class PacmanApp extends BaseJogl {
     private final int[] textures = new int[Textures.getTotal()];
     private boolean startGame, pauseGame;
     private int index, level, angle, score;
-    double pacmanSpeed = 0.4, enemySpeed = 0.15;
+    double pacmanSpeed = 0.6, enemySpeed = 0.6;
     GL gl;
-    String filePath = "Assets/", soundPath = "Assets/sounds/";
     Pacman pacman;
     List<Texts> TextsList;
     List<Enemy> enemies;
@@ -52,7 +51,7 @@ public class PacmanApp extends BaseJogl {
         for (Textures paths : Textures.values()) {
             for (String path : paths.getPath()) {
                 try {
-                    texture = TextureReader.readTexture(filePath + "/" + path, true);
+                    texture = TextureReader.readTexture("Assets/" + path, true);
 
                     gl.glBindTexture(GL_TEXTURE_2D, textures[i++]);
 
@@ -94,7 +93,7 @@ public class PacmanApp extends BaseJogl {
         pauseGame = true;
 
         TextsList.get(0).setAppear(true);
-        SoundPlayer.playAsync(soundPath + Begin.getSound(), () -> {
+        SoundPlayer.playAsync(Begin, () -> {
             pauseGame = false;
             TextsList.get(0).setAppear(false);
         });
@@ -127,7 +126,7 @@ public class PacmanApp extends BaseJogl {
                 drawTexture(p.getTexture().getIndex(0), new double[]{p.getXView(), p.getYView()}, p.getTexture());
 
                 if (pacman.isTouched(p.getX(), p.getY())) {
-                    SoundPlayer.playAsync(soundPath + PointEaten.getSound(), null);
+                    SoundPlayer.playAsync(p.getSound(), null);
                     score += 10;
                     p.setEaten(true);
                 }
@@ -214,7 +213,7 @@ public class PacmanApp extends BaseJogl {
 
             TextsList.get(pacman.isKilled(enemies) ? 1 : 2).setAppear(true);
 
-            SoundPlayer.playAsync(soundPath + (pacman.isKilled(enemies) ? Death.getSound() : Victory.getSound()), this::reInit);
+            SoundPlayer.playAsync(pacman.isKilled(enemies) ? Death : Victory, this::reInit);
         }
 
         writeText(new double[]{-0.1, 0.958}, "Score : " + score);
@@ -232,6 +231,7 @@ public class PacmanApp extends BaseJogl {
                 KeyCode faceDirection =  pacmanKeyList.isEmpty() ? RIGHT : pacmanKeyList.getFirst();
 
                 fires.add(new Fire(Fire, pacman, faceDirection));
+                SoundPlayer.playAsync(PacmanFire, null);
             }
         }
     }

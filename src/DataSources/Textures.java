@@ -82,7 +82,7 @@ public enum Textures {
     private static final Map<Textures, Integer> startIndexMap = new HashMap<>();
 
     Textures(String[] path, double[] scale) {
-        this.path = path;
+        this.path =  path;
         this.scale = scale;
     }
 

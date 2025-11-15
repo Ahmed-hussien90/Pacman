@@ -3,25 +3,23 @@ package App;
 import java.util.*;
 
 public class ShortestPath {
-    public static LinkedList<Integer> findPath(int start, int end) {
-        int n = Points.PointsList.keySet().stream().max(Integer::compare).get() + 1;
-
-        double[] dist = new double[n];
-        int[] parent = new int[n];
-        boolean[] visited = new boolean[n];
-
-        Arrays.fill(dist, Integer.MAX_VALUE);
+    public static LinkedList<Integer> findPath(int start, int end, int size, Callback callback) {
+        int[] parent = new int[size];
         Arrays.fill(parent, Integer.MIN_VALUE);
 
-        dist[start] = 0;
+        double[] dist = new double[size];
+        Arrays.fill(dist, Integer.MAX_VALUE);
+
+        boolean[] visited = new boolean[size];
 
         PriorityQueue<Node> pQueue = new PriorityQueue<>(Comparator.comparingDouble(a -> a.cost));
 
+        dist[start] = 0;
+
         pQueue.add(new Node(start, dist[start]));
 
-        Node current;
         while (!pQueue.isEmpty()) {
-            current = pQueue.poll();
+            Node current = pQueue.poll();
 
             if (visited[current.node]) continue;
 
@@ -29,12 +27,11 @@ public class ShortestPath {
 
             if (current.node == end) break;
 
-            Node finalCurrent = current;
-            getAvailableDirections(Points.PointsList.get(current.node)).forEach((next, weight) -> {
-                if (finalCurrent.cost + weight < dist[next]) {
-                    dist[next] = finalCurrent.cost + weight;
-                    parent[next] = finalCurrent.node;
-                    pQueue.add(new Node(next, dist[next]));
+            callback.calculateMinWeight(current).forEach(neighbour -> {
+                if (current.cost + neighbour.cost < dist[neighbour.node]) {
+                    dist[neighbour.node] = current.cost + neighbour.cost;
+                    parent[neighbour.node] = current.node;
+                    pQueue.add(new ShortestPath.Node(neighbour.node, dist[neighbour.node]));
                 }
             });
         }
@@ -50,24 +47,10 @@ public class ShortestPath {
         return path;
     }
 
-    private static Map<Integer, Double> getAvailableDirections(Points p) {
-        Map<Integer, Double> dir = new HashMap<>();
-
-        addIfValid(dir, p.getTop(),    p, false);
-        addIfValid(dir, p.getBottom(), p, false);
-        addIfValid(dir, p.getLeft(),   p, true);
-        addIfValid(dir, p.getRight(),  p, true);
-
-        return dir;
+    public record Node(int node, double cost) {
     }
 
-    private static void addIfValid(Map<Integer, Double> dir, int next, Points p, boolean useX) {
-        if (next >= 0) {
-            Points np = Points.PointsList.get(next);
-            dir.put(next, Math.abs(useX ? p.getX() - np.getX() : p.getY() - np.getY()));
-        }
-    }
-
-    private record Node(int node, double cost) {
+    public interface Callback {
+        List<Node> calculateMinWeight(Node current);
     }
 }

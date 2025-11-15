@@ -1,12 +1,14 @@
 package GameEntity;
 
+import App.Points;
 import App.ShortestPath;
+import App.SoundPlayer;
 import DataSources.KeyCode;
+import static DataSources.Sound.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.LinkedList;
-import java.util.Random;
+import java.util.*;
 
 import static DataSources.Textures.Ghost;
 
@@ -31,9 +33,30 @@ public class Enemy extends GameEntity {
         this.homePath = new LinkedList<>();
     }
 
-    public void setHomePath(int to) {
-        this.homePath = ShortestPath.findPath(this.index, to);
+    public void setHomePath(int end) {
+        int size = Points.PointsList.keySet().stream().max(Integer::compare).get() + 1;
+
+        this.homePath = ShortestPath.findPath(this.index, end, size, (current) -> {
+            Points p = Points.PointsList.get(current.node());
+
+            List<ShortestPath.Node> dir = new ArrayList<>();
+
+            addIfValid(dir, p, p.getTop(),    false);
+            addIfValid(dir, p, p.getBottom(), false);
+            addIfValid(dir, p, p.getLeft(),   true);
+            addIfValid(dir, p, p.getRight(),  true);
+
+            return dir;
+        });
     }
+
+    private void addIfValid(List<ShortestPath.Node> dir, Points p, int next, boolean useX) {
+        if (next >= 0) {
+            Points np = Points.PointsList.get(next);
+            dir.add(new ShortestPath.Node(next, Math.abs(useX ? p.getX() - np.getX() : p.getY() - np.getY())));
+        }
+    }
+
 
     public void setRandom() {
         KeyCode[] keyCodes = KeyCode.values();
@@ -47,6 +70,7 @@ public class Enemy extends GameEntity {
 
         if (this.health <= 0) {
             this.setDead(true);
+            SoundPlayer.playAsync(EnemyKilled, null);
         }
     }
 
@@ -55,13 +79,13 @@ public class Enemy extends GameEntity {
 
         if(this.isDead) {
             this.setHealth(0);
-            this.setSpeed(speed * 3);
+            this.setSpeed(speed * 2);
 
             int[] choices = {80, 82, 83};
             this.setHomePath(choices[new Random().nextInt(choices.length)]);
         }else {
             this.setHealth(100);
-            this.setSpeed(speed / 3);
+            this.setSpeed(speed / 2);
         }
     }
 }
