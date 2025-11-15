@@ -5,6 +5,9 @@ import App.ShortestPath;
 import App.SoundPlayer;
 import DataSources.KeyCode;
 import static DataSources.Sound.*;
+import static App.Points.PointsList;
+
+import Movement.MoveCommand;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,10 +37,10 @@ public class Enemy extends GameEntity {
     }
 
     public void setHomePath(int end) {
-        int size = Points.PointsList.keySet().stream().max(Integer::compare).get() + 1;
+        int size = PointsList.keySet().stream().max(Integer::compare).get() + 1;
 
         this.homePath = ShortestPath.findPath(this.index, end, size, (current) -> {
-            Points p = Points.PointsList.get(current.node());
+            Points p = PointsList.get(current.node());
 
             List<ShortestPath.Node> dir = new ArrayList<>();
 
@@ -48,11 +51,15 @@ public class Enemy extends GameEntity {
 
             return dir;
         });
+
+        if(this.isMoving) {
+            this.index = MoveCommand.movements.get(this.getRandom()).getTarget(this);
+        }
     }
 
     private void addIfValid(List<ShortestPath.Node> dir, Points p, int next, boolean useX) {
         if (next >= 0) {
-            Points np = Points.PointsList.get(next);
+            Points np = PointsList.get(next);
             dir.add(new ShortestPath.Node(next, Math.abs(useX ? p.getX() - np.getX() : p.getY() - np.getY())));
         }
     }
@@ -79,13 +86,10 @@ public class Enemy extends GameEntity {
 
         if(this.isDead) {
             this.setHealth(0);
-            this.setSpeed(speed * 2);
-
             int[] choices = {80, 82, 83};
             this.setHomePath(choices[new Random().nextInt(choices.length)]);
         }else {
             this.setHealth(100);
-            this.setSpeed(speed / 2);
         }
     }
 }

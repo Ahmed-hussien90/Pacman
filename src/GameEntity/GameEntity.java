@@ -1,6 +1,6 @@
 package GameEntity;
 
-import App.Points;
+import static App.Points.PointsList;
 import DataSources.Textures;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,14 +24,15 @@ public class GameEntity {
     @Setter @Getter
     protected boolean isMoving;
 
-    final int HEIGHT = 100, WIDTH = 100;
+    @Getter
+    private final int HEIGHT = 100, WIDTH = 100;
 
     public GameEntity(int textureId, int index, double speed) {
         this.textureId = textureId;
         this.index = index;
         this.speed = speed;
-        this.x = Points.PointsList.get(this.index).getX();
-        this.y = Points.PointsList.get(this.index).getY();
+        this.x = PointsList.get(this.index).getX();
+        this.y = PointsList.get(this.index).getY();
     }
 
     public double getXView() {

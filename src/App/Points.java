@@ -17,20 +17,30 @@ import static DataSources.Textures.Point;
 public class Points {
     @Getter
     private final Textures texture;
+
     @Getter
     private final Sound sound;
 
     @Getter
     private final double x, y;
+
     @Getter
     private final int top, left, bottom, right;
+
+    @Getter
+    private final boolean defaultView;
+
     @Setter @Getter
     private boolean isEaten;
 
-    final int HEIGHT = 100, WIDTH = 100;
+    @Getter
+    private final int HEIGHT = 100, WIDTH = 100;
+
+    @Getter @Setter
+    private static int noOfViewedPoints;
 
     public static Map<Integer, Points> PointsList = Map.<Integer, Points>ofEntries(
-        Map.entry(1 , new Points(Point,45    , 38.75 , -1    , -1    , 50    , 2     , false)),
+        Map.entry(1 , new Points(Point,45    , 38.75 , -1    , -1    , 50    , 2     , true )),
         Map.entry(2 , new Points(Point,61.25 , 38.75 , 3     , 67    , 1     , -1    , false)),
         Map.entry(3 , new Points(Point,61.25 , 48    , 4     , 2     , -1    , 17    , false)),
         Map.entry(4 , new Points(Point,61.25 , 58    , -1    , 3     , 5     , -1    , false)),
@@ -102,13 +112,19 @@ public class Points {
         Map.entry(70, new Points(Fruit,18    , 58    , 63    , 65    , -1    , -1    , false)),
         Map.entry(71, new Points(Fruit,71.5  , 58    , 15    , 17    , -1    , -1    , false)),
         Map.entry(72, new Points(Fruit,29    , 90.5  , -1    , -1    , 59    , 58    , false)),
-        Map.entry(81, new Points(Point,45    , 58    , -1    , 80    , 53    , 5     , false)),
-        Map.entry(80, new Points(Point,45    , 48    , 81    , -1    , 83    , 82    , false)),
-        Map.entry(82, new Points(Point,50.5  , 48    , -1    , -1    , 80    , -1    , false)),
-        Map.entry(83, new Points(Point,39.5  , 48    , -1    , -1    , -1    , 80    , false))
+        Map.entry(81, new Points(Point,45    , 58    , -1    , 80    , 53    , 5     , true )),
+        Map.entry(80, new Points(Point,45    , 48    , 81    , -1    , 83    , 82    , true )),
+        Map.entry(82, new Points(Point,50.5  , 48    , -1    , -1    , 80    , -1    , true )),
+        Map.entry(83, new Points(Point,39.5  , 48    , -1    , -1    , -1    , 80    , true ))
     );
 
-    private Points(Textures texture, double x, double y, int top, int bottom, int left, int right, boolean isEaten) {
+
+
+    public static void resetNoOfViewedPoints() {
+        Points.noOfViewedPoints = (int) PointsList.values().stream().filter(p -> !p.defaultView).count();
+    }
+
+    private Points(Textures texture, double x, double y, int top, int bottom, int left, int right, boolean defaultView) {
         this.texture = texture;
         this.x = x;
         this.y = y;
@@ -116,7 +132,8 @@ public class Points {
         this.left = left;
         this.bottom = bottom;
         this.right = right;
-        this.isEaten = isEaten;
+        this.defaultView = defaultView;
+        this.isEaten = defaultView;
 
         this.sound = switch (texture) {
             case Fruit -> FruitEaten;
