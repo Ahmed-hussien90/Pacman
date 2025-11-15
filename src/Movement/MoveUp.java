@@ -1,28 +1,32 @@
 package Movement;
 
-import App.Pacman;
 import App.Points;
+import GameEntity.GameEntity;
+import GameEntity.Pacman;
+
 import static DataSources.KeyCode.*;
 
 public class MoveUp implements MoveCommand {
     @Override
-    public void execute(Pacman pacman) {
-        int direction = Points.PointsList.get(pacman.getIndex()).getTop();
+    public void execute(GameEntity entity) {
+        int direction = Points.PointsList.get(entity.getIndex()).getTop();
 
-        pacman.setMoving(false);
+        entity.setMoving(false);
         if (direction != -1) {
-            if (Math.abs(Points.PointsList.get(direction).getY() - pacman.getY()) <= pacman.getSpeed()) {
-                pacman.setIndex(direction);
-                pacman.setY(Points.PointsList.get(direction).getY());
+            if (Math.abs(Points.PointsList.get(direction).getY() - entity.getY()) <= entity.getSpeed()) {
+                entity.setIndex(direction);
+                entity.setY(Points.PointsList.get(direction).getY());
             } else {
-                pacman.setY(pacman.getY() +pacman.getSpeed());
-                pacman.setFace(UP);
-                pacman.setMoving(true);
+                entity.setY(entity.getY() +entity.getSpeed());
+                if(entity instanceof Pacman) {
+                    ((Pacman) entity).setTexture(UP);
+                }
+                entity.setMoving(true);
             }
         }
     }
 
-    public int getTarget(Pacman pacman){
-        return Points.PointsList.get(pacman.getIndex()).getTop();
+    public int getTarget(GameEntity entity){
+        return Points.PointsList.get(entity.getIndex()).getTop();
     }
 }

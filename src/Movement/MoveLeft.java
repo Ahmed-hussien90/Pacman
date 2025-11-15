@@ -1,36 +1,39 @@
 package Movement;
 
-import App.Pacman;
+import GameEntity.GameEntity;
+import GameEntity.Pacman;
 import App.Points;
 import static DataSources.KeyCode.*;
 
 public class MoveLeft implements MoveCommand {
     @Override
-    public void execute(Pacman pacman) {
-        int direction = Points.PointsList.get(pacman.getIndex()).getLeft();
+    public void execute(GameEntity entity) {
+        int direction = Points.PointsList.get(entity.getIndex()).getLeft();
 
-        pacman.setMoving(false);
+        entity.setMoving(false);
         if (direction != -1) {
             if (direction == -2) {
-                pacman.setIndex(18);
-                pacman.setX(Points.PointsList.get(pacman.getIndex()).getX());
-                pacman.setY(Points.PointsList.get(pacman.getIndex()).getY());
-                pacman.setMoving(true);
+                entity.setIndex(18);
+                entity.setX(Points.PointsList.get(entity.getIndex()).getX());
+                entity.setY(Points.PointsList.get(entity.getIndex()).getY());
+                entity.setMoving(true);
                 return;
             }
 
-            if (Math.abs(Points.PointsList.get(direction).getX() - pacman.getX()) <= pacman.getSpeed()) {
-                pacman.setIndex(direction);
-                pacman.setX(Points.PointsList.get(direction).getX());
+            if (Math.abs(Points.PointsList.get(direction).getX() - entity.getX()) <= entity.getSpeed()) {
+                entity.setIndex(direction);
+                entity.setX(Points.PointsList.get(direction).getX());
             } else {
-                pacman.setX(pacman.getX() -pacman.getSpeed());
-                pacman.setFace(LEFT);
-                pacman.setMoving(true);
+                entity.setX(entity.getX() -entity.getSpeed());
+                if(entity instanceof Pacman) {
+                    ((Pacman) entity).setTexture(LEFT);
+                }
+                entity.setMoving(true);
             }
         }
     }
 
-    public int getTarget(Pacman pacman){
-        return Points.PointsList.get(pacman.getIndex()).getLeft();
+    public int getTarget(GameEntity entity){
+        return Points.PointsList.get(entity.getIndex()).getLeft();
     }
 }

@@ -7,23 +7,28 @@ import java.util.Map;
 
 public enum Textures {
     PacmanRight(
-            new String[]{"pacman/r1.png", "pacman/r2.png", "pacman/r3.png"}
+            new String[]{"pacman/r1.png", "pacman/r2.png", "pacman/r3.png"},
+            new double[]{0.05, 0.05}
     ),
 
     PacmanLeft(
-            new String[]{"pacman/l1.png", "pacman/l2.png", "pacman/l3.png"}
+            new String[]{"pacman/l1.png", "pacman/l2.png", "pacman/l3.png"},
+            new double[]{0.05, 0.05}
     ),
 
     PacmanTop(
-            new String[]{"pacman/t1.png", "pacman/t2.png", "pacman/t3.png"}
+            new String[]{"pacman/t1.png", "pacman/t2.png", "pacman/t3.png"},
+            new double[]{0.05, 0.05}
     ),
 
     PacmanBottom(
-            new String[]{"pacman/b1.png", "pacman/b2.png", "pacman/b3.png"}
+            new String[]{"pacman/b1.png", "pacman/b2.png", "pacman/b3.png"},
+            new double[]{0.05, 0.05}
     ),
 
     Ghost(
-            new String[]{"ghosts/blinky.png", "ghosts/pinky.png", "ghosts/clyde.png", "ghosts/blue_ghost.png"}
+            new String[]{"ghosts/blinky.png", "ghosts/pinky.png", "ghosts/clyde.png", "ghosts/blue_ghost.png"},
+            new double[]{0.05, 0.05}
     ),
 
     Fire(
@@ -68,17 +73,13 @@ public enum Textures {
     @Getter
     private final String[] path;
     @Getter
-    private double[] scale;
+    private final double[] scale;
     @Getter
     private double[] position;
     @Getter
     private static final int total;
 
     private static final Map<Textures, Integer> startIndexMap = new HashMap<>();
-
-    Textures(String[] path) {
-        this.path = path;
-    }
 
     Textures(String[] path, double[] scale) {
         this.path = path;
@@ -102,5 +103,8 @@ public enum Textures {
 
     public int getIndex(int index) {
         return startIndexMap.get(this) + index;
+    }
+    public int getIndex(KeyCode keyCode) {
+        return startIndexMap.get(this) + keyCode.ordinal();
     }
 }

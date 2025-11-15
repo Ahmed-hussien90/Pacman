@@ -1,5 +1,7 @@
 package App;
 
+import lombok.Setter;
+
 import javax.sound.sampled.*;
 import java.io.File;
 import java.util.concurrent.CompletableFuture;
@@ -8,6 +10,9 @@ public class SoundPlayer {
 
     private static final int BUFFER_SIZE = 4096;
 
+    @Setter
+    private static boolean isMuted;
+
     public static void playAsync(String path, Runnable onEnd) {
         CompletableFuture.runAsync(() -> {
             try (AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File(path))) {
@@ -15,13 +20,23 @@ public class SoundPlayer {
                 DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
                 try (SourceDataLine audioLine = (SourceDataLine) AudioSystem.getLine(info)) {
                     audioLine.open(format);
+
+                    FloatControl gainControl = null;
+                    if (audioLine.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
+                        gainControl = (FloatControl) audioLine.getControl(FloatControl.Type.MASTER_GAIN);
+                    }
+
+                    applyMute(gainControl);
+
                     audioLine.start();
 
                     byte[] buffer = new byte[BUFFER_SIZE];
-                    int bytesRead;
 
+                    int bytesRead;
                     while ((bytesRead = audioStream.read(buffer)) != -1) {
                         audioLine.write(buffer, 0, bytesRead);
+
+                        applyMute(gainControl);
                     }
 
                     audioLine.drain();
@@ -33,5 +48,14 @@ public class SoundPlayer {
                 e.printStackTrace();
             }
         });
+    }
+
+    private static void applyMute(FloatControl gainControl) {
+        if (gainControl == null) return;
+
+        float min = gainControl.getMinimum(); // usually around -80dB
+        float max = gainControl.getMaximum(); // usually 6dB or similar
+
+        gainControl.setValue(isMuted ? min : max);
     }
 }

@@ -1,28 +1,31 @@
 package Movement;
 
-import App.Pacman;
+import GameEntity.GameEntity;
+import GameEntity.Pacman;
 import App.Points;
 import static DataSources.KeyCode.*;
 
 public class MoveDown implements MoveCommand {
     @Override
-    public void execute(Pacman pacman) {
-        int direction = Points.PointsList.get(pacman.getIndex()).getBottom();
+    public void execute(GameEntity entity) {
+        int direction = Points.PointsList.get(entity.getIndex()).getBottom();
 
-        pacman.setMoving(false);
+        entity.setMoving(false);
         if(direction != -1){
-            if (Math.abs(Points.PointsList.get(direction).getY() - pacman.getY()) <= pacman.getSpeed()) {
-                pacman.setIndex(direction);
-                pacman.setY(Points.PointsList.get(direction).getY());
+            if (Math.abs(Points.PointsList.get(direction).getY() - entity.getY()) <= entity.getSpeed()) {
+                entity.setIndex(direction);
+                entity.setY(Points.PointsList.get(direction).getY());
             } else {
-                pacman.setY(pacman.getY() -pacman.getSpeed());
-                pacman.setFace(DOWN);
-                pacman.setMoving(true);
+                entity.setY(entity.getY() -entity.getSpeed());
+                if(entity instanceof Pacman) {
+                    ((Pacman) entity).setTexture(DOWN);
+                }
+                entity.setMoving(true);
             }
         }
     }
 
-    public int getTarget(Pacman pacman){
-        return Points.PointsList.get(pacman.getIndex()).getBottom();
+    public int getTarget(GameEntity entity){
+        return Points.PointsList.get(entity.getIndex()).getBottom();
     }
 }

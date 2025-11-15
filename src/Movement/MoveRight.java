@@ -1,35 +1,39 @@
 package Movement;
 
-import App.Pacman;
 import App.Points;
+import GameEntity.GameEntity;
+import GameEntity.Pacman;
+
 import static DataSources.KeyCode.*;
 
 public class MoveRight implements MoveCommand {
     @Override
-    public void execute(Pacman pacman) {
-        int direction = Points.PointsList.get(pacman.getIndex()).getRight();
+    public void execute(GameEntity entity) {
+        int direction = Points.PointsList.get(entity.getIndex()).getRight();
 
-        pacman.setMoving(false);
+        entity.setMoving(false);
         if (direction != -1) {
             if (direction == -2) {
-                pacman.setIndex(66);
-                pacman.setX(Points.PointsList.get(pacman.getIndex()).getX());
-                pacman.setY(Points.PointsList.get(pacman.getIndex()).getY());
+                entity.setIndex(66);
+                entity.setX(Points.PointsList.get(entity.getIndex()).getX());
+                entity.setY(Points.PointsList.get(entity.getIndex()).getY());
                 return;
             }
 
-            if (Math.abs(Points.PointsList.get(direction).getX() - pacman.getX()) <= pacman.getSpeed()) {
-                pacman.setIndex(direction);
-                pacman.setX(Points.PointsList.get(direction).getX());
+            if (Math.abs(Points.PointsList.get(direction).getX() - entity.getX()) <= entity.getSpeed()) {
+                entity.setIndex(direction);
+                entity.setX(Points.PointsList.get(direction).getX());
             } else {
-                pacman.setX(pacman.getX() +pacman.getSpeed());
-                pacman.setFace(RIGHT);
-                pacman.setMoving(true);
+                entity.setX(entity.getX() +entity.getSpeed());
+                if(entity instanceof Pacman) {
+                    ((Pacman) entity).setTexture(RIGHT);
+                }
+                entity.setMoving(true);
             }
         }
     }
 
-    public int getTarget(Pacman pacman){
-        return Points.PointsList.get(pacman.getIndex()).getRight();
+    public int getTarget(GameEntity entity){
+        return Points.PointsList.get(entity.getIndex()).getRight();
     }
 }

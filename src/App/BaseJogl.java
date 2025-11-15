@@ -1,5 +1,6 @@
 package App;
 
+import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
 import java.awt.event.KeyEvent;
@@ -54,5 +55,42 @@ public class BaseJogl implements GLEventListener, KeyListener, MouseListener {
 
     @Override
     public void displayChanged(GLAutoDrawable glAutoDrawable, boolean b, boolean b1) {
+    }
+
+    protected void BeginEnd(GL gl) {
+        gl.glBegin(GL.GL_QUADS);
+        gl.glTexCoord2f(0.0f, 0.0f);
+        gl.glVertex3f(-1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1.0f, 0.0f);
+        gl.glVertex3f(1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1.0f, 1.0f);
+        gl.glVertex3f(1.0f, 1.0f, -1.0f);
+        gl.glTexCoord2f(0.0f, 1.0f);
+        gl.glVertex3f(-1.0f, 1.0f, -1.0f);
+        gl.glEnd();
+    }
+
+    protected void EnableDisable(GL gl, int glConst, Runnable r) {
+        gl.glEnable(glConst);
+        r.run();
+        gl.glDisable(glConst);
+    }
+
+    protected void DisableEnable(GL gl, int glConst, Runnable r) {
+        gl.glDisable(glConst);
+        r.run();
+        gl.glEnable(glConst);
+    }
+
+    protected void PushPopMatrix(GL gl, Runnable r) {
+        gl.glPushMatrix();
+        r.run();
+        gl.glPopMatrix();
+    }
+
+    protected void PushPopAttrib(GL gl, int glConst, Runnable r) {
+        gl.glPushAttrib(glConst);
+        r.run();
+        gl.glPopAttrib();
     }
 }

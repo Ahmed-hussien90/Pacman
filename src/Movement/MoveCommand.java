@@ -1,9 +1,9 @@
 package Movement;
 
-import App.Pacman;
+import GameEntity.GameEntity;
 
 public interface MoveCommand {
-    void execute(Pacman pacman);
+    void execute(GameEntity entity);
 
-    int getTarget(Pacman pacman);
+    int getTarget(GameEntity entity);
 }
