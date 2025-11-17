@@ -17,14 +17,12 @@ import static DataSources.KeyCode.*;
 import static DataSources.Textures.*;
 import static DataSources.Sound.*;
 import static App.Points.PointsList;
-import static javax.media.opengl.GL.GL_CURRENT_BIT;
-import static javax.media.opengl.GL.GL_TEXTURE_2D;
 
 public class PacmanApp extends BaseJogl {
     private final int[] textures = new int[Textures.getTotal()];
     private boolean startGame, pauseGame;
     private int index, level, angle, score;
-    double pacmanSpeed = 0.6, enemySpeed = 0.3;
+    double pacmanSpeed = 0.4, enemySpeed = 0.2;
     GL gl;
     Pacman pacman;
     List<Texts> TextsList;
@@ -35,7 +33,7 @@ public class PacmanApp extends BaseJogl {
     public void init(GLAutoDrawable gld) {
         gl = gld.getGL();
         gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-        gl.glEnable(GL_TEXTURE_2D);
+        gl.glEnable(GL.GL_TEXTURE_2D);
         gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
         gl.glGenTextures(textures.length, textures, 0);
 
@@ -46,10 +44,10 @@ public class PacmanApp extends BaseJogl {
                 try {
                     texture = TextureReader.readTexture("Assets/" + path, true);
 
-                    gl.glBindTexture(GL_TEXTURE_2D, textures[i++]);
+                    gl.glBindTexture(GL.GL_TEXTURE_2D, textures[i++]);
 
                     new GLU().gluBuild2DMipmaps(
-                            GL_TEXTURE_2D,
+                            GL.GL_TEXTURE_2D,
                             GL.GL_RGBA,
                             texture.width(),
                             texture.height(),
@@ -266,7 +264,7 @@ public class PacmanApp extends BaseJogl {
 
     private void drawTexture(int textureIdx, double[] position, Textures texture) {
         EnableDisable(gl, GL.GL_BLEND, () -> {
-            gl.glBindTexture(GL_TEXTURE_2D, textures[textureIdx]);
+            gl.glBindTexture(GL.GL_TEXTURE_2D, textures[textureIdx]);
             PushPopMatrix(gl, () -> {
                 gl.glTranslated(position[0], position[1], 0);
                 gl.glScaled(texture.getScale()[0], texture.getScale()[1], 1);
@@ -282,9 +280,9 @@ public class PacmanApp extends BaseJogl {
     }
 
     public void writeText(double[] position, String text) {
-        DisableEnable(gl, GL_TEXTURE_2D, () -> {
+        DisableEnable(gl, GL.GL_TEXTURE_2D, () -> {
             gl.glMatrixMode(GL.GL_MODELVIEW);
-            PushPopAttrib(gl, GL_CURRENT_BIT, () -> {
+            PushPopAttrib(gl, GL.GL_CURRENT_BIT, () -> {
                 gl.glColor4f(1, 0, 0, 0.5f);
                 PushPopMatrix(gl, () -> {
                     gl.glRasterPos2d(position[0], position[1]);

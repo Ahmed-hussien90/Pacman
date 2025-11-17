@@ -17,23 +17,7 @@ public class App extends JFrame {
     PacmanApp listener = new PacmanApp();
 
     public static void main(String[] args) {
-        loadAllDlls();
-
         new App().animator.start();
-    }
-
-    public static void loadAllDlls() {
-        try {
-            File dllFolder = new File("dlls");
-
-            for (File dll : Objects.requireNonNull(dllFolder.listFiles())) {
-                if (dll.getName().endsWith(".dll")) {
-                    System.load(dll.getAbsolutePath());
-                }
-            }
-        }catch (NullPointerException |  UnsatisfiedLinkError ex){
-            System.out.println("Error loading DLL: " + ex.getMessage());
-        }
     }
 
     public App() {
