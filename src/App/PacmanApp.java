@@ -16,7 +16,7 @@ import DataSources.*;
 import static DataSources.KeyCode.*;
 import static DataSources.Textures.*;
 import static DataSources.Sound.*;
-import static App.Points.PointsList;
+import static App.Point.PointsList;
 
 public class PacmanApp extends BaseJogl {
     private final int[] textures = new int[Textures.getTotal()];
@@ -74,7 +74,7 @@ public class PacmanApp extends BaseJogl {
     }
 
     public void reInit() {
-        Points.resetNoOfViewedPoints();
+        Point.resetNoOfViewedPoints();
 
         PointsList.forEach((id, point) -> point.setEaten(point.isDefaultView()));
 
@@ -120,7 +120,7 @@ public class PacmanApp extends BaseJogl {
                 if (pacman.isTouched(p.getX(), p.getY())) {
                     score += 10;
                     SoundPlayer.playAsync(p.getSound(), null);
-                    Points.setNoOfViewedPoints(Points.getNoOfViewedPoints() - 1);
+                    Point.setNoOfViewedPoints(Point.getNoOfViewedPoints() - 1);
                     p.setEaten(true);
                 }
             }
@@ -129,20 +129,21 @@ public class PacmanApp extends BaseJogl {
         if (!pauseGame) {
             if (!pacmanKeyList.isEmpty()) {
                 if (pacmanKeyList.size() > 1 && pacman.isMoving()) {
-                    int target = MoveCommand.movements.get(pacmanKeyList.getFirst()).getTarget(pacman);
+                    int target = Command.movements.get(pacmanKeyList.getFirst()).getTarget(pacman);
 
                     if (KeyCode.isOpposite(pacmanKeyList.getFirst(), pacmanKeyList.get(1))) {
                         if (target != -1) {
                             pacman.setIndex(target);
                         }
                         pacmanKeyList.removeFirst();
-                    } else if (MoveCommand.movements.get(pacmanKeyList.get(1)).getTarget(new Pacman(PacmanRight.getIndex(0), target, pacmanSpeed)) == -1) {
+                    } else if (Command.movements.get(pacmanKeyList.get(1)).getTarget(new Pacman(PacmanRight.getIndex(0), target, pacmanSpeed)) == -1) {
                         pacmanKeyList.addFirst(pacmanKeyList.getFirst());
                     }
 
                 }
 
-                MoveCommand.movements.get(pacmanKeyList.getFirst()).execute(pacman);
+                Command.movements.get(pacmanKeyList.getFirst()).execute(pacman);
+                pacman.setTexture(pacmanKeyList.getFirst());
                 if (!pacman.isMoving() && pacmanKeyList.size() > 1) {
                     pacmanKeyList.removeFirst();
                 }
@@ -153,14 +154,14 @@ public class PacmanApp extends BaseJogl {
                     index = e.getHomePath().peek();
                     KeyCode target = PointsList.get(e.getIndex()).getTargetKeyCode(index);
                     if(target != null) {
-                        MoveCommand.movements.get(target).execute(e);
+                        Command.movements.get(target).execute(e);
                     }
                     if (e.getIndex() == index) {
                         e.getHomePath().pop();
                     }
                 } else {
                     KeyCode target = e.getRandom();
-                    MoveCommand.movements.get(target).execute(e);
+                    Command.movements.get(target).execute(e);
                     if (!e.isMoving()) {
                         e.setRandom();
                     }
@@ -176,7 +177,7 @@ public class PacmanApp extends BaseJogl {
         fires.removeIf((fire) -> !fire.isMoving() && PointsList.get(fire.getIndex()).getTargetIndex(fire.getFaceDirection()) == -1);
 
         fires.removeIf(fire -> {
-            MoveCommand.movements.get(fire.getFaceDirection()).execute(fire);
+            Command.movements.get(fire.getFaceDirection()).execute(fire);
 
             drawTexture(fire);
 
@@ -269,7 +270,7 @@ public class PacmanApp extends BaseJogl {
                 gl.glTranslated(position[0], position[1], 0);
                 gl.glScaled(texture.getScale()[0], texture.getScale()[1], 1);
 
-                if (textureIdx == Fruit.getIndex(0)) {
+                if (texture == Fruit) {
                     angle = ++angle % 360;
                     gl.glRotated(angle, 0, 0, 1);
                 }

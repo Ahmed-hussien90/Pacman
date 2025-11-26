@@ -1,10 +1,14 @@
 package DataSources;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@RequiredArgsConstructor
+@AllArgsConstructor
 public enum Textures {
     PacmanRight(
             new String[]{"pacman/r1.png", "pacman/r2.png", "pacman/r3.png"},
@@ -36,7 +40,7 @@ public enum Textures {
             new double[]{0.075, 0.075}
     ),
 
-    Point(
+    Dot(
             new String[]{"extra/dot.png"},
             new double[]{0.075, 0.075}
     ),
@@ -80,17 +84,6 @@ public enum Textures {
     private static final int total;
 
     private static final Map<Textures, Integer> startIndexMap = new HashMap<>();
-
-    Textures(String[] path, double[] scale) {
-        this.path =  path;
-        this.scale = scale;
-    }
-
-    Textures(String[] path, double[] scale, double[] position) {
-        this.path = path;
-        this.scale = scale;
-        this.position = position;
-    }
 
     static {
         int index = 0;

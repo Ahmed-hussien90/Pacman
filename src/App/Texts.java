@@ -1,17 +1,15 @@
 package App;
 
+import DataSources.Textures;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+@AllArgsConstructor
+@Getter
 public class Texts {
-    @Getter
     private final int index;
 
-    @Setter @Getter
+    @Setter
     private boolean isAppear;
-
-    public Texts(int index, boolean isAppear) {
-        this.index = index;
-        this.isAppear = isAppear;
-    }
 }

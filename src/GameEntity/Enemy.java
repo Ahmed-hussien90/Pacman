@@ -1,13 +1,13 @@
 package GameEntity;
 
-import App.Points;
+import App.Point;
 import App.ShortestPath;
 import App.SoundPlayer;
 import DataSources.KeyCode;
 import static DataSources.Sound.*;
-import static App.Points.PointsList;
+import static App.Point.PointsList;
 
-import Movement.MoveCommand;
+import Movement.Command;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -40,7 +40,7 @@ public class Enemy extends GameEntity {
         int size = PointsList.keySet().stream().max(Integer::compare).get() + 1;
 
         this.homePath = ShortestPath.findPath(this.index, end, size, (current) -> {
-            Points p = PointsList.get(current.node());
+            Point p = PointsList.get(current.node());
 
             List<ShortestPath.Node> dir = new ArrayList<>();
 
@@ -53,13 +53,13 @@ public class Enemy extends GameEntity {
         });
 
         if(this.isMoving) {
-            this.index = MoveCommand.movements.get(this.getRandom()).getTarget(this);
+            this.index = Command.movements.get(this.getRandom()).getTarget(this);
         }
     }
 
-    private void addIfValid(List<ShortestPath.Node> dir, Points p, int next, boolean useX) {
+    private void addIfValid(List<ShortestPath.Node> dir, Point p, int next, boolean useX) {
         if (next >= 0) {
-            Points np = PointsList.get(next);
+            Point np = PointsList.get(next);
             dir.add(new ShortestPath.Node(next, Math.abs(useX ? p.getX() - np.getX() : p.getY() - np.getY())));
         }
     }

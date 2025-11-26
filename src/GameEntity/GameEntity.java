@@ -1,6 +1,6 @@
 package GameEntity;
 
-import static App.Points.PointsList;
+import static App.Point.PointsList;
 import DataSources.Textures;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,8 +29,12 @@ public class GameEntity {
 
     public GameEntity(int textureId, int index, double speed) {
         this.textureId = textureId;
-        this.index = index;
+        this.setPosition(index);
         this.speed = speed;
+    }
+
+    public void setPosition(int index) {
+        this.index = index;
         this.x = PointsList.get(this.index).getX();
         this.y = PointsList.get(this.index).getY();
     }
@@ -42,7 +46,18 @@ public class GameEntity {
         return this.y / (HEIGHT / 2.0) - 0.9;
     }
 
+    public void increaseX(double x) {
+        this.x += x;
+    }
+    public void increaseY(double y) {
+        this.y += y;
+    }
+
     public boolean isTouched(double x, double y) {
         return Math.abs(this.y - y) <= 2 && Math.abs(this.x - x) <= 2;
+    }
+
+    public boolean isPointTouched(double x, double y) {
+        return Math.abs(this.y - y) <= this.speed && Math.abs(this.x - x) <= this.speed;
     }
 }

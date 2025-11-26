@@ -2,9 +2,6 @@ package GameEntity;
 
 import java.util.List;
 
-import static App.Points.PointsList;
-
-import App.Points;
 import DataSources.KeyCode;
 
 import static DataSources.Textures.*;
@@ -43,6 +40,6 @@ public class Pacman extends GameEntity {
     }
 
     public boolean isWon() {
-        return Points.getNoOfViewedPoints() == 0;
+        return App.Point.getNoOfViewedPoints() == 0;
     }
 }
